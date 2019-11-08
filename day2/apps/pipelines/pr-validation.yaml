@@ -17,4 +17,4 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
-          - template: ../day2/dotnetcore/build/scm-api.yaml
+          - template: ../dotnetcore/build/scm-api.yaml
