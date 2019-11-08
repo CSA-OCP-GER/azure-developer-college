@@ -15,8 +15,8 @@ stages:
     displayName: Build
 
     jobs:
-      - job: Scm-API
-        displayName: Build dotnetcore SCM-Api
+      - job: Build
+        displayName: Build Scm Api
         pool:
           vmImage: ubuntu-latest
         steps:
