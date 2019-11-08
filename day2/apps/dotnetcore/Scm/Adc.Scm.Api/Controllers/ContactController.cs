@@ -1,0 +1,79 @@
+﻿using Adc.Scm.Api.Models;
+using Adc.Scm.Api.Services;
+using Adc.Scm.Repository.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+
+namespace Adc.Scm.Api.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    [Produces("application/json")]
+    public class ContactController : ControllerBase
+    {
+        private readonly IContactRepository _repository;
+        private readonly MapperService _mapper;
+
+        public ContactController(IContactRepository repository, MapperService mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<Contact>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get()
+        {
+            var domainObjects = await _repository.Get();
+            return Ok(_mapper.Map<List<DomainObjects.Contact>, List<Contact>>(domainObjects));
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var result = await _repository.Get(id);
+            if (null == result)
+                return NotFound();
+
+            return Ok(_mapper.Map<DomainObjects.Contact, Contact>(result));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Add([FromBody]Contact contact)
+        {
+            var domainContact = await _repository.Add(_mapper.Map<Contact, DomainObjects.Contact>(contact));
+            return Ok(_mapper.Map<DomainObjects.Contact, Contact>(domainContact));
+        }
+
+        [HttpPut]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Save([FromBody]Contact contact)
+        {
+            var domainContact = await _repository.Save(_mapper.Map<Contact, DomainObjects.Contact>(contact));
+
+            if (null == domainContact)
+                return NotFound();
+
+            return Ok(_mapper.Map<DomainObjects.Contact, Contact>(domainContact));
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var domainContact = await _repository.Delete(id);
+            if (null == domainContact)
+                return NotFound();
+
+            return Ok(_mapper.Map<DomainObjects.Contact, Contact>(domainContact));
+        }
+    }
+}
