@@ -1,0 +1,20 @@
+pr:
+  branches:
+    include:
+      - master
+      - features/*
+  paths:
+    include:
+      - day2/apps/dotnetcore/*
+
+stages:
+  - stage: Build
+    displayName: Build
+
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - template: day2/apps/dotnetcore/build/scm-api.yaml

@@ -1,0 +1,19 @@
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: "$(Build.SourceDirectory)/day2/apps/dotnetcore/scm/*.csproj"
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      projects: "$(Build.SourceDirectory)/day2/apps/dotnetcore/scm/*.csproj"
+      arguments: "--configuration $(BuildConfiguration)"
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: "$(Build.SourceDirectory)/day2/apps/dotnetcore/scm/Adc.Scm.Api/Adc.Scm.Api.csproj"
+      arguments: "--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)"
+      zipAfterPublish: True
