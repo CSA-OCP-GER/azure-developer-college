@@ -2,12 +2,9 @@ pr:
   branches:
     include:
       - master
-      - features/*
   paths:
     include:
       - day2/apps/dotnetcore/*
-    exclude:
-      - "*"
 
 variables:
   configuration: release

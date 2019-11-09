@@ -28,7 +28,7 @@ stages:
             inputs:
               sourceFolder: day2/apps/infrastructure/templates
               contents: |
-                "scm-api-dotnetcore.json"
+                scm-api-dotnetcore.json
               targetFolder: $(Build.ArtifactStagingDirectory)
           - task: PublishBuildArtifacts@1
             inputs:
