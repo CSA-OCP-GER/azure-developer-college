@@ -8,8 +8,8 @@ trigger:
       - day2/apps/infrastructure/templates/scm-api-dotnetcore.json
       - day2/apps/pipelines/cd-scm.yaml
 
-  variables:
-    configuration: release
+variables:
+  configuration: release
 
 stages:
   - stage: Build
