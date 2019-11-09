@@ -63,5 +63,5 @@ stages:
                   inputs:
                     appName: anmockscmdev-api
                     azureSubscription: ANMOCK-InternalSubscription
-                    package: $(Pipeline.Workspace)/drop/Adc.Scm.Api.zip)
+                    package: $(Pipeline.Workspace)/drop/Adc.Scm.Api.zip
 
