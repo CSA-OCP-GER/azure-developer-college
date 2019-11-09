@@ -22,4 +22,4 @@ stages:
         steps:
           - template: ../dotnetcore/build/scm-api.yaml
             parameters:
-              buildConfiguration: "$(configuration)"
+              buildConfiguration: $(configuration)

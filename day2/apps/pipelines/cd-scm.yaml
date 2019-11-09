@@ -23,7 +23,7 @@ stages:
         steps:
           - template: ../dotnetcore/build/scm-api.yaml
             parameters:
-              buildConfiguration: "$(configuration)"
+              buildConfiguration: '$(configuration)'
           - task: CopyFiles@2
             inputs:
               sourceFolder: day2/apps/infrastructure/templates
@@ -44,7 +44,7 @@ stages:
         displayName: Deploy Scm Api
         pool:
           vmImage: ubuntu-latest
-        environment: "Day2-Development"
+        environment: Day2-Development
         strategy:
           runOnce:
             deploy:
@@ -57,5 +57,5 @@ stages:
                     resourceGroupName: "DAY2-SCM-DEV-RG"
                     location: eastus2
                     templateLocation: 'Linked artifact'
-                    csmFile: drop/scm-api-dotnetcore.json
-                    overrideParameters: "-sku B1 -webAppName anmockscmdev"
+                    csmFile: $(Pipeline.Workspace)/drop/scm-api-dotnetcore.json
+                    overrideParameters: -sku B1 -webAppName anmockscmdev
