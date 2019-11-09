@@ -6,6 +6,8 @@ pr:
   paths:
     include:
       - day2/apps/dotnetcore/*
+    exclude:
+      - "*"
 
 variables:
   configuration: release

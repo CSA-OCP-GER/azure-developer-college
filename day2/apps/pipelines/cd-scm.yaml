@@ -26,8 +26,9 @@ stages:
               buildConfiguration: "$(configuration)"
           - task: CopyFiles@2
             inputs:
+              sourceFolder: day2/apps/infrastructure/templates
               contents: |
-                "day2/apps/infrastructure/templates/scm-api-dotnetcore.json"
+                "scm-api-dotnetcore.json"
               targetFolder: $(Build.ArtifactStagingDirectory)
           - task: PublishBuildArtifacts@1
             inputs:
