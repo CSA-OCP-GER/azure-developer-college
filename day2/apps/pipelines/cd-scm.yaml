@@ -1,0 +1,58 @@
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - day2/apps/dotnetcore/*
+      - day2/apps/infrastructure/templates/scm-api-dotnetcore.json
+      - day2/apps/pipelines/cd-scm.yaml
+
+  variables:
+    configuration: release
+
+stages:
+  - stage: Build
+    displayName: Build
+
+    jobs:
+      - job: Build
+        displayName: Build Scm Api
+        pool:
+          vmImage: ubuntu_latest
+        steps:
+          - template: ../dotnetcore/build/scm-api.yaml
+            parameters:
+              buildConfiguration: "$(configuration)"
+          - task: CopyFiles@2
+            inputs:
+              contents: |
+                "../infrastructure/templates/scm-api-dotnetcore.json"
+              targetFolder: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathtoPublish: $(Build.ArtifactStagingDirectory)
+              artifactName: drop
+
+  - stage: Development
+    displayName: Deploy Scm to Development Stage
+    dependsOn: Build
+
+    jobs:
+      - deployment: Deploy
+        displayName: Deploye Scm
+        pool:
+          vmImage: ubuntu_latest
+        environment: "Day2-Development"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureResourceGroupDeployment@2
+                  inputs:
+                    action: "Create Or Update Resource Group"
+                    resourceGroupName: "DAY2-SCM-DEV-RG"
+                    location: eastus2
+                    templateLocation: "Linked artifact"
+                    csmFile: scm-api-dotnetcore.json
+                    overrideParameters: "-sku B1 -webAppName anmockscmdev"

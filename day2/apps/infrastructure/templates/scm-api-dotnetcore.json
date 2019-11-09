@@ -1,8 +1,71 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "variables": {},
-    "resources": [],
-    "outputs": {}
+    "parameters": {
+        "sku": {
+            "type": "string",
+            "defaultValue": "B1",
+            "metadata": {
+                "description": "The SKU of App Service Plan, default is S1"
+            }
+        },
+        "webAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "Base name of the resource such as web app name and app service plan"
+            },
+            "minLength": 5
+        }
+    },
+    "variables": {
+        "webAppPortalName": "[concat(parameters('webAppName'), '-api')]",
+        "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
+        "location": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2018-02-01",
+            "type": "Microsoft.Web/serverfarms",
+            "kind": "app",
+            "name": "[variables('appServicePlanName')]",
+            "location": "[variables('location')]",
+            "properties": {
+            },
+            "dependsOn": [
+            ],
+            "sku": {
+                "name": "[parameters('sku')]"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "type": "Microsoft.Web/sites",
+            "kind": "api",
+            "name": "[variables('webAppPortalName')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "httpsOnly": true,
+                "clientAffinityEnabled": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+            ]
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "type": "Microsoft.Web/sites/config",
+            "name": "[concat(variables('webAppPortalName'), '/web')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
+            ],
+            "properties": {
+                "alwaysOn": true,
+                "use32BitWorkerProcess": false
+            }
+        }
+    ],
+    "outputs": {
+    }
 }
