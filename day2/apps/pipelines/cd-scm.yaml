@@ -43,7 +43,7 @@ stages:
       - deployment: Deploy
         displayName: Deploye Scm
         pool:
-          vmImage: ubuntu_latest
+          vmImage: ubuntu-latest
         environment: "Day2-Development"
         strategy:
           runOnce:
