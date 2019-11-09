@@ -41,7 +41,7 @@ stages:
 
     jobs:
       - deployment: Deploy
-        displayName: Deploye Scm
+        displayName: Deploy Scm Api
         pool:
           vmImage: ubuntu-latest
         environment: "Day2-Development"
@@ -53,9 +53,9 @@ stages:
                 - task: AzureResourceGroupDeployment@2
                   inputs:
                     azureSubscription: ANMOCK-InternalSubscription
-                    action: "Create Or Update Resource Group"
+                    action: 'Create Or Update Resource Group'
                     resourceGroupName: "DAY2-SCM-DEV-RG"
                     location: eastus2
-                    templateLocation: "Linked artifact"
-                    csmFile: scm-api-dotnetcore.json
+                    templateLocation: 'Linked artifact'
+                    csmFile: drop/scm-api-dotnetcore.json
                     overrideParameters: "-sku B1 -webAppName anmockscmdev"
