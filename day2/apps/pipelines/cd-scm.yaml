@@ -49,6 +49,10 @@ stages:
           runOnce:
             deploy:
               steps:
+                - task: DownloadBuildArtifacts@0
+                  displayName: "Download Build Artifacts"
+                  inputs:
+                    artifactName: WebSite
                 - task: AzureResourceGroupDeployment@2
                   inputs:
                     azureSubscription: ANMOCK-InternalSubscription
