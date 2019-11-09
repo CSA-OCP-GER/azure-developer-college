@@ -1,0 +1,68 @@
+pr: none
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - day2/apps/dotnetcore/*
+      - day2/apps/infrastructure/templates/scm-api-dotnetcore.json
+      - day2/apps/pipelines/cd-scm.yaml
+
+variables:
+  configuration: release
+
+stages:
+  - stage: Build
+    displayName: Build
+
+    jobs:
+      - job: Build
+        displayName: Build Scm Api
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - template: ../dotnetcore/build/scm-api.yaml
+            parameters:
+              buildConfiguration: '$(configuration)'
+          - task: CopyFiles@2
+            inputs:
+              sourceFolder: day2/apps/infrastructure/templates
+              contents: |
+                scm-api-dotnetcore.json
+              targetFolder: $(Build.ArtifactStagingDirectory)
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: $(Build.ArtifactStagingDirectory)
+              artifactName: drop
+
+  - stage: Development
+    displayName: Deploy Scm to Development Stage
+    dependsOn: Build
+
+    jobs:
+      - deployment: Deploy
+        displayName: Deploy Scm Api
+        pool:
+          vmImage: ubuntu-latest
+        environment: Day2-Development
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                - task: AzureResourceGroupDeployment@2
+                  inputs:
+                    azureSubscription: ANMOCK-InternalSubscription
+                    action: 'Create Or Update Resource Group'
+                    resourceGroupName: "DAY2-SCM-DEV-RG"
+                    location: eastus2
+                    templateLocation: 'Linked artifact'
+                    csmFile: $(Pipeline.Workspace)/drop/scm-api-dotnetcore.json
+                    overrideParameters: -sku B1 -webAppName anmockscmdev
+                - task: AzureWebApp@1
+                  inputs:
+                    appName: anmockscmdev-api
+                    azureSubscription: ANMOCK-InternalSubscription
+                    package: $(Pipeline.Workspace)/drop/Adc.Scm.Api.zip
+
