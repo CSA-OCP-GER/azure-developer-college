@@ -50,6 +50,7 @@ stages:
               steps:
                 - task: AzureResourceGroupDeployment@2
                   inputs:
+                    azureSubscription: ANMOCK-InternalSubscription
                     action: "Create Or Update Resource Group"
                     resourceGroupName: "DAY2-SCM-DEV-RG"
                     location: eastus2
