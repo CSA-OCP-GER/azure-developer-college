@@ -59,3 +59,9 @@ stages:
                     templateLocation: 'Linked artifact'
                     csmFile: $(Pipeline.Workspace)/drop/scm-api-dotnetcore.json
                     overrideParameters: -sku B1 -webAppName anmockscmdev
+                - task: AzureWebApp@1
+                  inputs:
+                    appName: anmockscmdev-api
+                    azureSubscription: ANMOCK-InternalSubscription
+                    package: $(Pipeline.Workspace)/drop/Adc.Scm.Api.zip)
+
