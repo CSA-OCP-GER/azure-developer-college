@@ -24,7 +24,7 @@ stages:
           artifactDropName: drop
 
   - stage: Development
-    displayName: Deploy Scm to Development Stage
+    displayName: Development
     dependsOn: Build
 
     jobs:
@@ -37,7 +37,7 @@ stages:
           artifactDropName: drop
 
   - stage: Test
-    displayName: Deploy Scm to Testing Stage
+    displayName: Test
     dependsOn: Development
 
     jobs:
