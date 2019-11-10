@@ -19,7 +19,13 @@
         "use32bitworker": {
             "type": "bool",
             "metadata": {
-                "description": "Use 32bit worker process or not. Some App Service Plan SKUs does only allow 32bit like D1"
+                "description": "Use 32bit worker process or not. Some App Service Plan SKUs does only allow 32bit e.g. D1"
+            }
+        },
+        "alwaysOn": {
+            "type": "bool",
+            "metadata": {
+                "description": "Use alwaysOn for the App Service Pan or not? Some App Service Plan SKUs does not support it e.g. D1"
             }
         }
     },
@@ -67,7 +73,7 @@
                 "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
             ],
             "properties": {
-                "alwaysOn": true,
+                "alwaysOn": "[parameters('alwaysOn')]",
                 "use32BitWorkerProcess": "[parameters('use32bitworker')]"
             }
         }
