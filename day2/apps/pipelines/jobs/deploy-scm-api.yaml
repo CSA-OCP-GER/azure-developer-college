@@ -24,10 +24,10 @@ jobs:
                 resourceGroupName: ${{ variables.resourceGroupName }}
                 location: ${{ variables.location }}
                 templateLocation: 'Linked artifact'
-                csmFile: $(Pipeline.Workspace)/${{ artifactDropName }}/scm-api-dotnetcore.json
+                csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-api-dotnetcore.json
                 overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }}
             - task: AzureWebApp@1
               inputs:
                 appName: ${{ variables.apiAppName }}
                 azureSubscription: $(azureSubscription)
-                package: $(Pipeline.Workspace)/${{ artifactDropName }}/Adc.Scm.Api.zip
+                package: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/Adc.Scm.Api.zip
