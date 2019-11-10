@@ -11,6 +11,7 @@ trigger:
 
 variables:
   configuration: release
+  azureSubscription: ANMOCK-InternalSubscription
 
 stages:
   - stage: Build
@@ -43,26 +44,27 @@ stages:
     jobs:
       - deployment: Deploy
         displayName: Deploy Scm Api
+        variables: 
+          - template: variables/cd-scm-dev.yaml
         pool:
-          vmImage: ubuntu-latest
+          vmImage: ${{ variables.vmImage }}
         environment: Day2-Development
         strategy:
           runOnce:
             deploy:
               steps:
-                - download: current
                 - task: AzureResourceGroupDeployment@2
                   inputs:
-                    azureSubscription: ANMOCK-InternalSubscription
+                    azureSubscription: $(azureSubscription)
                     action: 'Create Or Update Resource Group'
-                    resourceGroupName: "DAY2-SCM-DEV-RG"
-                    location: eastus2
+                    resourceGroupName: ${{ variables.resourceGroupName }}
+                    location: ${{ variables.location }}
                     templateLocation: 'Linked artifact'
                     csmFile: $(Pipeline.Workspace)/drop/scm-api-dotnetcore.json
-                    overrideParameters: -sku B1 -webAppName anmockscmdev
+                    overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }}
                 - task: AzureWebApp@1
                   inputs:
-                    appName: anmockscmdev-api
-                    azureSubscription: ANMOCK-InternalSubscription
+                    appName: ${{ variables.apiAppName }}
+                    azureSubscription: $(azureSubscription)
                     package: $(Pipeline.Workspace)/drop/Adc.Scm.Api.zip
 

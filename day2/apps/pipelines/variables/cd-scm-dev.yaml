@@ -1,0 +1,11 @@
+variables:
+  - name: vmImage
+    value: ubuntu-latest
+  - name: resourceGroupName
+    value: ADC-DAY1-SCM-DEV
+  - name: location
+    value: eastus2
+  - name: apiAppName
+    value: anmockscmapi-dev
+  - name: appServicePlanSKU
+    value: B1

@@ -18,7 +18,7 @@
         }
     },
     "variables": {
-        "webAppPortalName": "[concat(parameters('webAppName'), '-api')]",
+        "webAppPortalName": "[parameters('webAppName')]",
         "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
         "location": "[resourceGroup().location]"
     },
