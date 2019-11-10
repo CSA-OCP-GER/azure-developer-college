@@ -45,7 +45,7 @@ stages:
       - template: jobs/deploy-scm-api.yaml
         parameters:
           name: Deploy Scm Api
-          variablesFile: ../variables/cd-scm.yaml
+          variablesFile: $(Pipeline.Workspace)/day2/apps/pipelines/variables/cd-scm-dev.yaml
           environmentName: ADC-DAY2-SCM-DEV
           azureSubscription: $(azureSubscription)
 
