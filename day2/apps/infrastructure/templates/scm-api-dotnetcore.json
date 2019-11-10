@@ -15,10 +15,22 @@
                 "description": "Base name of the resource such as web app name and app service plan"
             },
             "minLength": 5
+        },
+        "use32bitworker": {
+            "type": "bool",
+            "metadata": {
+                "description": "Use 32bit worker process or not. Some App Service Plan SKUs does only allow 32bit e.g. D1"
+            }
+        },
+        "alwaysOn": {
+            "type": "bool",
+            "metadata": {
+                "description": "Use alwaysOn for the App Service Pan or not? Some App Service Plan SKUs does not support it e.g. D1"
+            }
         }
     },
     "variables": {
-        "webAppPortalName": "[concat(parameters('webAppName'), '-api')]",
+        "webAppPortalName": "[parameters('webAppName')]",
         "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
         "location": "[resourceGroup().location]"
     },
@@ -61,8 +73,8 @@
                 "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
             ],
             "properties": {
-                "alwaysOn": true,
-                "use32BitWorkerProcess": false
+                "alwaysOn": "[parameters('alwaysOn')]",
+                "use32BitWorkerProcess": "[parameters('use32bitworker')]"
             }
         }
     ],
