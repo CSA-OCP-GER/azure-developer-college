@@ -2,10 +2,10 @@ variables:
   - name: vmImage
     value: ubuntu-latest
   - name: resourceGroupName
-    value: ADC-DAY1-SCM-DEV
+    value: ADC-DAY2-SCM-DEV
   - name: location
     value: eastus2
   - name: apiAppName
-    value: anmockscmapi-dev
+    value: adcday2scmapi-dev
   - name: appServicePlanSKU
     value: B1

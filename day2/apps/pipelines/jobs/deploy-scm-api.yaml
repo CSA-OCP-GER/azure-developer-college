@@ -1,0 +1,32 @@
+parameters:
+  name: ''
+  variablesFile: ''
+  environmentName: ''
+  azureSubscription: ''
+
+jobs:
+  - deployment: Deploy
+    displayName: ${{ parameters.name }}
+    variables: 
+      - template: ${{ parameters.variablesFile }}
+    pool:
+      vmImage: ${{ variables.vmImage }}
+    environment: ${{ parameters.environmentName }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureResourceGroupDeployment@2
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                action: 'Create Or Update Resource Group'
+                resourceGroupName: ${{ variables.resourceGroupName }}
+                location: ${{ variables.location }}
+                templateLocation: 'Linked artifact'
+                csmFile: $(Pipeline.Workspace)/drop/scm-api-dotnetcore.json
+                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }}
+            - task: AzureWebApp@1
+              inputs:
+                appName: ${{ variables.apiAppName }}
+                azureSubscription: $(azureSubscription)
+                package: $(Pipeline.Workspace)/drop/Adc.Scm.Api.zip

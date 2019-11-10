@@ -42,29 +42,10 @@ stages:
     dependsOn: Build
 
     jobs:
-      - deployment: Deploy
-        displayName: Deploy Scm Api
-        variables: 
-          - template: variables/cd-scm-dev.yaml
-        pool:
-          vmImage: ${{ variables.vmImage }}
-        environment: Day2-Development
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: AzureResourceGroupDeployment@2
-                  inputs:
-                    azureSubscription: $(azureSubscription)
-                    action: 'Create Or Update Resource Group'
-                    resourceGroupName: ${{ variables.resourceGroupName }}
-                    location: ${{ variables.location }}
-                    templateLocation: 'Linked artifact'
-                    csmFile: $(Pipeline.Workspace)/drop/scm-api-dotnetcore.json
-                    overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }}
-                - task: AzureWebApp@1
-                  inputs:
-                    appName: ${{ variables.apiAppName }}
-                    azureSubscription: $(azureSubscription)
-                    package: $(Pipeline.Workspace)/drop/Adc.Scm.Api.zip
+      - template: jobs/deploy-scm-api-yaml
+        parameters:
+          name: Deploy Scm Api
+          variablesFile: ../variables/cd-scm.yaml
+          environmentName: ADC-DAY2-SCM-DEV
+          azureSubscription: $(azureSubscription)
 
