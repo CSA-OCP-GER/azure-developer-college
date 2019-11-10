@@ -25,7 +25,7 @@ jobs:
                 location: ${{ variables.location }}
                 templateLocation: 'Linked artifact'
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-api-dotnetcore.json
-                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use64bitworker ${{ variables.use64bitworker }}
+                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }}
             - task: AzureWebApp@1
               inputs:
                 appName: ${{ variables.apiAppName }}

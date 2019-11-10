@@ -16,10 +16,10 @@
             },
             "minLength": 5
         },
-        "use64bitworker": {
+        "use32bitworker": {
             "type": "bool",
             "metadata": {
-                "description": "Use 64bit worker process or not. Some App Service Plan SKUs does only allwo 32bit like D1"
+                "description": "Use 32bit worker process or not. Some App Service Plan SKUs does only allow 32bit like D1"
             }
         }
     },
@@ -68,7 +68,7 @@
             ],
             "properties": {
                 "alwaysOn": true,
-                "use32BitWorkerProcess": "[parameters('use64bitworker')]"
+                "use32BitWorkerProcess": "[parameters('use32bitworker')]"
             }
         }
     ],

@@ -9,5 +9,5 @@ variables:
     value: adcday2scmapi-test
   - name: appServicePlanSKU
     value: D1
-  - name: use64bitworker
-    value: false
+  - name: use32bitworker
+    value: true
