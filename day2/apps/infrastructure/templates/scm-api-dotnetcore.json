@@ -15,6 +15,12 @@
                 "description": "Base name of the resource such as web app name and app service plan"
             },
             "minLength": 5
+        },
+        "use64bitworker": {
+            "type": "bool",
+            "metadata": {
+                "description": "Use 64bit worker process or not. Some App Service Plan SKUs does only allwo 32bit like D1"
+            }
         }
     },
     "variables": {
@@ -62,7 +68,7 @@
             ],
             "properties": {
                 "alwaysOn": true,
-                "use32BitWorkerProcess": false
+                "use32BitWorkerProcess": "[parameters('use64bitworker')]"
             }
         }
     ],
