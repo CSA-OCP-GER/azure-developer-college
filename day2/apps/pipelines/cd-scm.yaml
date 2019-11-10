@@ -38,7 +38,7 @@ stages:
 
   - stage: Test
     displayName: Deploy Scm to Testing Stage
-    dependsOn: Build
+    dependsOn: Development
 
     jobs:
       - template: jobs/deploy-scm-api.yaml

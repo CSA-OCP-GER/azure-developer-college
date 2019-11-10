@@ -1,7 +1,7 @@
 parameters:
   configuration: release
   artifactDropName: drop
-  
+
 jobs:
   - job: Build
     displayName: Build Scm Api
@@ -20,4 +20,4 @@ jobs:
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: $(Build.ArtifactStagingDirectory)
-          artifactName: ${{ parameters.artifatcDropName }}
+          artifactName: ${{ parameters.artifactDropName }}
