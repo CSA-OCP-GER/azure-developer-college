@@ -1,6 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import contactsStore from "./components/contacts/store";
+import notificationsStore from "./components/notifications/store";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -19,7 +22,8 @@ export default new Vuex.Store({
   })],
   strict: true,
   modules: {
-
+    contacts: contactsStore,
+    notifications: notificationsStore
   },
   state: {
 

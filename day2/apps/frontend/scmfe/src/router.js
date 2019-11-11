@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
-import home from "./components/home";
+import Home from "./components/home/Home";
+import ContactsList from "./components/contacts/ContactsList";
 import goTo from "vuetify/lib/services/goto";
 
 Vue.use(Router);
@@ -12,7 +13,12 @@ export default new Router({
     {
       path: "/",
       name: "home",
-      component: home
+      component: Home
+    },
+    {
+      path: "/contacts",
+      name: "contacts",
+      component: ContactsList
     },
     {
       path: "*",
