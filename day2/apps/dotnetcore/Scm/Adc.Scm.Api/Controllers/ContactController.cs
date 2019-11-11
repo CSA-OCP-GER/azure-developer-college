@@ -34,7 +34,7 @@ namespace Adc.Scm.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _repository.Get(id);
             if (null == result)
@@ -44,11 +44,11 @@ namespace Adc.Scm.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Add([FromBody]Contact contact)
         {
             var domainContact = await _repository.Add(_mapper.Map<Contact, DomainObjects.Contact>(contact));
-            return Ok(_mapper.Map<DomainObjects.Contact, Contact>(domainContact));
+            return CreatedAtAction(nameof(GetById), new { id = domainContact.Id }, _mapper.Map<DomainObjects.Contact, Contact>(domainContact));
         }
 
         [HttpPut]
@@ -66,14 +66,14 @@ namespace Adc.Scm.Api.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var domainContact = await _repository.Delete(id);
             if (null == domainContact)
                 return NotFound();
 
-            return Ok(_mapper.Map<DomainObjects.Contact, Contact>(domainContact));
+            return NoContent();
         }
     }
 }
