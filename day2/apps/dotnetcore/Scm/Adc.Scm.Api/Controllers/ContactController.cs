@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Adc.Scm.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("contacts")]
     [Produces("application/json")]
     public class ContactController : ControllerBase
     {
