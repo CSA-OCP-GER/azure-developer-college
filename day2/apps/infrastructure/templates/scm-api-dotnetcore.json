@@ -74,7 +74,12 @@
             ],
             "properties": {
                 "alwaysOn": "[parameters('alwaysOn')]",
-                "use32BitWorkerProcess": "[parameters('use32bitworker')]"
+                "use32BitWorkerProcess": "[parameters('use32bitworker')]",
+                "cors": {
+                    "allowedOrigins": [
+                        "*"
+                    ]
+                }
             }
         }
     ],
