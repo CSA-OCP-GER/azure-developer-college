@@ -10,7 +10,7 @@ trigger:
       - day2/apps/pipelines/cd-scm-fe.yaml
 
 variables:
-  azureSubscription: DECHRIST-InternalSubscription
+  azureSubscription: 'DECHRIST-InternalSubscription'
 
 stages:
   - stage: Build
@@ -31,8 +31,8 @@ stages:
           name: Deploy Scm Frontend
           variablesFile: ../variables/cd-scm-dev.yaml
           environmentName: ADC-DAY2-SCM-DEV
-          azureSubscription: $(azureSubscription)
-          artifactDropName: drop-fe
+          azureSubscription: ${{ parameters.azureSubscription }}
+          artifactDropName: 'drop-fe'
 
   # - stage: Test
   #   displayName: Test

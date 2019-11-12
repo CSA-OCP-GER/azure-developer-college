@@ -3,7 +3,7 @@ parameters:
   variablesFile: ''
   environmentName: ''
   azureSubscription: ''
-  artifactDropName: drop-fe
+  artifactDropName: 'drop-fe'
 
 jobs:
   - deployment: Deploy
@@ -33,13 +33,6 @@ jobs:
                 scriptLocation: 'inlineScript'
                 inlineScript: |
                   az storage blob service-properties update --account-name ${{ variables.storageAccountName }} --static-website  --index-document index.html --404-document index.html
-            # - task: AzureCLI@2
-            #   inputs:
-            #     azureSubscription: ${{ parameters.azureSubscription }}
-            #     scriptType: 'bash'
-            #     scriptLocation: 'inlineScript'
-            #     inlineScript: |
-            #       echo "##vso[task.setvariable variable=spaEndpoint]`az storage account show -n $(storageAccountName) --query "primaryEndpoints.web" --output tsv`"
             - task: AzureCLI@2
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
