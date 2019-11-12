@@ -1,0 +1,12 @@
+variables:
+  - name: vmImage
+    value: ubuntu-latest
+  - name: resourceGroupName
+    value: teststatic-rg
+    # value: ADC-DAY2-SCM-DEV
+  - name: location
+    value: westeurope
+  - name: storageAccountName
+    value: scmvuefe-dev
+  - name: spaEndpoint
+    value: "https://test123.azurewebsites.net"

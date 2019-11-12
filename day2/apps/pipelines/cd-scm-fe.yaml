@@ -21,18 +21,18 @@ stages:
         parameters:
           artifactDropName: drop-fe
 
-  # - stage: Development
-  #   displayName: Development
-  #   dependsOn: Build
+  - stage: Development
+    displayName: Development
+    dependsOn: Build
 
-  #   jobs:
-  #     - template: jobs/deploy-scm-fe.yaml
-  #       parameters:
-  #         name: Deploy Scm Frontend
-  #         variablesFile: ../variables/cd-scm-dev.yaml
-  #         environmentName: ADC-DAY2-SCM-DEV
-  #         azureSubscription: $(azureSubscription)
-  #         artifactDropName: drop-fe
+    jobs:
+      - template: jobs/deploy-scm-fe.yaml
+        parameters:
+          name: Deploy Scm Frontend
+          variablesFile: ../variables/cd-scm-dev.yaml
+          environmentName: ADC-DAY2-SCM-DEV
+          azureSubscription: $(azureSubscription)
+          artifactDropName: drop-fe
 
   # - stage: Test
   #   displayName: Test
