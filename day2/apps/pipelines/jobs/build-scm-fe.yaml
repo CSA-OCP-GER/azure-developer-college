@@ -19,7 +19,7 @@ jobs:
           contents: |
             scm-fe.json
           targetFolder: $(Build.ArtifactStagingDirectory)/templates
-      - task: PublishBuildArtifacts@1
+      - task: PublishPipelineArtifact@1
         inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: ${{ parameters.artifactDropName }}
+          targetPath: $(Build.ArtifactStagingDirectory)
+          artifactName: ${{ parameters.artifactDropName }}
