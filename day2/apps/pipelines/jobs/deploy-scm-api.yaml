@@ -26,8 +26,9 @@ jobs:
                 templateLocation: 'Linked artifact'
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-api-dotnetcore.json
                 overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }}
-            - task: AzureWebApp@1
+            - task: AzureRmWebAppDeployment@4
               inputs:
-                appName: ${{ variables.apiAppName }}
-                azureSubscription: $(azureSubscription)
+                azureSubscription: 'ANMOCK-InternalSubscription'
+                appType: apiApp
+                webAppName: ${{ variables.apiAppName }}
                 package: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/Adc.Scm.Api.zip
