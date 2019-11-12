@@ -31,7 +31,7 @@ stages:
           name: Deploy Scm Frontend
           variablesFile: ../variables/cd-scm-dev.yaml
           environmentName: ADC-DAY2-SCM-DEV
-          azureSubscription: ${{ parameters.azureSubscription }}
+          azureSubscription: ${{ variables.azureSubscription }}
           artifactDropName: 'drop-fe'
 
   # - stage: Test
