@@ -18,6 +18,7 @@ jobs:
         deploy:
           steps:
             - task: AzureResourceGroupDeployment@2
+              displayName: Deploy Storage Account
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 action: 'Create Or Update Resource Group'
@@ -27,6 +28,7 @@ jobs:
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/templates/scm-fe.json
                 overrideParameters: -storageAccountName ${{ variables.storageAccountName }}
             - task: AzureCLI@2
+              displayName: Enable static website hosting
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 scriptType: 'bash'
@@ -34,6 +36,7 @@ jobs:
                 inlineScript: |
                   az storage blob service-properties update --account-name ${{ variables.storageAccountName }} --static-website  --index-document index.html --404-document index.html
             - task: AzureCLI@2
+              displayName: Display static website URL
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 scriptType: 'bash'
@@ -41,16 +44,18 @@ jobs:
                 inlineScript: |
                   az storage account show -n ${{ variables.storageAccountName }} --query "primaryEndpoints.web" --output tsv
             - task: Bash@3
+              displayName: Configure endpoint within SPA settings.js
               inputs:
                 targetType: 'inline'
                 script: 'echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js'
             - task: AzureCLI@2
+              displayName: Copy SPA to blob storage
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az storage blob upload-batch -d $web --account-name ${{ variables.storageAccountName }} -s $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist
+                  az storage blob upload-batch -d '$web' --account-name ${{ variables.storageAccountName }} -s $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist
             # - task: AzureFileCopy@3
             #   inputs:
             #     SourcePath: '$(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/**'
