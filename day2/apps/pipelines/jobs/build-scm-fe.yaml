@@ -23,7 +23,7 @@ jobs:
           sourceFolder: day2/apps/infrastructure/templates
           contents: |
             scm-fe.json
-          targetFolder: $(Build.ArtifactStagingDirectory)
+          targetFolder: $(Build.ArtifactStagingDirectory)/templates
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
