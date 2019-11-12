@@ -110,13 +110,13 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
             ],
             "properties": {
-                "ImageStoreOptions--StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-                "ImageStoreOptions--ImageContainer": "rawimages",
-                "ImageStoreOptions--ThumbnailContainer": "thumbnails",
-                "StorageQueueOptions--StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-                "StorageQueueOptions--Queue": "thumbnails",
-                "StorageQueueOptions--ImageContainer": "rawimage",
-                "StorageQueueOptions--ThumbnailContainer": "thumbnails"
+                "ImageStoreOptions__StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                "ImageStoreOptions__ImageContainer": "rawimages",
+                "ImageStoreOptions-__ThumbnailContainer": "thumbnails",
+                "StorageQueueOptions__StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                "StorageQueueOptions__Queue": "thumbnails",
+                "StorageQueueOptions__ImageContainer": "rawimage",
+                "StorageQueueOptions__ThumbnailContainer": "thumbnails"
             }
         }
     ],
