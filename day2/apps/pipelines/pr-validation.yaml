@@ -16,10 +16,13 @@ stages:
 
     jobs:
       - job: Build
-        displayName: Build Scm Api
+        displayName: Build Scm Components
         pool:
           vmImage: ubuntu-latest
         steps:
           - template: ../dotnetcore/build/scm-api.yaml
+            parameters:
+              buildConfiguration: $(configuration)
+          - template: ../dotnetcore/build/scm-resources-api.yaml
             parameters:
               buildConfiguration: $(configuration)
