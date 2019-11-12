@@ -33,10 +33,10 @@ namespace Adc.Scm.Resources.Api.Controllers
             {
                 await file.CopyToAsync(memstream);
 
-                var name = await _repository.Add(file.FileName, memstream.ToArray());
-                await _service.NotifyImageCreated(name);
+                var result = await _repository.Add(file.FileName, memstream.ToArray());
+                await _service.NotifyImageCreated(result.Item1);
 
-                return CreatedAtAction(nameof(DownloadImage), new { image = name }, null);
+                return Created(result.Item2, null);
             }            
         }
 

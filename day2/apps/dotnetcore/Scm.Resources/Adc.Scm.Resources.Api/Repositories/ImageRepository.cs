@@ -19,7 +19,7 @@ namespace Adc.Scm.Resources.Api.Repositories
             _options = options.Value;
         }
 
-        public async Task<string> Add(string filename, byte[] data)
+        public async Task<Tuple<string, string>> Add(string filename, byte[] data)
         {
             var extension = Path.GetExtension(filename);
             var id = Guid.NewGuid();
@@ -30,7 +30,9 @@ namespace Adc.Scm.Resources.Api.Repositories
             var blob = container.GetBlockBlobReference(blobname);
             await blob.UploadFromByteArrayAsync(data, 0, data.Length);
 
-            return blobname;
+            var outputBlob = GetOutputContainer().GetBlockBlobReference(blobname);
+
+            return Tuple.Create(blobname, outputBlob.StorageUri.PrimaryUri.OriginalString);            
         }
 
         public async Task<byte[]> Get(string image)
