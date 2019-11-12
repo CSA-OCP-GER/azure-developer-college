@@ -10,7 +10,7 @@ trigger:
       - day2/apps/pipelines/cd-scm-fe.yaml
 
 variables:
-  azureSubscription: DECHRIST-InternalSubscription
+  azureSubscription: ANMOCK-InternalSubscription
 
 stages:
   - stage: Build
