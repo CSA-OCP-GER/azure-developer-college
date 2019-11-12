@@ -41,7 +41,7 @@ stages:
     dependsOn: Development
 
     jobs:
-      - template: jobs/deploy-scm-api.yaml
+      - template: jobs/deploy-scm-resources-api.yaml
         parameters:
           name: Deploy Scm Resources Api
           variablesFile: ../variables/cd-scm-resources-test.yaml
