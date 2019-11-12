@@ -328,4 +328,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+day2/apps/frontend/scmfe/dist
 .DS_Store
