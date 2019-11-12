@@ -56,11 +56,4 @@ jobs:
                 scriptLocation: 'inlineScript'
                 inlineScript: |
                   az storage blob upload-batch -d '$web' --account-name ${{ variables.storageAccountName }} -s $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist
-            # - task: AzureFileCopy@3
-            #   inputs:
-            #     SourcePath: '$(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/**'
-            #     azureSubscription: ${{ parameters.azureSubscription }}
-            #     Destination: 'AzureBlob'
-            #     storage: '${{ variables.storageAccountName }}'
-            #     ContainerName: '$web'
             

@@ -9,4 +9,4 @@ variables:
   - name: storageAccountName
     value: scmvuefedev
   - name: spaEndpoint
-    value: "https://test123.azurewebsites.net"
+    value: "https://adcday2scmapi-dev.azurewebsites.net/"
