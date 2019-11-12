@@ -26,25 +26,25 @@ jobs:
                 templateLocation: 'Linked artifact'
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/templates/scm-fe.json
                 overrideParameters: -storageAccountName ${{ variables.storageAccountName }}
-            - task: AzureCLI@2
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                scriptType: 'bash'
-                scriptLocation: 'inlineScript'
-                inlineScript: |
-                  az storage blob service-properties update --account-name ${{ variables.storageAccountName }} --static-website  --index-document index.html --404-document index.html
-            - task: AzureCLI@2
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                scriptType: 'bash'
-                scriptLocation: 'inlineScript'
-                inlineScript: |
-                  echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js
-            - task: AzureFileCopy@3
-              inputs:
-                SourcePath: '$(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/**'
-                azureSubscription: ${{ parameters.azureSubscription }}
-                Destination: 'AzureBlob'
-                storage: '${{ variables.storageAccountName }}'
-                ContainerName: '$web'
+            # - task: AzureCLI@2
+            #   inputs:
+            #     azureSubscription: ${{ parameters.azureSubscription }}
+            #     scriptType: 'bash'
+            #     scriptLocation: 'inlineScript'
+            #     inlineScript: |
+            #       az storage blob service-properties update --account-name ${{ variables.storageAccountName }} --static-website  --index-document index.html --404-document index.html
+            # - task: AzureCLI@2
+            #   inputs:
+            #     azureSubscription: ${{ parameters.azureSubscription }}
+            #     scriptType: 'bash'
+            #     scriptLocation: 'inlineScript'
+            #     inlineScript: |
+            #       echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js
+            # - task: AzureFileCopy@3
+            #   inputs:
+            #     SourcePath: '$(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/**'
+            #     azureSubscription: ${{ parameters.azureSubscription }}
+            #     Destination: 'AzureBlob'
+            #     storage: '${{ variables.storageAccountName }}'
+            #     ContainerName: '$web'
             
