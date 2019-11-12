@@ -7,6 +7,6 @@ variables:
   - name: location
     value: westeurope
   - name: storageAccountName
-    value: scmvuefe-dev
+    value: scmvuefedev
   - name: spaEndpoint
     value: "https://test123.azurewebsites.net"

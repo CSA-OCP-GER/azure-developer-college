@@ -26,13 +26,20 @@ jobs:
                 templateLocation: 'Linked artifact'
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/templates/scm-fe.json
                 overrideParameters: -storageAccountName ${{ variables.storageAccountName }}
-            # - task: AzureCLI@2
-            #   inputs:
-            #     azureSubscription: ${{ parameters.azureSubscription }}
-            #     scriptType: 'bash'
-            #     scriptLocation: 'inlineScript'
-            #     inlineScript: |
-            #       az storage blob service-properties update --account-name ${{ variables.storageAccountName }} --static-website  --index-document index.html --404-document index.html
+            - task: AzureCLI@2
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  az storage blob service-properties update --account-name ${{ variables.storageAccountName }} --static-website  --index-document index.html --404-document index.html
+            - task: AzureCLI@2
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: |
+                  az storage account show -n ${{ variables.storageAccountName }} --query "primaryEndpoints.web" --output tsv
             # - task: AzureCLI@2
             #   inputs:
             #     azureSubscription: ${{ parameters.azureSubscription }}
