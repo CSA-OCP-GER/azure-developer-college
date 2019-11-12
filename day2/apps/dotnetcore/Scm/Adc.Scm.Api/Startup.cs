@@ -36,14 +36,14 @@ namespace Adc.Scm.Api
             services.AddScoped<IContactRepository, ContactRepository>();
             services.AddScoped<MapperService>();
 
-            services.AddSwaggerGen(c => 
+            services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Contacts API", Version = "v1" });
             });
 
-            services.AddCors(options => 
+            services.AddCors(options =>
             {
-                options.AddPolicy("AllowAnyOrigin", builder => builder.AllowAnyOrigin());
+                options.AddPolicy("AllowAnyOrigin", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
         }
 
@@ -59,7 +59,7 @@ namespace Adc.Scm.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwaggerUI(c => 
+            app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contacts API v1");
                 c.RoutePrefix = string.Empty;

@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "https://scmanmock.azurewebsites.net/";
+const BASE_URL = window.uisettings.endpoint;
 
 export function getHttpClient() {
     return getClientInternal(BASE_URL);

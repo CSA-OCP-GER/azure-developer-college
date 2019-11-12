@@ -1,6 +1,6 @@
 import { getHttpClient } from "../../utils/http-client";
 
-const BASE_PATH = "/Contact";
+const BASE_PATH = "/contacts";
 
 const state = {
     contacts: [],
@@ -78,8 +78,8 @@ const actions = {
     create({ commit, dispatch }, payload) {
         dispatch("wait/start", "apicall", { root: true });
         var client = getHttpClient();
-        return client.post("", payload).then(response => {
-            var newcontact = response.headers.location.split("/")[2];
+        return client.post(`${BASE_PATH}`, payload).then(response => {
+            var newcontact = response.data.id;
             commit("setNewContact", newcontact);
             dispatch("wait/end", "apicall", { root: true });
         }).catch(err => {

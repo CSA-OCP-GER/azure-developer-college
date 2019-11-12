@@ -1,3 +1,3 @@
 var uisettings = {
-    "endpoint": "http://localhost:8080/api/Contacts"
+    "endpoint": "https://localhost:5001"
 }

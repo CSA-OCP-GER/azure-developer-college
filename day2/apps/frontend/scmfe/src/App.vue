@@ -1,5 +1,12 @@
 <template>
   <v-app id="inspire">
+    <v-progress-linear
+      v-if="$wait.any"
+      color="white"
+      style="z-index: 6; margin-top: 0px; position: fixed"
+      height="3"
+      :indeterminate="true"
+    ></v-progress-linear>
     <v-navigation-drawer v-model="drawer" :clipped="$vuetify.breakpoint.lgAndUp" app>
       <v-list>
         <template v-for="item in items">
@@ -61,9 +68,6 @@
       <router-view></router-view>
       <!-- </v-container> -->
     </v-content>
-    <v-btn bottom color="pink" dark fab fixed right @click="addContact()">
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
   </v-app>
 </template>
 
