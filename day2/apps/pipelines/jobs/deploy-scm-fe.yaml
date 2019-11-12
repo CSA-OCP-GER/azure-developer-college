@@ -40,18 +40,22 @@ jobs:
                 scriptLocation: 'inlineScript'
                 inlineScript: |
                   az storage account show -n ${{ variables.storageAccountName }} --query "primaryEndpoints.web" --output tsv
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: 'echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js'
             - task: AzureCLI@2
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js
-            - task: AzureFileCopy@3
-              inputs:
-                SourcePath: '$(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/**'
-                azureSubscription: ${{ parameters.azureSubscription }}
-                Destination: 'AzureBlob'
-                storage: '${{ variables.storageAccountName }}'
-                ContainerName: '$web'
+                  az storage blob upload-batch -d $web --account-name ${{ variables.storageAccountName }} -s $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist
+            # - task: AzureFileCopy@3
+            #   inputs:
+            #     SourcePath: '$(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/**'
+            #     azureSubscription: ${{ parameters.azureSubscription }}
+            #     Destination: 'AzureBlob'
+            #     storage: '${{ variables.storageAccountName }}'
+            #     ContainerName: '$web'
             
