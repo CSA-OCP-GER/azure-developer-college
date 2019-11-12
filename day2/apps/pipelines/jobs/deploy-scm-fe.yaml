@@ -3,7 +3,7 @@ parameters:
   variablesFile: ''
   environmentName: ''
   azureSubscription: ''
-  artifactDropName: 'drop-fe'
+  artifactDropName: drop
 
 jobs:
   - deployment: Deploy
