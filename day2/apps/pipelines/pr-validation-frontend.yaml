@@ -7,9 +7,6 @@ pr:
     include:
       - day2/apps/frontend/*
 
-variables:
-  configuration: release
-
 stages:
   - stage: Build
     displayName: Build
@@ -20,4 +17,4 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
-          - template: jobs/build-scm-fe.yaml
+          - template: ../frontend/build/scm-fe.yaml
