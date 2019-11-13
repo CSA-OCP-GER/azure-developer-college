@@ -43,7 +43,7 @@ namespace Adc.Scm.Api
 
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAnyOrigin", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                options.AddPolicy("AllowAnyOrigin", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Location"));
             });
         }
 

@@ -64,18 +64,20 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <!-- <v-container class="fill-height" fluid> -->
       <router-view></router-view>
-      <!-- </v-container> -->
     </v-content>
+    <notification-snackbar></notification-snackbar>
   </v-app>
 </template>
 
 <script>
+import NotificationSnackbar from "./components/notifications/NotificationSnackbar";
 export default {
   name: "App",
 
-  components: {},
+  components: {
+    NotificationSnackbar
+  },
 
   data: () => ({
     dialog: false,

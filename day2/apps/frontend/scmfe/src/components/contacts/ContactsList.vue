@@ -8,10 +8,22 @@
     </v-toolbar>
     <v-divider />
     <v-container class="grid-list-xl">
-      <v-layout row>
-        <v-flex xs12>
-          <h1>Contacts List</h1>
-        </v-flex>
+      <v-toolbar class="px-0" flat color="transparent">
+        <v-toolbar-title class="pt-0 px-0 headline">
+          <span class="ml-3 hidden-sm-and-down">Contacts List</span>
+        </v-toolbar-title>
+        <div class="flex-grow-1"></div>
+        <v-spacer></v-spacer>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" icon @click="refresh()">
+              <v-icon>mdi-refresh</v-icon>
+            </v-btn>
+          </template>
+          <span>Refresh</span>
+        </v-tooltip>
+      </v-toolbar>
+      <v-layout row class="px-5">
         <v-flex xs12>
           <v-data-table :headers="headers" :items="contacts" class="elevation-1">
             <template v-slot:item.avatar="{item}">
@@ -24,7 +36,7 @@
                   :color="`${hover ? 'primary' : ''}`"
                   small
                   class="mr-2"
-                  @click="editItem(item)"
+                  @click="editContact(item)"
                 >mdi-pencil</v-icon>
               </v-hover>
               <v-hover>
@@ -32,7 +44,7 @@
                   slot-scope="{ hover }"
                   :color="`${hover ? 'red' : ''}`"
                   small
-                  @click="deleteItem(item)"
+                  @click="deleteContact(item)"
                 >mdi-delete</v-icon>
               </v-hover>
             </template>
@@ -44,17 +56,20 @@
     <v-btn bottom color="green" dark fab fixed right @click="createContact()">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
+    <confirmation-dialog ref="confirm"></confirmation-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import ContactsCreate from "./ContactsCreate";
+import ConfirmationDialog from "../dialog/ConfirmationDialog";
 import Avatar from "../avatar/Avatar";
 
 export default {
   components: {
     ContactsCreate,
+    ConfirmationDialog,
     Avatar
   },
   computed: {
@@ -67,7 +82,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      list: "contacts/list"
+      list: "contacts/list",
+      delete: "contacts/delete"
     }),
     refresh() {
       this.loading = true;
@@ -77,9 +93,28 @@ export default {
       this.$refs.contactsCreate.open({}).then(newContact => {
         if (newContact != null) {
           this.refresh();
-          // this.$router.push({ path: `/contacts/${newContact}` });
+          this.$router.push({
+            name: "contactDetail",
+            params: { id: newContact }
+          });
         }
       });
+    },
+    editContact(contact) {
+      this.$router.push({ name: "contactDetail", params: { id: contact.id } });
+    },
+    deleteContact(contact) {
+      this.$refs.confirm
+        .open(
+          "Delete Contact",
+          `Are you sure you want to delete contact ${contact.firstname} ${contact.lastname}?`,
+          {
+            color: "red"
+          }
+        )
+        .then(confirm => {
+          if (confirm) this.delete(contact.id).then(() => this.refresh());
+        });
     }
   },
   data() {
