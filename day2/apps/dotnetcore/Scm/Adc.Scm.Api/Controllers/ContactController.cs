@@ -51,10 +51,10 @@ namespace Adc.Scm.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = domainContact.Id }, _mapper.Map<DomainObjects.Contact, Contact>(domainContact));
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Save([FromBody]Contact contact)
+        public async Task<IActionResult> Save(Guid id, [FromBody]Contact contact)
         {
             var domainContact = await _repository.Save(_mapper.Map<Contact, DomainObjects.Contact>(contact));
 
