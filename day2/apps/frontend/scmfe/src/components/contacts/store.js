@@ -81,6 +81,7 @@ const actions = {
         return client.post(`${BASE_PATH}`, payload).then(response => {
             var newcontact = response.data.id;
             commit("setNewContact", newcontact);
+            dispatch("notifications/addMessage", { type: "success", message: "Contact successfully created.", read: false }, { root: true });
             dispatch("wait/end", "apicall", { root: true });
         }).catch(err => {
             if (typeof err == "object" && err.code) {
@@ -100,6 +101,7 @@ const actions = {
         var client = getHttpClient();
         return client.delete(`${BASE_PATH}/${id}`).then(() => {
             dispatch("wait/end", "apicall", { root: true });
+            dispatch("notifications/addMessage", { type: "success", message: "Contact successfully deleted.", read: false }, { root: true });
         }).catch(err => {
             if (typeof err == "object" && err.code) {
                 if (err.code == "ECONNABORTED") {
