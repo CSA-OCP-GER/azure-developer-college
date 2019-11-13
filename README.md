@@ -8,6 +8,9 @@ Repository for Azure Developer College Hands-On
 ## Azure Pipelines
 
 ### Day2 SCM 
+
+### API / Backend ###
+
  [![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/SCM-Pipelines/Day2-CD-SCM?branchName=master&stageName=Build)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=3&branchName=master)
 Build
 
@@ -16,6 +19,15 @@ Development
 
  [![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/SCM-Pipelines/Day2-CD-SCM?branchName=master&stageName=Test)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=3&branchName=master)
 Test
+
+### Frontend ###
+
+[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day2-CD-SCM-Frontend?branchName=master&stageName=Build)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=8&branchName=master) Build
+
+[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day2-CD-SCM-Frontend?branchName=master&stageName=Development)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=8&branchName=master) Development
+
+[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day2-CD-SCM-Frontend?branchName=master&stageName=Test)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=8&branchName=master) Test
+
 ## Prerequisites
 
 - todo
