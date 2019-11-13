@@ -56,17 +56,20 @@
     <v-btn bottom color="green" dark fab fixed right @click="createContact()">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
+    <confirmation-dialog ref="confirm"></confirmation-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import ContactsCreate from "./ContactsCreate";
+import ConfirmationDialog from "../dialog/ConfirmationDialog";
 import Avatar from "../avatar/Avatar";
 
 export default {
   components: {
     ContactsCreate,
+    ConfirmationDialog,
     Avatar
   },
   computed: {
@@ -79,7 +82,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      list: "contacts/list"
+      list: "contacts/list",
+      delete: "contacts/delete"
     }),
     refresh() {
       this.loading = true;
@@ -98,6 +102,19 @@ export default {
     },
     editContact(contact) {
       this.$router.push({ name: "contactDetail", params: { id: contact.id } });
+    },
+    deleteContact(contact) {
+      this.$refs.confirm
+        .open(
+          "Delete Contact",
+          `Are you sure you want to delete contact ${contact.firstname} ${contact.lastname}?`,
+          {
+            color: "red"
+          }
+        )
+        .then(confirm => {
+          if (confirm) this.delete(contact.id).then(() => this.refresh());
+        });
     }
   },
   data() {

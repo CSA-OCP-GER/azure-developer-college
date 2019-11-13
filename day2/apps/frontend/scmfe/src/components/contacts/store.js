@@ -100,8 +100,8 @@ const actions = {
         dispatch("wait/start", "apicall", { root: true });
         var client = getHttpClient();
         return client.delete(`${BASE_PATH}/${id}`).then(() => {
-            dispatch("wait/end", "apicall", { root: true });
             dispatch("notifications/addMessage", { type: "success", message: "Contact successfully deleted.", read: false }, { root: true });
+            dispatch("wait/end", "apicall", { root: true });
         }).catch(err => {
             if (typeof err == "object" && err.code) {
                 if (err.code == "ECONNABORTED") {

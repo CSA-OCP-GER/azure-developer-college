@@ -30,7 +30,7 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item @click="confirmDelete()">
+            <v-list-item @click="deleteContact()">
               <v-list-item-avatar>
                 <v-icon color="red">mdi-delete</v-icon>
               </v-list-item-avatar>
@@ -95,33 +95,36 @@
             </v-card-text>
             <v-divider />
             <v-card-actions class="justify-center">
-              <v-btn color="primary" text>Change Avatar</v-btn>
+              <v-btn color="primary" text @click="changeImage()">Change Avatar</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
       </v-layout>
     </v-container>
     <confirmation-dialog ref="confirm"></confirmation-dialog>
+    <image-upload-dialog ref="logoupload"></image-upload-dialog>
   </div>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
 import _ from "lodash";
 import Avatar from "../avatar/Avatar";
-import ConfirmationDialog from "..//dialog/ConfirmationDialog";
+import ConfirmationDialog from "../dialog/ConfirmationDialog";
+import ImageUploadDialog from "../resources/ImageUploadDialog";
 
 export default {
   components: {
     Avatar,
-    ConfirmationDialog
+    ConfirmationDialog,
+    ImageUploadDialog
   },
   computed: {
     ...mapGetters({
       contact: "contacts/contact"
     }),
-   isFormDirty() {
+    isFormDirty() {
       return Object.keys(this.fields).some(key => this.fields[key].dirty);
-    },
+    }
   },
   created() {
     return this.read(this.$route.params.id);
@@ -142,10 +145,34 @@ export default {
   methods: {
     ...mapActions({
       read: "contacts/read",
-      update: "contacts/update"
+      update: "contacts/update",
+      delete: "contacts/delete"
     }),
     updateContact() {
       this.update(this.contactFields).then(() => this.$validator.reset());
+    },
+    deleteContact() {
+      this.$refs.confirm
+        .open(
+          "Delete Contact",
+          `Are you sure you want to delete contact ${this.contactFields.firstname} ${this.contactFields.lastname}?`,
+          {
+            color: "red"
+          }
+        )
+        .then(confirm => {
+          if (confirm)
+            this.delete(this.contactFields.id).then(() =>
+              this.$router.push({ name: "contacts" })
+            );
+        });
+    },
+    changeImage() {
+      this.$refs.logoupload.open().then(url => {
+        if (url) {
+          this.contactFields.image = url;
+        }
+      });
     }
   },
   data() {
