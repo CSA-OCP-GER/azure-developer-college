@@ -17,3 +17,5 @@ variables:
     value: adcd2scmresourcestest
   - name: resizerFunctionName
     value: adcday2scmresizer-prod
+  - name: applicationInsightsName
+    value: appinsightsscmd2-test

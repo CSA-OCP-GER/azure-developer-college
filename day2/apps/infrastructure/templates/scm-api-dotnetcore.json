@@ -27,6 +27,9 @@
             "metadata": {
                 "description": "Use alwaysOn for the App Service Pan or not? Some App Service Plan SKUs does not support it e.g. D1"
             }
+        },
+        "applicationInsightsName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -80,6 +83,18 @@
                         "*"
                     ]
                 }
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "type": "Microsoft.Web/sites/config",
+            "name": "[concat(variables('webAppPortalName'), '/appsettings')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
+            ],
+            "properties": {
+                "ApplicationInsights__InstrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
             }
         }
     ],

@@ -25,7 +25,7 @@ jobs:
                 location: ${{ variables.location }}
                 templateLocation: "Linked artifact"
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-resources-api-dotnetcore.json
-                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.resizerFunctionName }}
+                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.resizerFunctionName }} -applicationInsightsName ${{ variables.applicationInsightsName }}
             - task: AzureRmWebAppDeployment@4
               inputs:
                 azureSubscription: "ANMOCK-InternalSubscription"

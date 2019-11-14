@@ -40,6 +40,9 @@
                 "description": "Name of resizer function"
             },
             "minLength": 5
+        },
+        "applicationInsightsName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -124,7 +127,8 @@
                 "StorageQueueOptions__StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
                 "StorageQueueOptions__Queue": "thumbnails",
                 "StorageQueueOptions__ImageContainer": "rawimages",
-                "StorageQueueOptions__ThumbnailContainer": "thumbnails"
+                "StorageQueueOptions__ThumbnailContainer": "thumbnails",
+                "ApplicationInsights__InstrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
             }
         },
         {
@@ -172,6 +176,10 @@
                         {
                             "name": "ImageProcessorOptions__ImageWidth",
                             "value": "100"
+                        },
+                        {
+                            "name": "ApplicationInsights__InstrumentationKey",
+                            "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
                         }
                     ]
                 }
