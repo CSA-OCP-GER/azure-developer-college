@@ -128,7 +128,7 @@
                 "StorageQueueOptions__Queue": "thumbnails",
                 "StorageQueueOptions__ImageContainer": "rawimages",
                 "StorageQueueOptions__ThumbnailContainer": "thumbnails",
-                "ApplicationInsights__InstrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
             }
         },
         {
@@ -178,7 +178,7 @@
                             "value": "100"
                         },
                         {
-                            "name": "ApplicationInsights__InstrumentationKey",
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                             "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
                         }
                     ]

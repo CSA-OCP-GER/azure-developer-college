@@ -1,6 +1,8 @@
+using Adc.Scm.Api.Monitoring;
 using Adc.Scm.Api.Services;
 using Adc.Scm.Repository.EntityFrameworkCore;
 using Adc.Scm.Repository.Interfaces;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Data.Sqlite;
@@ -29,6 +31,11 @@ namespace Adc.Scm.Api
         {
             _sqlite = new SqliteConnection("DataSource=:memory:");
             _sqlite.Open();
+
+            // Initialize ApplicationInsights
+            services.AddSingleton<ITelemetryInitializer, ApiTelemetryInitializer>();
+            services.AddApplicationInsightsTelemetry();
+
 
             services.AddControllers();
             services.AddEntityFrameworkSqlite();
