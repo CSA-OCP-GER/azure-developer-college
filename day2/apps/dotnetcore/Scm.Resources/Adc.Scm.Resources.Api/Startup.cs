@@ -28,7 +28,7 @@ namespace Adc.Scm.Resources.Api
             services.AddSingleton<ITelemetryInitializer, ApiTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
-            services.AddControllers(options => 
+            services.AddControllers(options =>
             {
                 options.InputFormatters.Add(new ImageInputFormatter());
             });
