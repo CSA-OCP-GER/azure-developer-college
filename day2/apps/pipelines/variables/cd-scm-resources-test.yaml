@@ -15,3 +15,5 @@ variables:
     value: false
   - name: storageAccountName
     value: adcd2scmresourcestest
+  - name: resizerFunctionName
+    value: adcday2scmresizer-prod

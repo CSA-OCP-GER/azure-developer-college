@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Adc.Scm.Resources.Api.Repositories;
 using Adc.Scm.Resources.Api.Services;
@@ -27,8 +28,17 @@ namespace Adc.Scm.Resources.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UploadImage([FromForm(Name = "imageupload")]IFormFile file)
         {
+            // validate image extension
+            var extension = Path.GetExtension(file.FileName);
+            extension = extension.Replace(".", "");
+            var isSupported = Regex.IsMatch(extension, "gif|png|jpe?g", RegexOptions.IgnoreCase);
+
+            if (!isSupported)
+                return BadRequest($"{extension} is not supported");
+
             using (var memstream = new MemoryStream())
             {
                 await file.CopyToAsync(memstream);

@@ -1,6 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Gif;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,17 +29,35 @@ namespace Adc.Scm.Resources.ImageResizer
 
         public async Task Process(ResizeMessage msg)
         {
+            var thumbnailWidth = _options.ImageWidth;
             var inputContainer = GetInputContainer(msg);
             var outputContainer = GetOutputContainer(msg);
 
             var inputBlob = inputContainer.GetBlockBlobReference(msg.Image);
             var outputBlob = outputContainer.GetBlockBlobReference(msg.Image);
+            var encoder = GetEncoder(msg.Image);
 
-            using (var memstream = new MemoryStream())
+            if (null == encoder)
             {
-                await inputBlob.DownloadToStreamAsync(memstream);
-                var data = memstream.ToArray();
-                await outputBlob.UploadFromByteArrayAsync(data, 0, data.Length);
+                throw new NotSupportedException($"No encoder supported for {msg.Image}");
+            }
+
+            using (var inputStream = new MemoryStream())
+            using (var outputStream = new MemoryStream())
+            {
+                await inputBlob.DownloadToStreamAsync(inputStream);
+                inputStream.Position = 0;
+
+                using (var image = Image.Load(inputStream))
+                {
+                    var divisor = image.Width / thumbnailWidth;
+                    var height = Convert.ToInt32(Math.Round((decimal)(image.Height / divisor)));
+                    image.Mutate(x => x.Resize(thumbnailWidth, height));
+                    image.Save(outputStream, encoder);
+                    outputStream.Position = 0;
+                }
+
+                await outputBlob.UploadFromStreamAsync(outputStream);
             }
         }
 
@@ -79,6 +103,33 @@ namespace Adc.Scm.Resources.ImageResizer
             }
 
             return container;
+        }
+
+        private IImageEncoder GetEncoder(string image)
+        {
+            IImageEncoder encoder = null;
+            var extension = Path.GetExtension(image);
+            extension = extension.Replace(".", "");
+
+            switch (extension)
+            {
+                case "png":
+                    encoder = new PngEncoder();
+                    break;
+                case "jpg":
+                    encoder = new JpegEncoder();
+                    break;
+                case "jpeg":
+                    encoder = new JpegEncoder();
+                    break;
+                case "gif":
+                    encoder = new GifEncoder();
+                    break;
+                default:
+                    break;
+            }
+
+            return encoder;
         }
     }
 }

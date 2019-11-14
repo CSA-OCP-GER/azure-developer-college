@@ -30,9 +30,17 @@ namespace Adc.Scm.Resources.ImageResizer
         {
             _context = context;
 
-            ServiceProvider.GetRequiredService<ImageProcessor>().Process(msg).GetAwaiter().GetResult();
+            try
+            {
+                ServiceProvider.GetRequiredService<ImageProcessor>().Process(msg).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                log.LogInformation(ex.Message);
+            }
+            
 
-            log.LogInformation($"C# Queue trigger function processed: {msg}");
+            log.LogInformation($"Function processed: {msg}");
         }
 
         private static IConfiguration BuildConfiguration()

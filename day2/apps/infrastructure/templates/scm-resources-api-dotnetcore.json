@@ -33,11 +33,19 @@
             "metadata": {
                 "description": "Name of storage account"
             }
+        },
+        "functionAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of resizer function"
+            },
+            "minLength": 5
         }
     },
     "variables": {
         "webAppPortalName": "[parameters('webAppName')]",
         "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
+        "resizerFunctionName": "[parameters('functionAppName')]",
         "location": "[resourceGroup().location]"
     },
     "resources": [
@@ -117,6 +125,48 @@
                 "StorageQueueOptions__Queue": "thumbnails",
                 "StorageQueueOptions__ImageContainer": "rawimage",
                 "StorageQueueOptions__ThumbnailContainer": "thumbnails"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "type": "Microsoft.Web/sites",
+            "kind": "functionapp",
+            "name": "[variables('resizerFunctionName')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "AzureWebJobsDashboard",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "ImageProcessorOptions__StorageAccountConnectionString",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                        },
+                        {
+                            "name": "ImageProcessorOptions__ImageWidth",
+                            "value": "100"
+                        }
+                    ]
+                }
             }
         }
     ],

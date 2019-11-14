@@ -1,14 +1,14 @@
 parameters:
-  name: ''
-  variablesFile: ''
-  environmentName: ''
-  azureSubscription: ''
+  name: ""
+  variablesFile: ""
+  environmentName: ""
+  azureSubscription: ""
   artifactDropName: drop
 
 jobs:
   - deployment: Deploy
     displayName: ${{ parameters.name }}
-    variables: 
+    variables:
       - template: ${{ parameters.variablesFile }}
     pool:
       vmImage: ${{ variables.vmImage }}
@@ -20,15 +20,21 @@ jobs:
             - task: AzureResourceGroupDeployment@2
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
-                action: 'Create Or Update Resource Group'
+                action: "Create Or Update Resource Group"
                 resourceGroupName: ${{ variables.resourceGroupName }}
                 location: ${{ variables.location }}
-                templateLocation: 'Linked artifact'
+                templateLocation: "Linked artifact"
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-resources-api-dotnetcore.json
-                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -storageAccountName ${{ variables.storageAccountName }}
+                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.resizerFunctionName }}
             - task: AzureRmWebAppDeployment@4
               inputs:
-                azureSubscription: 'ANMOCK-InternalSubscription'
+                azureSubscription: "ANMOCK-InternalSubscription"
                 appType: apiApp
                 webAppName: ${{ variables.apiAppName }}
                 package: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/Adc.Scm.Resources.Api.zip
+            - task: AzureRmWebAppDeployment@4
+              inputs:
+                azureSubscription: "ANMOCK-InternalSubscription"
+                appType: apiApp
+                webAppName: ${{ variables.resizerFunctionName }}
+                package: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/Adc.Scm.Resources.ImageResizer.zip

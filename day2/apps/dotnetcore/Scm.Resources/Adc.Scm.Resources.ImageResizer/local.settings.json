@@ -7,6 +7,7 @@
     "QueueName": "thumbnails"
   },
   "ImageProcessorOptions": {
-    "StorageAccountConnectionString": "UseDevelopmentStorage=true"
+    "StorageAccountConnectionString": "UseDevelopmentStorage=true",
+    "ImageWidth" :  "100"
   }
 }
