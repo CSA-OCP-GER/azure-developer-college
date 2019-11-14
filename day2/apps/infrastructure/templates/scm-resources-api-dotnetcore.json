@@ -123,7 +123,7 @@
                 "ImageStoreOptions-__ThumbnailContainer": "thumbnails",
                 "StorageQueueOptions__StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
                 "StorageQueueOptions__Queue": "thumbnails",
-                "StorageQueueOptions__ImageContainer": "rawimage",
+                "StorageQueueOptions__ImageContainer": "rawimages",
                 "StorageQueueOptions__ThumbnailContainer": "thumbnails"
             }
         },

@@ -33,6 +33,9 @@ namespace Adc.Scm.Resources.Api.Controllers
         {
             // validate image extension
             var extension = Path.GetExtension(file.FileName);
+            if (string.IsNullOrEmpty(extension))
+                return BadRequest($"No file extension specified");
+
             extension = extension.Replace(".", "");
             var isSupported = Regex.IsMatch(extension, "gif|png|jpe?g", RegexOptions.IgnoreCase);
 
