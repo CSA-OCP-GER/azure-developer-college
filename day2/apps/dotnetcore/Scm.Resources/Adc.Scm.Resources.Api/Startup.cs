@@ -1,3 +1,4 @@
+using Adc.Scm.Resources.Api.Formatter;
 using Adc.Scm.Resources.Api.Monitoring;
 using Adc.Scm.Resources.Api.Repositories;
 using Adc.Scm.Resources.Api.Services;
@@ -27,7 +28,11 @@ namespace Adc.Scm.Resources.Api
             services.AddSingleton<ITelemetryInitializer, ApiTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.InputFormatters.Add(new ImageInputFormatter());
+            });
+
             services.AddScoped<ImageRepository>();
             services.Configure<ImageStoreOptions>(c => Configuration.Bind("ImageStoreOptions", c));
             services.AddScoped<StorageQueueService>();

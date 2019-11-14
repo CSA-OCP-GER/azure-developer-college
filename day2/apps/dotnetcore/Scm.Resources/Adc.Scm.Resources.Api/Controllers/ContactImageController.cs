@@ -53,6 +53,28 @@ namespace Adc.Scm.Resources.Api.Controllers
             }            
         }
 
+        [HttpPost("binary")]
+        [Consumes("image/png", "image/gif", "image/jpeg", "image/jpg")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> BinaryUpload([FromBody]byte[] data)
+        {
+            var contentType = Request.ContentType;
+            var type = contentType.ToString().Split('/')[1];
+
+            var isSupported = Regex.IsMatch(type, "gif|png|jpe?g", RegexOptions.IgnoreCase);
+
+            if (!isSupported)
+                return BadRequest($"{type} is not supported");
+
+            var filename = $"{Guid.NewGuid().ToString()}.{type}";
+
+            var result = await _repository.Add(filename, data);
+            await _service.NotifyImageCreated(result.Item1);
+
+            return Created(result.Item2, null);
+        }
+
         [HttpGet("{image}")]
         [Produces("application/octet-stream")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
