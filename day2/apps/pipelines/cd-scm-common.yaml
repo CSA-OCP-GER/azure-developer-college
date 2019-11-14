@@ -27,7 +27,7 @@ stages:
     jobs:
       - template: jobs/deploy-scm-common.yaml
         parameters:
-          name: Deploy Scm Api
+          name: Deploy Scm Common
           variablesFile: ../variables/cd-scm-common-dev.yaml
           environmentName: ADC-DAY2-SCM-DEV
           azureSubscription: $(azureSubscription)
