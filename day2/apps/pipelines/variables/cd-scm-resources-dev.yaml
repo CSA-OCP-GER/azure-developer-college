@@ -15,3 +15,7 @@ variables:
     value: false
   - name: storageAccountName
     value: adcd2scmresourcesdev
+  - name: resizerFunctionName
+    value: adcday2scmresizer-dev
+  - name: applicationInsightsName
+    value: appinsightsscmd2-dev
