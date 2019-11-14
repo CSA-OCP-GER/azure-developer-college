@@ -2,6 +2,6 @@ variables:
   - name: vmImage
     value: ubuntu-latest
   - name: resourceGroupName
-    value: ADC-DAY2-SCM-DEV
+    value: ADC-DAY2-SCM-TEST
   - name: applicationInsightsName
     value: appinsightsscmd2-test
