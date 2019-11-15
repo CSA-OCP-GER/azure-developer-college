@@ -42,6 +42,7 @@ namespace Adc.Scm.Api
             services.AddDbContext<ContactDbContext>(options => options.UseSqlite(_sqlite));
             services.AddScoped<IContactRepository, ContactRepository>();
             services.AddScoped<MapperService>();
+            services.AddScoped<ClaimsProviderService>();
 
             services.AddSwaggerGen(c =>
             {

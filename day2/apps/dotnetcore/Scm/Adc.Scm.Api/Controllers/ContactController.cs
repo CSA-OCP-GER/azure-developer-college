@@ -15,11 +15,13 @@ namespace Adc.Scm.Api.Controllers
     public class ContactController : ControllerBase
     {
         private readonly IContactRepository _repository;
+        private readonly ClaimsProviderService _claimsProvider;
         private readonly MapperService _mapper;
 
-        public ContactController(IContactRepository repository, MapperService mapper)
+        public ContactController(IContactRepository repository, MapperService mapper, ClaimsProviderService claimsProvider)
         {
             _repository = repository;
+            _claimsProvider = claimsProvider;
             _mapper = mapper;
         }
 
@@ -27,7 +29,8 @@ namespace Adc.Scm.Api.Controllers
         [ProducesResponseType(typeof(List<Contact>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get()
         {
-            var domainObjects = await _repository.Get();
+            var userId = _claimsProvider.GetUserId(this.HttpContext);
+            var domainObjects = await _repository.Get(userId);
             return Ok(_mapper.Map<List<DomainObjects.Contact>, List<Contact>>(domainObjects));
         }
 
@@ -36,7 +39,8 @@ namespace Adc.Scm.Api.Controllers
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _repository.Get(id);
+            var userId = _claimsProvider.GetUserId(this.HttpContext);
+            var result = await _repository.Get(userId, id);
             if (null == result)
                 return NotFound();
 
@@ -47,16 +51,22 @@ namespace Adc.Scm.Api.Controllers
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Add([FromBody]Contact contact)
         {
-            var domainContact = await _repository.Add(_mapper.Map<Contact, DomainObjects.Contact>(contact));
+            var userId = _claimsProvider.GetUserId(this.HttpContext);
+            var domainContact = await _repository.Add(userId, _mapper.Map<Contact, DomainObjects.Contact>(contact));
             return CreatedAtAction(nameof(GetById), new { id = domainContact.Id }, _mapper.Map<DomainObjects.Contact, Contact>(domainContact));
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Save(Guid id, [FromBody]Contact contact)
         {
-            var domainContact = await _repository.Save(_mapper.Map<Contact, DomainObjects.Contact>(contact));
+            if (id != contact.Id)
+                return BadRequest($"Provided id does not match Contact.Id");
+
+            var userId = _claimsProvider.GetUserId(this.HttpContext);
+            var domainContact = await _repository.Save(userId, _mapper.Map<Contact, DomainObjects.Contact>(contact));
 
             if (null == domainContact)
                 return NotFound();
@@ -69,7 +79,8 @@ namespace Adc.Scm.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var domainContact = await _repository.Delete(id);
+            var userId = _claimsProvider.GetUserId(this.HttpContext);
+            var domainContact = await _repository.Delete(userId, id);
             if (null == domainContact)
                 return NotFound();
 

@@ -7,10 +7,10 @@ namespace Adc.Scm.Repository.Interfaces
 {
     public interface IContactRepository
     {
-        Task<Contact> Add(Contact contact);
-        Task<Contact> Save(Contact contact);
-        Task<Contact> Delete(Guid id);
-        Task<Contact> Get(Guid id);
-        Task<List<Contact>> Get();
+        Task<Contact> Add(Guid userId, Contact contact);
+        Task<Contact> Save(Guid userId, Contact contact);
+        Task<Contact> Delete(Guid userId, Guid id);
+        Task<Contact> Get(Guid userId, Guid id);
+        Task<List<Contact>> Get(Guid userId);
     }
 }
