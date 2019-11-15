@@ -57,7 +57,7 @@ jobs:
               displayName: Configure endpoint within SPA settings.js
               inputs:
                 targetType: 'inline'
-                script: 'echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\", \"resourcesEndpoint\": \"${{ variables.resourcesEndpoint }}\", \"aiKey\": \"${{ appinsightsKey }}\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js'
+                script: 'echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\", \"resourcesEndpoint\": \"${{ variables.resourcesEndpoint }}\", \"aiKey\": \"${{ variables.appinsightsKey }}\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js'
             - task: AzureCLI@2
               displayName: Copy SPA to blob storage
               inputs:
