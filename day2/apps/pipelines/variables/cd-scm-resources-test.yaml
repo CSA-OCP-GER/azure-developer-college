@@ -16,6 +16,6 @@ variables:
   - name: storageAccountName
     value: adcd2scmresourcestest
   - name: resizerFunctionName
-    value: adcday2scmresizer-prod
+    value: adcday2scmresizer-test
   - name: applicationInsightsName
     value: appinsightsscmd2-test
