@@ -11,7 +11,7 @@ Vue.config.productionTip = false
 Vue.use(VueWait);
 Vue.use(VeeValidate);
 Vue.use(VueAppInsights, {
-  id: "",
+  id: window.uisettings.appInsightsKey,
   router
 });
 
