@@ -1,5 +1,8 @@
+using Adc.Scm.Resources.Api.Formatter;
+using Adc.Scm.Resources.Api.Monitoring;
 using Adc.Scm.Resources.Api.Repositories;
 using Adc.Scm.Resources.Api.Services;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +24,15 @@ namespace Adc.Scm.Resources.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            // Initialize ApplicationInsights
+            services.AddSingleton<ITelemetryInitializer, ApiTelemetryInitializer>();
+            services.AddApplicationInsightsTelemetry();
+
+            services.AddControllers(options =>
+            {
+                options.InputFormatters.Add(new ImageInputFormatter());
+            });
+
             services.AddScoped<ImageRepository>();
             services.Configure<ImageStoreOptions>(c => Configuration.Bind("ImageStoreOptions", c));
             services.AddScoped<StorageQueueService>();

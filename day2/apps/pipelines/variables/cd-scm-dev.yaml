@@ -13,3 +13,5 @@ variables:
     value: true
   - name: alwaysOn
     value: false
+  - name: applicationInsightsName
+    value: appinsightsscmd2-dev

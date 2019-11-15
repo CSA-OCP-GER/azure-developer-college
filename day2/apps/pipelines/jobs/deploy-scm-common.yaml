@@ -24,11 +24,5 @@ jobs:
                 resourceGroupName: ${{ variables.resourceGroupName }}
                 location: ${{ variables.location }}
                 templateLocation: "Linked artifact"
-                csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-api-dotnetcore.json
-                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -applicationInsightsName ${{ variables.applicationInsightsName }}
-            - task: AzureRmWebAppDeployment@4
-              inputs:
-                azureSubscription: "ANMOCK-InternalSubscription"
-                appType: apiApp
-                webAppName: ${{ variables.apiAppName }}
-                package: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/Adc.Scm.Api.zip
+                csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-common.json
+                overrideParameters: -applicationInsightsName ${{ variables.applicationInsightsName }}

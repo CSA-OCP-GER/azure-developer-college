@@ -33,11 +33,23 @@
             "metadata": {
                 "description": "Name of storage account"
             }
+        },
+        "functionAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of resizer function"
+            },
+            "minLength": 5
+        },
+        "applicationInsightsName": {
+            "type": "string"
         }
     },
     "variables": {
         "webAppPortalName": "[parameters('webAppName')]",
         "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
+        "resizerFunctionName": "[parameters('functionAppName')]",
+        "consumpltionPlanName": "[concat(parameters('functionAppName'), '-plan')]",
         "location": "[resourceGroup().location]"
     },
     "resources": [
@@ -115,8 +127,77 @@
                 "ImageStoreOptions-__ThumbnailContainer": "thumbnails",
                 "StorageQueueOptions__StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
                 "StorageQueueOptions__Queue": "thumbnails",
-                "StorageQueueOptions__ImageContainer": "rawimage",
-                "StorageQueueOptions__ThumbnailContainer": "thumbnails"
+                "StorageQueueOptions__ImageContainer": "rawimages",
+                "StorageQueueOptions__ThumbnailContainer": "thumbnails",
+                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+            }
+        },
+        {
+            "apiVersion": "2018-02-01",
+            "type": "Microsoft.Web/serverfarms",
+            "name": "[variables('consumpltionPlanName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic"
+            },
+            "properties": {
+                "name": "[variables('consumpltionPlanName')]",
+                "computeMode": "Dynamic"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "type": "Microsoft.Web/sites",
+            "kind": "functionapp",
+            "name": "[variables('resizerFunctionName')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('consumpltionPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('consumpltionPlanName'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "AzureWebJobsDashboard",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                        },
+                        {
+                            "name": "StorageAccountConnectionString",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                        },
+                        {
+                            "name": "QueueName",
+                            "value": "thumbnails"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "ImageProcessorOptions__StorageAccountConnectionString",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                        },
+                        {
+                            "name": "ImageProcessorOptions__ImageWidth",
+                            "value": "100"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                        }
+                    ]
+                }
             }
         }
     ],
