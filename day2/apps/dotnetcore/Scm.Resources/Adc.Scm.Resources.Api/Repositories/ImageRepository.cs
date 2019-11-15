@@ -28,9 +28,12 @@ namespace Adc.Scm.Resources.Api.Repositories
             var container = GetInputContainer();
 
             var blob = container.GetBlockBlobReference(blobname);
-            await blob.UploadFromByteArrayAsync(data, 0, data.Length);
+            var uploadOne = blob.UploadFromByteArrayAsync(data, 0, data.Length);
 
             var outputBlob = GetOutputContainer().GetBlockBlobReference(blobname);
+            var uploadTwo = outputBlob.UploadFromByteArrayAsync(data, 0, data.Length);
+
+            await Task.WhenAll(uploadOne, uploadTwo);
 
             return Tuple.Create(blobname, outputBlob.StorageUri.PrimaryUri.OriginalString);            
         }
