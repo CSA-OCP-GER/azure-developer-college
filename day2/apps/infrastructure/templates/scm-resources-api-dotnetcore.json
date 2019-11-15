@@ -49,6 +49,7 @@
         "webAppPortalName": "[parameters('webAppName')]",
         "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
         "resizerFunctionName": "[parameters('functionAppName')]",
+        "consumpltionPlanName": "[concat(parameters('functionAppName'), '-plan')]",
         "location": "[resourceGroup().location]"
     },
     "resources": [
@@ -132,17 +133,31 @@
             }
         },
         {
+            "apiVersion": "2018-02-01",
+            "type": "Microsoft.Web/serverfarms",
+            "name": "[variables('consumpltionPlanName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic"
+            },
+            "properties": {
+                "name": "[variables('consumpltionPlanName')]",
+                "computeMode": "Dynamic"
+            }
+        },
+        {
             "apiVersion": "2018-11-01",
             "type": "Microsoft.Web/sites",
             "kind": "functionapp",
             "name": "[variables('resizerFunctionName')]",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "[resourceId('Microsoft.Web/serverfarms', variables('consumpltionPlanName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
             ],
             "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('consumpltionPlanName'))]",
                 "siteConfig": {
                     "appSettings": [
                         {

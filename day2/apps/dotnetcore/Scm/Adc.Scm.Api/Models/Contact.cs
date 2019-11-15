@@ -14,5 +14,6 @@ namespace Adc.Scm.Api.Models
         public string Email { get; set; }
         [Required]
         public string Company { get; set; }
+        public string AvatarLocation { get; set; }
     }
 }
