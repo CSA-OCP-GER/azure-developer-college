@@ -12,15 +12,19 @@ const getters = {
 // actions
 const actions = {
     uploadImage({ commit, dispatch }, payload) {
+        var {
+            blob,
+            fileType
+        } = payload;
         dispatch("wait/start", "apicall", { root: true });
         commit("clearImage");
         var client = getResourcesHttpClient();
         const config = {
             headers: {
-                "content-type": "multipart/form-data"
+                "content-type": fileType
             }
         };
-        return client.post("/contactimages", payload, config).then(response => {
+        return client.post("/contactimages/binary", blob, config).then(response => {
             commit("setImage", response.headers.location);
             dispatch("notifications/addMessage", { type: "success", message: "Image upload successful.", read: false }, { root: true });
             dispatch("wait/end", "apicall", { root: true });

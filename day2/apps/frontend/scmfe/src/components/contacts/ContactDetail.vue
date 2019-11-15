@@ -203,6 +203,7 @@ export default {
     contact: {
       handler() {
         this.contactFields = _.cloneDeep(this.contact);
+        this.contactFields.image = "";
       },
       deep: true
     }
