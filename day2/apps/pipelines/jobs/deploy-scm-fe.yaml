@@ -52,7 +52,7 @@ jobs:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  echo "##vso[task.setvariable variable=appinsightsKey]`az resource show -g ${{ variables.resourceGroupName }} -n ${{ variables.applicationInsightsName } --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`"
+                  echo "##vso[task.setvariable variable=appinsightsKey]`az resource show -g ${{ variables.resourceGroupName }} -n ${{ variables.applicationInsightsName }} --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`"
             - task: Bash@3
               displayName: Configure endpoint within SPA settings.js
               inputs:
