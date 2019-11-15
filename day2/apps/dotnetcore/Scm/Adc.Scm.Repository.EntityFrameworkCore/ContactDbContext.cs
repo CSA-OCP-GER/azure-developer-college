@@ -35,6 +35,10 @@ namespace Adc.Scm.Repository.EntityFrameworkCore
                 .HasColumnName("email")
                 .IsUnicode()
                 .IsRequired();
+            contact
+                .Property(c => c.AvatarLocation)
+                .HasColumnName("avatarlocation")
+                .IsUnicode();
 
             base.OnModelCreating(builder);
         }
