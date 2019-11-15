@@ -27,7 +27,11 @@
         <v-flex xs12>
           <v-data-table :headers="headers" :items="contacts" class="elevation-1">
             <template v-slot:item.avatar="{item}">
-              <avatar :image="item.image" :firstname="item.firstname" :lastname="item.lastname"></avatar>
+              <avatar
+                :image="item.avatarLocation"
+                :firstname="item.firstname"
+                :lastname="item.lastname"
+              ></avatar>
             </template>
             <template v-slot:item.actions="{item}">
               <v-hover>

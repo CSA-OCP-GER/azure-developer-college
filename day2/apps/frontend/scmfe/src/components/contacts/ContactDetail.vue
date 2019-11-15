@@ -42,43 +42,114 @@
       <v-layout row class="px-5">
         <v-flex xs12 md8 sm7>
           <v-card>
-            <v-subheader>Contact Details</v-subheader>
             <v-card-text>
-              <v-text-field
-                :error-messages="errors.collect('firstname')"
-                data-vv-as="First Name"
-                name="firstname"
-                v-validate="'required|max:255'"
-                v-model="contactFields.firstname"
-                label="First Name"
-              ></v-text-field>
-              <v-text-field
-                :error-messages="errors.collect('lastname')"
-                data-vv-as="Last Name"
-                name="lastname"
-                v-validate="'required|max:255'"
-                v-model="contactFields.lastname"
-                label="Last Name"
-              ></v-text-field>
-              <v-text-field
-                :error-messages="errors.collect('email')"
-                data-vv-as="Email Address"
-                name="email"
-                v-validate="'required|max:255'"
-                v-model="contactFields.email"
-                label="Email Address"
-              ></v-text-field>
-            </v-card-text>
-            <v-subheader>Company Details</v-subheader>
-            <v-card-text>
-              <v-text-field
-                :error-messages="errors.collect('company')"
-                data-vv-as="Company"
-                name="company"
-                v-validate="'required|max:255'"
-                v-model="contactFields.company"
-                label="Company"
-              ></v-text-field>
+              <v-container fluid>
+                <v-layout wrap row>
+                  <v-flex class="px-0" xs12>
+                    <v-subheader>Details</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md6 class="py-0">
+                    <v-text-field
+                      :error-messages="errors.collect('firstname')"
+                      data-vv-as="First Name"
+                      name="firstname"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.firstname"
+                      label="First Name"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 md6 class="py-0">
+                    <v-text-field
+                      :error-messages="errors.collect('lastname')"
+                      data-vv-as="Last Name"
+                      name="lastname"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.lastname"
+                      label="Last Name"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex class="py-0" xs12>
+                    <v-text-field
+                      :error-messages="errors.collect('email')"
+                      data-vv-as="Email Address"
+                      name="email"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.email"
+                      label="Email Address"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex class="py-0" xs12>
+                    <v-textarea
+                      name="description"
+                      v-model="contactFields.description"
+                      label="My Comments / Description"
+                    ></v-textarea>
+                  </v-flex>
+                  <v-flex class="px-0" xs12>
+                    <v-subheader>Company Details</v-subheader>
+                  </v-flex>
+                  <v-flex class="py-0" xs12>
+                    <v-text-field
+                      :error-messages="errors.collect('company')"
+                      data-vv-as="Company"
+                      name="company"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.company"
+                      label="Company"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex class="py-0" md8 xs12>
+                    <v-text-field
+                      :error-messages="errors.collect('street')"
+                      data-vv-as="Street"
+                      name="street"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.street"
+                      label="Street"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex class="py-0" md4 xs12>
+                    <v-text-field
+                      :error-messages="errors.collect('houseNumber')"
+                      data-vv-as="House Number"
+                      name="houseNumber"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.houseNumber"
+                      label="House Number"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex class="py-0" md4 xs12>
+                    <v-text-field
+                      :error-messages="errors.collect('postalCode')"
+                      data-vv-as="Postal Code"
+                      name="postalCode"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.postalCode"
+                      label="Postal Code"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex class="py-0" md8 xs12>
+                    <v-text-field
+                      :error-messages="errors.collect('city')"
+                      data-vv-as="City"
+                      name="city"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.city"
+                      label="City"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex class="py-0" xs12>
+                    <v-text-field
+                      :error-messages="errors.collect('country')"
+                      data-vv-as="Country"
+                      name="country"
+                      v-validate="'required|max:255'"
+                      v-model="contactFields.country"
+                      label="Country"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-container>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -88,7 +159,7 @@
             <v-card-text class="text-center">
               <avatar
                 :size="140"
-                :image="contactFields.image"
+                :image="contactFields.avatarLocation"
                 :firstname="contactFields.firstname"
                 :lastname="contactFields.lastname"
               ></avatar>
@@ -170,7 +241,7 @@ export default {
     changeImage() {
       this.$refs.logoupload.open().then(url => {
         if (url) {
-          this.contactFields.image = url;
+          this.contactFields.avatarLocation = url;
         }
       });
     }
@@ -202,6 +273,7 @@ export default {
   watch: {
     contact: {
       handler() {
+        this.contactFields.avatarLocation = "";
         this.contactFields = _.cloneDeep(this.contact);
       },
       deep: true
