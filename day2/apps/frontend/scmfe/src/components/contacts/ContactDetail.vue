@@ -88,7 +88,7 @@
             <v-card-text class="text-center">
               <avatar
                 :size="140"
-                :image="contactFields.image"
+                :image="contactFields.avatarLocation"
                 :firstname="contactFields.firstname"
                 :lastname="contactFields.lastname"
               ></avatar>
@@ -170,7 +170,7 @@ export default {
     changeImage() {
       this.$refs.logoupload.open().then(url => {
         if (url) {
-          this.contactFields.image = url;
+          this.contactFields.avatarLocation = url;
         }
       });
     }
@@ -202,8 +202,8 @@ export default {
   watch: {
     contact: {
       handler() {
+        this.contactFields.avatarLocation = "";
         this.contactFields = _.cloneDeep(this.contact);
-        this.contactFields.image = "";
       },
       deep: true
     }

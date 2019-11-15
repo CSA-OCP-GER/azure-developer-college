@@ -1,6 +1,6 @@
 <template>
   <v-avatar v-if="image && image != ''" :size="size">
-    <img :src="`${image}`" :alt="`${firstname} ${lastname}`" />
+    <img :lazy-src="require('../../assets/no-user.png')" :src="image" :alt="`${firstname} ${lastname}`" />
   </v-avatar>
   <v-avatar v-else :size="size" :color="color && color != '' ? color : calculatedColor">
     <span :class="textclass">{{initials}}</span>

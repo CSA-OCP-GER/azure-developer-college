@@ -59,9 +59,6 @@
         class="hidden-sm-and-down"
       />
       <v-spacer />
-      <v-btn icon>
-        <v-icon>mdi-bell</v-icon>
-      </v-btn>
     </v-app-bar>
     <v-content>
       <router-view></router-view>
