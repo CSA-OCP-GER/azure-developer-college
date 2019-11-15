@@ -27,10 +27,7 @@
             alt="Source Image"
             :img-style="{ 'width': '400px', 'height': '300px' }"
           ></vue-cropper>
-          <p
-            v-show="!logoImgSrc"
-            class="text-center"
-          >Select an image to upload.</p>
+          <p v-show="!logoImgSrc" class="text-center">Select an image to upload.</p>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -77,7 +74,9 @@ export default {
     logoUrl: "",
     logoCropImg: null,
     resolve: null,
-    reject: null
+    reject: null,
+    fileType: "",
+    fileName: ""
   }),
   methods: {
     ...mapActions({
@@ -90,9 +89,10 @@ export default {
       this.logoCropImg = this.$refs.logoCropper
         .getCroppedCanvas()
         .toBlob(blob => {
-          const formData = new FormData();
-          formData.append("imageupload", blob);
-          return this.uploadImage(formData).then(() => {
+          return this.uploadImage({
+            blob,
+            fileType: this.fileType
+          }).then(() => {
             this.logoUrl = this.image;
             this.close();
           });
@@ -100,6 +100,7 @@ export default {
     },
     logoSetImage(e) {
       const file = e.target.files[0];
+      if (file == null || file == undefined) return;
 
       if (!file.type.includes("image/")) {
         this.snackbar.text = "Wrong file type.";
@@ -107,6 +108,9 @@ export default {
         this.snackbar.show = true;
         return;
       }
+
+      this.fileType = file.type;
+      this.fileName = file.name;
 
       if (typeof FileReader === "function") {
         const reader = new FileReader();
@@ -145,6 +149,8 @@ export default {
       this.logoCropImg = null;
       this.resolve = null;
       this.reject = null;
+      this.fileType = "";
+      this.fileName = "";
     },
     cancel() {
       this.resolve(false);
@@ -156,6 +162,8 @@ export default {
       this.logoCropImg = null;
       this.resolve = null;
       this.reject = null;
+      this.fileName = "";
+      this.fileType = "";
     }
   },
   watch: {
