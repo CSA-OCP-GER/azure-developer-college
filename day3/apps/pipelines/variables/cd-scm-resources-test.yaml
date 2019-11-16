@@ -1,0 +1,21 @@
+variables:
+  - name: vmImage
+    value: ubuntu-latest
+  - name: resourceGroupName
+    value: ADC-DAY3-SCM-TEST
+  - name: location
+    value: eastus2
+  - name: apiAppName
+    value: adcday3scmresourcesapi-test
+  - name: appServicePlanSKU
+    value: D1
+  - name: use32bitworker
+    value: true
+  - name: alwaysOn
+    value: false
+  - name: storageAccountName
+    value: adcd3scmresourcestest
+  - name: resizerFunctionName
+    value: adcday3scmresizer-test
+  - name: applicationInsightsName
+    value: appinsightsscmd3-test

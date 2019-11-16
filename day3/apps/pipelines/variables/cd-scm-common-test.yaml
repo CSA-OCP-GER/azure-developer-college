@@ -1,0 +1,7 @@
+variables:
+  - name: vmImage
+    value: ubuntu-latest
+  - name: resourceGroupName
+    value: ADC-DAY3-SCM-TEST
+  - name: applicationInsightsName
+    value: appinsightsscmd3-test
