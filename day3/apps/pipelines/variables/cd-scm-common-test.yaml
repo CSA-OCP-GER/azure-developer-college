@@ -3,5 +3,7 @@ variables:
     value: ubuntu-latest
   - name: resourceGroupName
     value: ADC-DAY3-SCM-TEST
+  - name: location
+    value: eastus2
   - name: applicationInsightsName
     value: appinsightsscmd3-test
