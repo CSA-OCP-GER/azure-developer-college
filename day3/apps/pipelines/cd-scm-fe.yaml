@@ -10,7 +10,7 @@ trigger:
       - day3/apps/pipelines/cd-scm-fe.yaml
 
 variables:
-  azureSubscription: ANMOCK-InternalSubscription
+  azureSubscription: AzureDeveloperCollege
 
 stages:
   - stage: Build
