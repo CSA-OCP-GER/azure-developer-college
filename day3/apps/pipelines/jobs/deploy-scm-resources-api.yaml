@@ -28,13 +28,13 @@ jobs:
                 overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.resizerFunctionName }} -applicationInsightsName ${{ variables.applicationInsightsName }}
             - task: AzureRmWebAppDeployment@4
               inputs:
-                azureSubscription: "ANMOCK-InternalSubscription"
+                azureSubscription: ${{ parameters.azureSubscription }}
                 appType: apiApp
                 webAppName: ${{ variables.apiAppName }}
                 package: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/Adc.Scm.Resources.Api.zip
             - task: AzureRmWebAppDeployment@4
               inputs:
-                azureSubscription: "ANMOCK-InternalSubscription"
+                azureSubscription: ${{ parameters.azureSubscription }}
                 appType: apiApp
                 webAppName: ${{ variables.resizerFunctionName }}
                 package: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/Adc.Scm.Resources.ImageResizer.zip
