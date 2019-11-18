@@ -1,10 +1,10 @@
 steps:
   - task: Npm@1
     inputs:
-      command: 'install'
-      workingDir: 'day2/apps/frontend/scmfe'
+      command: "install"
+      workingDir: "day3/apps/frontend/scmfe"
   - task: Npm@1
     inputs:
-      command: 'custom'
-      workingDir: 'day2/apps/frontend/scmfe'
-      customCommand: 'run build'
+      command: "custom"
+      workingDir: "day3/apps/frontend/scmfe"
+      customCommand: "run build"
