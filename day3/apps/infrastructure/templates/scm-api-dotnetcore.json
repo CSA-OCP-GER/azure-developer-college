@@ -115,7 +115,7 @@
             "type": "Microsoft.Sql/servers",
             "name": "[parameters('sqlServerName')]",
             "location": "[variables('location')]",
-            "apiVersion": "2015-05-01-preview",
+            "apiVersion": "2014-04-01",
             "properties": {
                 "administratorLogin": "[parameters('sqlUserName')]",
                 "administratorLoginPassword": "[parameters('sqlPassword')]",
@@ -126,7 +126,7 @@
                     "type": "Microsoft.Sql/servers/databases",
                     "name": "[concat(parameters('sqlServerName'), '/', parameters('sqlDatabaseName'))]",
                     "location": "[variables('location')]",
-                    "apiVersion": "2017-10-01-preview",
+                    "apiVersion": "2014-04-01",
                     "dependsOn": [
                         "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
                     ]
@@ -135,7 +135,7 @@
                     "type": "firewallrules",
                     "name": "AllowAllAzureIps",
                     "location": "[variables('location')]",
-                    "apiVersion": "2015-05-01-preview",
+                    "apiVersion": "2014-04-01",
                     "dependsOn": [
                         "[resourceID('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
                     ],
