@@ -11,7 +11,7 @@ trigger:
 
 variables:
   configuration: release
-  azureSubscription: AzureDeveloperCollege
+  azureSubscription: ANMOCK-InternalSubscription
 
 stages:
   - stage: Build
