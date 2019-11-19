@@ -10,12 +10,11 @@ jobs:
   - deployment: Deploy
     displayName: ${{ parameters.name }}
     variables:
+      - group: ${{ parameters.variableGroupName }}
       - template: ${{ parameters.variablesFile }}
     pool:
       vmImage: ${{ variables.vmImage }}
-    environment: ${{ parameters.environmentName }}
-    variables:
-      - group: ${{ parameters.variableGroupName }}
+    environment: ${{ parameters.environmentName }}  
     strategy:
       runOnce:
         deploy:
