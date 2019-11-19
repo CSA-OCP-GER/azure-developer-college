@@ -4,7 +4,7 @@ variables:
   - name: resourceGroupName
     value: ADC-DAY3-SCM-TEST
   - name: location
-    value: eastus2
+    value: westeurope
   - name: apiAppName
     value: adcday3scmapi-test
   - name: appServicePlanSKU

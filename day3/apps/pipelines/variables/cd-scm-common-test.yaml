@@ -4,6 +4,6 @@ variables:
   - name: resourceGroupName
     value: ADC-DAY3-SCM-TEST
   - name: location
-    value: eastus2
+    value: westeurope
   - name: applicationInsightsName
     value: appinsightsscmd3-test
