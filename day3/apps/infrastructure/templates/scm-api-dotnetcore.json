@@ -130,7 +130,8 @@
             "type": "Microsoft.Sql/servers",
             "name": "[parameters('sqlServerName')]",
             "location": "[variables('location')]",
-            "apiVersion": "2014-04-01",
+            "apiVersion": "2015-05-01-preview",
+            "kind": "v12.0",
             "properties": {
                 "administratorLogin": "[parameters('sqlUserName')]",
                 "administratorLoginPassword": "[parameters('sqlPassword')]",
@@ -141,7 +142,7 @@
             "type": "Microsoft.Sql/servers/databases",
             "name": "[concat(parameters('sqlServerName'), '/', parameters('sqlDatabaseName'))]",
             "location": "[variables('location')]",
-            "apiVersion": "2014-04-01",
+            "apiVersion": "2017-03-01-preview",
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
             ],
