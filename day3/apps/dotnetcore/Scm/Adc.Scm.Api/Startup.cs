@@ -5,7 +5,6 @@ using Adc.Scm.Repository.Interfaces;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,23 +22,19 @@ namespace Adc.Scm.Api
 
         public IConfiguration Configuration { get; }
 
-        // HACK: Keep Sqlite connection open !!!
-        private static SqliteConnection _sqlite;
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            _sqlite = new SqliteConnection("DataSource=:memory:");
-            _sqlite.Open();
-
             // Initialize ApplicationInsights
             services.AddSingleton<ITelemetryInitializer, ApiTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
 
             services.AddControllers();
-            services.AddEntityFrameworkSqlite();
-            services.AddDbContext<ContactDbContext>(options => options.UseSqlite(_sqlite));
+
+            var connStr = Configuration.GetConnectionString("DefaultConnectionString");
+            services.AddEntityFrameworkSqlServer();
+            services.AddDbContext<ContactDbContext>(options => options.UseSqlServer(connStr));
             services.AddScoped<IContactRepository, ContactRepository>();
             services.AddScoped<MapperService>();
             services.AddScoped<ClaimsProviderService>();
