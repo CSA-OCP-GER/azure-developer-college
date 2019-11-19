@@ -149,7 +149,8 @@
                 "name": "Basic",
                 "tier": "Basic",
                 "capacity": 5
-            }
+            },
+            "kind": "v12.0,user"
         }
     ],
     "outputs": {
