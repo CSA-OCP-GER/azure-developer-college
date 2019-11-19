@@ -14,8 +14,8 @@ jobs:
     pool:
       vmImage: ${{ variables.vmImage }}
     environment: ${{ parameters.environmentName }}
-    variable:
-      - group: ${{parameters.variableGroupName}}
+    variables:
+      - group: ${{ parameters.variableGroupName }}
     strategy:
       runOnce:
         deploy:
