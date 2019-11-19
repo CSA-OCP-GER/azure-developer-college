@@ -4,6 +4,7 @@ parameters:
   environmentName: ""
   azureSubscription: ""
   artifactDropName: drop
+  variableGroupName: ""
 
 jobs:
   - deployment: Deploy
@@ -13,6 +14,8 @@ jobs:
     pool:
       vmImage: ${{ variables.vmImage }}
     environment: ${{ parameters.environmentName }}
+    variable:
+      - group: ${{parameters.variableGroupName}}
     strategy:
       runOnce:
         deploy:
@@ -25,7 +28,7 @@ jobs:
                 location: ${{ variables.location }}
                 templateLocation: "Linked artifact"
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-api-dotnetcore.json
-                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -applicationInsightsName ${{ variables.applicationInsightsName }}
+                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -applicationInsightsName ${{ variables.applicationInsightsName }} -sqlServerName ${{variables.sqlServerName}} -sqlDatabaseName ${{ variables.sqlDatabaseName }} -sqlUserName $(sqlAdminUser) -sqlPassword $(sqlAdminPassword)
             - task: AzureRmWebAppDeployment@4
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}

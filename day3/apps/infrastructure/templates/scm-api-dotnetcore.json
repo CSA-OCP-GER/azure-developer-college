@@ -30,6 +30,18 @@
         },
         "applicationInsightsName": {
             "type": "string"
+        },
+        "sqlServerName": {
+            "type": "string"
+        },
+        "sqlUserName": {
+            "type": "string"
+        },
+        "sqlPassword": {
+            "type": "securestring"
+        },
+        "sqlDatabaseName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -91,11 +103,48 @@
             "name": "[concat(variables('webAppPortalName'), '/appsettings')]",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
+                "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]",
+                "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
             ],
             "properties": {
-                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]",
+                "SqlConnectionString": "[concat('Server=tcp:',reference(parameters('sqlserverName')).fullyQualifiedDomainName,',1433;Initial Catalog=',parameters('sqlDatabaseName'),';Persist Security Info=False;User ID=',reference(parameters('sqlserverName')).administratorLogin,';Password=',reference(parameters('sqlserverName')).administratorLoginPassword,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
             }
+        },
+        {
+            "type": "Microsoft.Sql/servers",
+            "name": "[parameters('sqlServerName')]",
+            "location": "[variables('location')]",
+            "apiVersion": "2015-05-01-preview",
+            "properties": {
+                "administratorLogin": "[parameters('sqlUserName')]",
+                "administratorLoginPassword": "[parameters('sqlPassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Sql/servers/databases",
+                    "name": "[concat(parameters('sqlServerName'), '/', parameters('sqlDatabaseName'))]",
+                    "location": "[variables('location')]",
+                    "apiVersion": "2017-10-01-preview",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+                    ]
+                },
+                {
+                    "type": "firewallrules",
+                    "name": "AllowAllAzureIps",
+                    "location": "[variables('location')]",
+                    "apiVersion": "2015-05-01-preview",
+                    "dependsOn": [
+                        "[resourceID('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+                    ],
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
         }
     ],
     "outputs": {

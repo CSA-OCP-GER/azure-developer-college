@@ -15,3 +15,7 @@ variables:
     value: false
   - name: applicationInsightsName
     value: appinsightsscmd3-test
+  - name: sqlServerName
+    value: adcd3sqlservertest
+  - name: sqlDatabaseName
+    value: scmcontactsdb
