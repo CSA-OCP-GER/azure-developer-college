@@ -135,31 +135,21 @@
                 "administratorLogin": "[parameters('sqlUserName')]",
                 "administratorLoginPassword": "[parameters('sqlPassword')]",
                 "version": "12.0"
-            },
-            "resources": [
-                {
-                    "type": "Microsoft.Sql/servers/databases",
-                    "name": "[concat(parameters('sqlServerName'), '/', parameters('sqlDatabaseName'))]",
-                    "location": "[variables('location')]",
-                    "apiVersion": "2014-04-01",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
-                    ]
-                },
-                {
-                    "type": "firewallrules",
-                    "name": "AllowAllAzureIps",
-                    "location": "[variables('location')]",
-                    "apiVersion": "2014-04-01",
-                    "dependsOn": [
-                        "[resourceID('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
-                    ],
-                    "properties": {
-                        "startIpAddress": "0.0.0.0",
-                        "endIpAddress": "0.0.0.0"
-                    }
-                }
-            ]
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "name": "[concat(parameters('sqlServerName'), '/', parameters('sqlDatabaseName'))]",
+            "location": "[variables('location')]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+            ],
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic",
+                "capacity": 5
+            }
         }
     ],
     "outputs": {
