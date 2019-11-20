@@ -35,8 +35,8 @@ namespace Adc.Scm.Resources.Api
 
             services.AddScoped<ImageRepository>();
             services.Configure<ImageStoreOptions>(c => Configuration.Bind("ImageStoreOptions", c));
-            services.AddScoped<StorageQueueService>();
-            services.Configure<StorageQueueOptions>(c => Configuration.Bind("StorageQueueOptions", c));
+            services.AddScoped<ServiceBusQueueService>();
+            services.Configure<ServiceBusQueueOptions>(c => Configuration.Bind("ServiceBusQueueOptions", c));
 
             services.AddSwaggerGen(c =>
             {

@@ -18,9 +18,9 @@ namespace Adc.Scm.Resources.Api.Controllers
     public class ContactImageController : ControllerBase
     {
         private readonly ImageRepository _repository;
-        private readonly StorageQueueService _service;
+        private readonly ServiceBusQueueService _service;
 
-        public ContactImageController(ImageRepository repository, StorageQueueService service)
+        public ContactImageController(ImageRepository repository, ServiceBusQueueService service)
         {
             _repository = repository;
             _service = service;
