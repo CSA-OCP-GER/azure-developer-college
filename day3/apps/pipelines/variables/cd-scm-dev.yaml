@@ -4,7 +4,7 @@ variables:
   - name: resourceGroupName
     value: ADC-DAY3-SCM-DEV
   - name: location
-    value: eastus2
+    value: westeurope
   - name: apiAppName
     value: adcday3scmapi-dev
   - name: appServicePlanSKU
@@ -15,3 +15,7 @@ variables:
     value: false
   - name: applicationInsightsName
     value: appinsightsscmd3-dev
+  - name: sqlServerName
+    value: adcd3sqlserverdev
+  - name: sqlDatabaseName
+    value: scmcontactsdb
