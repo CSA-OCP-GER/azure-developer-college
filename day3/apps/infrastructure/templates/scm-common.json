@@ -24,7 +24,9 @@
         "sbVersion": "2017-04-01",
         "sbThumbnailsQueueName": "thumbnails",
         "sbThumbnailsSendRule": "thumbnailssend",
-        "sbThumbnailsListenRule": "thumbnailslisten"
+        "sbThumbnailsListenRule": "thumbnailslisten",
+        "sbThumbnailSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsSendRule'))]",
+        "sbThumbnailListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsListenRule'))]"
     },
     "resources": [
         {
@@ -107,6 +109,14 @@
         "DefaultSharedAccessPolicyPrimaryKey": {
             "type": "string",
             "value": "[listkeys(variables('defaultAuthRuleResourceId'), variables('sbVersion')).primaryKey]"
+        },
+        "ThumbnailSendRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbThumbnailsSendRule'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "ThumbnailListenRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbThumbnailsListenRule'), variables('sbVersion')).primaryConnectionString]"
         }
     }
 }
