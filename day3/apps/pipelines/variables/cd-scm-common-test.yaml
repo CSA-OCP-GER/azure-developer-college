@@ -7,3 +7,7 @@ variables:
     value: westeurope
   - name: applicationInsightsName
     value: appinsightsscmd3-test
+  - name: serviceBusNamespaceName
+    value: adcd3sb-dev
+  - name: serviceBusSKU
+    value: Standard

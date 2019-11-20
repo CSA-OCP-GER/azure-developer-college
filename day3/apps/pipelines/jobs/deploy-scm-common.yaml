@@ -25,4 +25,4 @@ jobs:
                 location: ${{ variables.location }}
                 templateLocation: "Linked artifact"
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-common.json
-                overrideParameters: -applicationInsightsName ${{ variables.applicationInsightsName }}
+                overrideParameters: -applicationInsightsName ${{ variables.applicationInsightsName }} -serviceBusNamespaceName ${{ parameters.serviceBusNamespaceName }} -serviceBusSKU ${{ parameters.serviceBusSKU }}
