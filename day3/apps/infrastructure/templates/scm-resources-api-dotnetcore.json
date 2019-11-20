@@ -43,6 +43,9 @@
         },
         "applicationInsightsName": {
             "type": "string"
+        },
+        "serviceBusNamespaceName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -50,7 +53,13 @@
         "appServicePlanName": "[concat(parameters('webAppName'), '-plan')]",
         "resizerFunctionName": "[parameters('functionAppName')]",
         "consumpltionPlanName": "[concat(parameters('functionAppName'), '-plan')]",
-        "location": "[resourceGroup().location]"
+        "location": "[resourceGroup().location]",
+        "sbVersion": "2017-04-01",
+        "sbThumbnailsQueueName": "thumbnails",
+        "sbThumbnailsSendRule": "thumbnailssend",
+        "sbThumbnailsListenRule": "thumbnailslisten",
+        "sbThumbnailSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsSendRule'))]",
+        "sbThumbnailListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsListenRule'))]"
     },
     "resources": [
         {
@@ -125,10 +134,9 @@
                 "ImageStoreOptions__StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
                 "ImageStoreOptions__ImageContainer": "rawimages",
                 "ImageStoreOptions-__ThumbnailContainer": "thumbnails",
-                "StorageQueueOptions__StorageAccountConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
-                "StorageQueueOptions__Queue": "thumbnails",
-                "StorageQueueOptions__ImageContainer": "rawimages",
-                "StorageQueueOptions__ThumbnailContainer": "thumbnails",
+                "ServiceBusQueueOptions__ThumbnailQueueConnectionString": "[listKeys(variables('sbThumbnailSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]",
+                "ServiceBusQueueOptions__ImageContainer": "rawimages",
+                "ServiceBusQueueOptions__ThumbnailContainer": "thumbnails",
                 "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
             }
         },
@@ -169,12 +177,8 @@
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
                         },
                         {
-                            "name": "StorageAccountConnectionString",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
-                        },
-                        {
-                            "name": "QueueName",
-                            "value": "thumbnails"
+                            "name": "ServiceBusConnectionString",
+                            "value": "[replace(listKeys(variables('sbThumbnailListenAuthRuleId'), variables('sbVersion')).primaryConnectionString, 'EntityPath=thumbnails', '')]"
                         },
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",

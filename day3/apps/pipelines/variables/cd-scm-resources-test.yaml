@@ -19,3 +19,5 @@ variables:
     value: adcday3scmresizer-test
   - name: applicationInsightsName
     value: appinsightsscmd3-test
+  - name: serviceBusNamespaceName
+    value: adcd3sb-test

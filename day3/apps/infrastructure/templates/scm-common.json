@@ -1,12 +1,32 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "applicationInsightsName": {
             "type": "string"
+        },
+        "serviceBusNamespaceName": {
+            "type": "string"
+        },
+        "serviceBusSKU": {
+            "type": "string",
+            "allowedValues": [
+                "Basic",
+                "Standard",
+                "Premium"
+            ],
+            "defaultValue": "Standard"
         }
     },
     "variables": {
+        "defaultSASKeyName": "RootManageSharedAccessKey",
+        "defaultAuthRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', parameters('serviceBusNamespaceName'), variables('defaultSASKeyName'))]",
+        "sbVersion": "2017-04-01",
+        "sbThumbnailsQueueName": "thumbnails",
+        "sbThumbnailsSendRule": "thumbnailssend",
+        "sbThumbnailsListenRule": "thumbnailslisten",
+        "sbThumbnailSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsSendRule'))]",
+        "sbThumbnailListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsListenRule'))]"
     },
     "resources": [
         {
@@ -20,8 +40,83 @@
             "properties": {
                 "Application_Type": "web"
             }
+        },
+        {
+            "apiVersion": "2017-04-01",
+            "name": "[parameters('serviceBusNamespaceName')]",
+            "type": "Microsoft.ServiceBus/namespaces",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('serviceBusSKU')]"
+            }
+        },
+        {
+            "apiVersion": "2017-04-01",
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT5M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P2D",
+                "deadLetteringOnMessageExpiration": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "autoDeleteOnIdle": "P2D",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'), '/', variables('sbThumbnailsListenRule'))]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'), '/', variables('sbThumbnailsSendRule'))]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Send"
+                ]
+            }
         }
     ],
     "outputs": {
+        "NamespaceDefaultConnectionString": {
+            "type": "string",
+            "value": "[listkeys(variables('defaultAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "DefaultSharedAccessPolicyPrimaryKey": {
+            "type": "string",
+            "value": "[listkeys(variables('defaultAuthRuleResourceId'), variables('sbVersion')).primaryKey]"
+        },
+        "ThumbnailSendRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbThumbnailSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "ThumbnailListenRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbThumbnailListenAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        }
     }
 }
