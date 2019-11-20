@@ -22,7 +22,9 @@
         "defaultSASKeyName": "RootManageSharedAccessKey",
         "defaultAuthRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', parameters('serviceBusNamespaceName'), variables('defaultSASKeyName'))]",
         "sbVersion": "2017-04-01",
-        "sbThumbnailsQueueName": "thumbnails"
+        "sbThumbnailsQueueName": "thumbnails",
+        "sbThumbnailsSendRule": "thumbnailssend",
+        "sbThumbnailsListenRule": "thumbnailslisten"
     },
     "resources": [
         {
@@ -66,6 +68,34 @@
                 "autoDeleteOnIdle": "P2D",
                 "enablePartitioning": false,
                 "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'), '/', variables('sbThumbnailsListenRule'))]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'), '/', variables('sbThumbnailsSendRule'))]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Send"
+                ]
             }
         }
     ],
