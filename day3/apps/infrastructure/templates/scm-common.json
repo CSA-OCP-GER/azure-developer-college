@@ -112,11 +112,11 @@
         },
         "ThumbnailSendRuleConnectionString": {
             "type": "string",
-            "value": "[listKeys(variables('sbThumbnailsSendRule'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[listKeys(variables('sbThumbnailSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
         },
         "ThumbnailListenRuleConnectionString": {
             "type": "string",
-            "value": "[listKeys(variables('sbThumbnailsListenRule'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[listKeys(variables('sbThumbnailListenAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
         }
     }
 }
