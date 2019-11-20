@@ -8,6 +8,6 @@ variables:
   - name: applicationInsightsName
     value: appinsightsscmd3-dev
   - name: serviceBusNamespaceName
-    value: adcd3sb-test
+    value: adcd3sb-dev
   - name: serviceBusSKU
     value: Standard

@@ -51,6 +51,9 @@
             "type": "Microsoft.ServiceBus/namespaces/queues",
             "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'))]",
             "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
+            ],
             "properties": {
                 "lockDuration": "PT5M",
                 "maxSizeInMegabytes": 1024,
