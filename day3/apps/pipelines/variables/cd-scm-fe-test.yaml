@@ -11,5 +11,7 @@ variables:
     value: "https://adcday3scmapi-test.azurewebsites.net/"
   - name: resourcesEndpoint
     value: "https://adcday3scmresourcesapi-test.azurewebsites.net/"
+  - name: searchEndpoint
+    value: ""
   - name: applicationInsightsName
     value: appinsightsscmd3-test

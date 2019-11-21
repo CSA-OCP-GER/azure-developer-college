@@ -1,6 +1,7 @@
 import axios from "axios";
 const BASE_URL = window.uisettings.endpoint;
 const BASE_RESOURCES_URL = window.uisettings.resourcesEndpoint;
+const BASE_SEARCH_URL = window.uisettings.searchEndpoint;
 
 export function getHttpClient() {
     return getClientInternal(BASE_URL);
@@ -8,6 +9,10 @@ export function getHttpClient() {
 
 export function getResourcesHttpClient() {
     return getClientInternal(BASE_RESOURCES_URL);
+}
+
+export function getSearchHttpClient() {
+    return getClientInternal(BASE_SEARCH_URL);
 }
 
 function getClientInternal(baseUrl) {
