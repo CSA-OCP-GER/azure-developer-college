@@ -16,6 +16,10 @@ namespace Adc.Scm.Api.Services
             {
                 cfg.CreateMap<DomainObjects.Contact, Models.Contact>();
                 cfg.CreateMap<Models.Contact, DomainObjects.Contact>();
+
+                cfg.CreateMap<DomainObjects.Contact, Events.ContactAddedEvent>();
+                cfg.CreateMap<DomainObjects.Contact, Events.ContactChangedEvent>();
+                cfg.CreateMap<DomainObjects.Contact, Events.ContactDeletedEvent>();
             });
 
             return config.CreateMapper();
