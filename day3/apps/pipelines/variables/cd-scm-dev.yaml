@@ -19,3 +19,5 @@ variables:
     value: adcd3sqlserverdev
   - name: sqlDatabaseName
     value: scmcontactsdb
+  - name: serviceBusNamespaceName
+    value: adcd3sb-dev
