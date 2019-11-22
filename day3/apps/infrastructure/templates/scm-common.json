@@ -26,7 +26,15 @@
         "sbThumbnailsSendRule": "thumbnailssend",
         "sbThumbnailsListenRule": "thumbnailslisten",
         "sbThumbnailSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsSendRule'))]",
-        "sbThumbnailListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsListenRule'))]"
+        "sbThumbnailListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsListenRule'))]",
+        "sbScmContactTopic": "scmtopic",
+        "sbScmContactTopicSearchSubscription": "scmcontactsearch",
+        "sbScmContactTopicId": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'))]",
+        "sbScmContactTopicSendAuthRule": "scmtopicsend",
+        "sbScmContactTopicListenAuthRule": "scmtopiclisten",
+        "sbScmContactTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicSendAuthRule'))]",
+        "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]"
+
     },
     "resources": [
         {
@@ -99,6 +107,68 @@
                     "Send"
                 ]
             }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P2D",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": false,
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P2D",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicListenAuthRule'))]",
+            "dependsOn": [
+                "[variables('sbScmContactTopicId')]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicSendAuthRule'))]",
+            "dependsOn": [
+                "[variables('sbScmContactTopicId')]"
+            ],
+            "properties": {
+                "rights": [
+                    "Send"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicSearchSubscription'))]",
+            "dependsOn": [
+                "[variables('sbScmContactTopicId')]"
+            ],
+            "properties": {
+                "lockDuration": "PT5M",
+                "requiresSession": true,
+                "defaultMessageTimeToLive": "P2D",
+                "deadLetteringOnMessageExpiration": true,
+                "maxDeliveryCount": 10,
+                "enableBatchedOperations": false,
+                "autoDeleteOnIdle": "P2D"
+            }
         }
     ],
     "outputs": {
@@ -117,6 +187,14 @@
         "ThumbnailListenRuleConnectionString": {
             "type": "string",
             "value": "[listKeys(variables('sbThumbnailListenAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "ScmContactTopicListenRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbScmContactTopicListenAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "ScmContactTopicSendRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
         }
     }
 }

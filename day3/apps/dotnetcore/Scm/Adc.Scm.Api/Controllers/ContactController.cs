@@ -1,5 +1,6 @@
 ﻿using Adc.Scm.Api.Models;
 using Adc.Scm.Api.Services;
+using Adc.Scm.Events;
 using Adc.Scm.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,12 +18,18 @@ namespace Adc.Scm.Api.Controllers
         private readonly IContactRepository _repository;
         private readonly ClaimsProviderService _claimsProvider;
         private readonly MapperService _mapper;
+        private readonly EventService _eventService;
 
-        public ContactController(IContactRepository repository, MapperService mapper, ClaimsProviderService claimsProvider)
+        public ContactController(
+            IContactRepository repository, 
+            MapperService mapper, 
+            ClaimsProviderService claimsProvider,
+            EventService eventService)
         {
             _repository = repository;
             _claimsProvider = claimsProvider;
             _mapper = mapper;
+            _eventService = eventService;
         }
 
         [HttpGet]
@@ -53,6 +60,8 @@ namespace Adc.Scm.Api.Controllers
         {
             var userId = _claimsProvider.GetUserId(this.HttpContext);
             var domainContact = await _repository.Add(userId, _mapper.Map<Contact, DomainObjects.Contact>(contact));
+            var evt = _mapper.Map<DomainObjects.Contact, ContactAddedEvent>(domainContact);
+            await _eventService.Send(evt);
             return CreatedAtAction(nameof(GetById), new { id = domainContact.Id }, _mapper.Map<DomainObjects.Contact, Contact>(domainContact));
         }
 
@@ -71,6 +80,8 @@ namespace Adc.Scm.Api.Controllers
             if (null == domainContact)
                 return NotFound();
 
+            var evt = _mapper.Map<DomainObjects.Contact, ContactChangedEvent>(domainContact);
+            await _eventService.Send(evt);
             return Ok(_mapper.Map<DomainObjects.Contact, Contact>(domainContact));
         }
 
@@ -84,6 +95,8 @@ namespace Adc.Scm.Api.Controllers
             if (null == domainContact)
                 return NotFound();
 
+            var evt = _mapper.Map<DomainObjects.Contact, ContactDeletedEvent>(domainContact);
+            await _eventService.Send(evt);
             return NoContent();
         }
     }
