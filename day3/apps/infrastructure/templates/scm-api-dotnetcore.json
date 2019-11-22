@@ -115,7 +115,7 @@
             ],
             "properties": {
                 "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]",
-                "EventServiceOptions__ServiceBusConnectionString": "[replace(listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString, concat('EntityPath=', variables('sbScmContactTopic')), '')]"
+                "EventServiceOptions__ServiceBusConnectionString": "[listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
             }
         },
         {
