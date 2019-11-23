@@ -28,7 +28,7 @@ jobs:
                 overrideParameters: >
                   -appPlanSKU ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} 
                   -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} 
-                  -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.resizerFunctionName }} 
+                  -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.indexerFunctionName }} 
                   -applicationInsightsName ${{ variables.applicationInsightsName }} 
                   -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }}
                   -azureSearchServiceName ${{ variables.azureSearchServiceName }}
