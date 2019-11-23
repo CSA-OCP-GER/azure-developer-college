@@ -24,7 +24,7 @@ variables:
   - name: azureSearchServiceName
     value: adcd3search-test
   - name: azureSearchSKU
-    value: free
+    value: basic
   - name: azureSearchReplicaCount
     value: 1
   - name: azureSearchPartitionCount
