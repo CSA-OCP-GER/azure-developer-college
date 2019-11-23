@@ -1,0 +1,30 @@
+parameters:
+  buildConfiguration: release
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: "day3/apps/dotnetcore/Scm.Search/**/*.csproj"
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      projects: "day3/apps/dotnetcore/Scm.Search/**/*.csproj"
+      arguments: --configuration ${{ parameters.buildConfiguration }}
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Adc.Scm.Search.Api.csproj
+      arguments: --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
+      zipAfterPublish: True
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Indexer/Adc.Scm.Search.Indexer.csproj
+      arguments: --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
+      zipAfterPublish: True

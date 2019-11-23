@@ -1,0 +1,23 @@
+parameters:
+  configuration: release
+  artifactDropName: drop
+
+jobs:
+  - job: Build
+    displayName: Build Scm Search Api
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - template: ../../dotnetcore/build/scm-search-api.yaml
+        parameters:
+          buildConfiguration: ${{ parameters.configuration }}
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: day3/apps/infrastructure/templates
+          contents: |
+            scm-search-api-dotnetcore.json
+          targetFolder: $(Build.ArtifactStagingDirectory)
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(Build.ArtifactStagingDirectory)
+          artifactName: ${{ parameters.artifactDropName }}
