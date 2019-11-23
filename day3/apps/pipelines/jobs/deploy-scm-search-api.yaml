@@ -32,9 +32,9 @@ jobs:
                   -applicationInsightsName ${{ variables.applicationInsightsName }} 
                   -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }}
                   -azureSearchServiceName ${{ variables.azureSearchServiceName }}
-                  -azureSearchSKU ${{ parameters.azureSearchSKU }}
-                  -azureSearchReplicaCount ${{ parameters.azureSearchReplicaCount }}
-                  -azureSearchPartitionCount ${{ parameters.azureSearchPartitionCount }}
+                  -azureSearchSKU ${{ variables.azureSearchSKU }}
+                  -azureSearchReplicaCount ${{ variables.azureSearchReplicaCount }}
+                  -azureSearchPartitionCount ${{ variables.azureSearchPartitionCount }}
             - task: AzureRmWebAppDeployment@4
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
