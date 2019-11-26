@@ -37,7 +37,7 @@ namespace Adc.Scm.Search.Indexer
                             var definition = new Index()
                             {
                                 Name = _options.IndexName,
-                                Fields = FieldBuilder.BuildForType<Contact>(),
+                                Fields = FieldBuilder.BuildForType<Contact>(new Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new JsonLowercaseNamingStrategy() })
                             };
 
                             client.Indexes.CreateAsync(definition).Wait();
