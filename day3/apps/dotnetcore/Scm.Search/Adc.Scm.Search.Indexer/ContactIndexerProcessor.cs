@@ -2,6 +2,7 @@
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -37,7 +38,7 @@ namespace Adc.Scm.Search.Indexer
                             var definition = new Index()
                             {
                                 Name = _options.IndexName,
-                                Fields = FieldBuilder.BuildForType<Contact>(new Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new JsonLowercaseNamingStrategy() })
+                                Fields = FieldBuilder.BuildForType<Contact>(new DefaultContractResolver() { NamingStrategy = new JsonLowercaseNamingStrategy() })
                             };
 
                             client.Indexes.CreateAsync(definition).Wait();
@@ -70,6 +71,7 @@ namespace Adc.Scm.Search.Indexer
             try
             {
                 var indexClient = client.Indexes.GetClient(_options.IndexName);
+                indexClient.DeserializationSettings.ContractResolver = new DefaultContractResolver() { NamingStrategy = new JsonLowercaseNamingStrategy() };
                 await indexClient.Documents.IndexAsync(IndexBatch.New(new[] { action }));
             }
             catch (IndexBatchException)

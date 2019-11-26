@@ -1,10 +1,12 @@
 ﻿using Microsoft.Azure.Search;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Adc.Scm.Search.Indexer
 {
+    [JsonObject(NamingStrategyType = typeof(JsonLowercaseNamingStrategy))]
     public class Contact
     {
         [System.ComponentModel.DataAnnotations.Key]
