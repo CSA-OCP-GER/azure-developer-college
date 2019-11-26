@@ -20,7 +20,7 @@ namespace Adc.Scm.Search.Api.Services
         {
             var client = new SearchServiceClient(_options.ServiceName, new SearchCredentials(_options.AdminApiKey));
             var indexClient = client.Indexes.GetClient(_options.IndexName);
-            var result = await indexClient.Documents.SearchAsync($"(UserId:{userId.ToString()}) AND ({phrase})", 
+            var result = await indexClient.Documents.SearchAsync($"(userid:{userId.ToString()}) AND ({phrase})", 
                 new SearchParameters() 
                 {
                     QueryType = QueryType.Full
@@ -33,7 +33,7 @@ namespace Adc.Scm.Search.Api.Services
         {
             var client = new SearchServiceClient(_options.ServiceName, new SearchCredentials(_options.AdminApiKey));
             var indexClient = client.Indexes.GetClient(_options.IndexName);
-            var result = await indexClient.Documents.SearchAsync($"(UserId:{userId.ToString()}) AND ({search.Phrase})",
+            var result = await indexClient.Documents.SearchAsync($"(userid:{userId.ToString()}) AND ({search.Phrase})",
                 new SearchParameters()
                 {
                     QueryType = QueryType.Full,

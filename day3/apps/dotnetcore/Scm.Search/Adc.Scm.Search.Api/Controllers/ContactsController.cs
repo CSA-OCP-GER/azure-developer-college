@@ -24,9 +24,9 @@ namespace Adc.Scm.Search.Api.Controllers
             _claimsProvider = claimsProvider;
         }
 
-        [HttpGet("{phrase}")]
+        [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<object> Search(string phrase)
+        public async Task<object> Search([FromQuery]string phrase)
         {
             var userId = _claimsProvider.GetUserId(Request.HttpContext);
             return Ok(await _service.Search(userId, phrase));           
