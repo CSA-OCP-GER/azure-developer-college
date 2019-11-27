@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Search;
+﻿using Adc.Scm.Search.Api.Models;
+using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.Extensions.Options;
 using System;
@@ -19,10 +20,25 @@ namespace Adc.Scm.Search.Api.Services
         {
             var client = new SearchServiceClient(_options.ServiceName, new SearchCredentials(_options.AdminApiKey));
             var indexClient = client.Indexes.GetClient(_options.IndexName);
-            var result = await indexClient.Documents.SearchAsync($"(UserId:{userId.ToString()}) AND ({phrase})", 
+            var result = await indexClient.Documents.SearchAsync($"(userid:{userId.ToString()}) AND ({phrase})", 
                 new SearchParameters() 
                 {
                     QueryType = QueryType.Full
+                });
+
+            return result.Results;
+        }
+
+        public async Task<object> Search(Guid userId, ContactSearch search)
+        {
+            var client = new SearchServiceClient(_options.ServiceName, new SearchCredentials(_options.AdminApiKey));
+            var indexClient = client.Indexes.GetClient(_options.IndexName);
+            var result = await indexClient.Documents.SearchAsync($"(userid:{userId.ToString()}) AND ({search.Phrase})",
+                new SearchParameters()
+                {
+                    QueryType = QueryType.Full,
+                    Select = search.SelectFields,
+                    SearchFields = search.SearchFields
                 });
 
             return result.Results;

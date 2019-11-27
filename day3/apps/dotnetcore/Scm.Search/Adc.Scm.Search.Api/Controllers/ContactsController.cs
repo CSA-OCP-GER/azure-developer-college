@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Adc.Scm.Search.Api.Models;
 using Adc.Scm.Search.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,12 +24,20 @@ namespace Adc.Scm.Search.Api.Controllers
             _claimsProvider = claimsProvider;
         }
 
-        [HttpGet("{phrase}")]
+        [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<object> Search(string phrase)
+        public async Task<object> Search([FromQuery]string phrase)
         {
             var userId = _claimsProvider.GetUserId(Request.HttpContext);
             return Ok(await _service.Search(userId, phrase));           
+        }
+
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<object> Search([FromBody]ContactSearch search)
+        {
+            var userId = _claimsProvider.GetUserId(Request.HttpContext);
+            return Ok(await _service.Search(userId, search));
         }
     }
 }
