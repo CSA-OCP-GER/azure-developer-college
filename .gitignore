@@ -330,3 +330,4 @@ ASALocalRun/
 .mfractor/
 day2/apps/frontend/scmfe/dist
 .DS_Store
+day3/apps/nodejs/visitreport/.env
