@@ -35,7 +35,9 @@
         "sbScmContactTopicSendAuthRule": "scmtopicsend",
         "sbScmContactTopicListenAuthRule": "scmtopiclisten",
         "sbScmContactTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicSendAuthRule'))]",
-        "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]"
+        "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]",
+        "cosmosAccountId": "[resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccountName'))]",
+        "cosmosVersion": "2019-08-01"
     },
     "resources": [
         {
@@ -227,7 +229,7 @@
         },
         "CosmosDbConnectionString": {
             "type": "string",
-            "value": "[listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccountName')), '2019-08-01').primaryConnectionString]"
+            "value": "[listKeys(variables('cosmosAccountId'), variables('cosmosVersion')).primaryConnectionString]"
         }
     }
 }
