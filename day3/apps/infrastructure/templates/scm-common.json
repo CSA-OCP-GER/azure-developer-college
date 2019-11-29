@@ -229,7 +229,7 @@
         },
         "CosmosDbConnectionString": {
             "type": "string",
-            "value": "[listKeys(variables('cosmosAccountId'), variables('cosmosVersion')).primaryConnectionString]"
+            "value": "[listKeys(variables('cosmosAccountId'), variables('cosmosVersion')).primaryMasterKey]"
         }
     }
 }
