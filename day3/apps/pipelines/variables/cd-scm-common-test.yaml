@@ -12,4 +12,4 @@ variables:
   - name: serviceBusSKU
     value: Standard
   - name: cosmosDbAccountName
-    value: adcd3cosmos-dev
+    value: adcd3cosmos-test
