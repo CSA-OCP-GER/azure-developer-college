@@ -1,5 +1,5 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "applicationInsightsName": {
@@ -16,6 +16,9 @@
                 "Premium"
             ],
             "defaultValue": "Standard"
+        },
+        "cosmosDbAccountName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -32,7 +35,9 @@
         "sbScmContactTopicSendAuthRule": "scmtopicsend",
         "sbScmContactTopicListenAuthRule": "scmtopiclisten",
         "sbScmContactTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicSendAuthRule'))]",
-        "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]"
+        "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]",
+        "cosmosAccountId": "[resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccountName'))]",
+        "cosmosVersion": "2019-08-01"
     },
     "resources": [
         {
@@ -173,6 +178,28 @@
                     ]
                 }
             ]
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('cosmosDbAccountName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "GlobalDocumentDB",
+            "properties": {
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Eventual"
+                },
+                "databaseAccountOfferType": "Standard",
+                "locations": [
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false
+            }
         }
     ],
     "outputs": {
@@ -199,6 +226,10 @@
         "ScmContactTopicSendRuleConnectionString": {
             "type": "string",
             "value": "[listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "CosmosDbConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('cosmosAccountId'), variables('cosmosVersion')).primaryMasterKey]"
         }
     }
 }

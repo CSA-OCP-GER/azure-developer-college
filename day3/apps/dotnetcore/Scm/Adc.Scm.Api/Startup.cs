@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace Adc.Scm.Api
 {
@@ -38,22 +39,46 @@ namespace Adc.Scm.Api
             services.AddApplicationInsightsTelemetry();
 
 
-            services.AddControllers();
-            services.AddEntityFrameworkSqlServer();
+            services.AddControllers();            
 
             if (HostingEnvironment.IsDevelopment())
             {
-                _sqlite = new SqliteConnection("DataSource=:memory:");
-                _sqlite.Open();
-                services.AddDbContext<ContactDbContext>(options => options.UseSqlite(_sqlite));
+                var connStr = Configuration.GetConnectionString("DefaultConnectionString");
+
+                // Use Sqlite in development mode if ConnectionString is specified
+                if (!string.IsNullOrEmpty(connStr))
+                {
+                    _sqlite = new SqliteConnection("DataSource=:memory:");
+                    _sqlite.Open();
+                    services.AddEntityFrameworkSqlServer();
+                    services.AddDbContext<ContactDbContext>(options => options.UseSqlite(_sqlite));
+                    services.AddScoped<IContactRepository, ContactRepository>();
+                }
+                // Use CosmosDb if no ConnectionString is specified
+                else
+                {
+                    services.Configure<Repository.CosmosDb.RepositoryOptions>(options => Configuration.Bind("CosmosOptions", options));
+                    services.AddScoped<IContactRepository, Repository.CosmosDb.ContactRepository>();
+                }
             }
             else
             {
                 var connStr = Configuration.GetConnectionString("DefaultConnectionString");
-                services.AddDbContext<ContactDbContext>(options => options.UseSqlServer(connStr));
+                // Use SqlDatabase in production if ConnectionString is specified
+                if (!string.IsNullOrEmpty(connStr))
+                {
+                    services.AddEntityFrameworkSqlServer();
+                    services.AddDbContext<ContactDbContext>(options => options.UseSqlServer(connStr));
+                    services.AddScoped<IContactRepository, ContactRepository>();
+                }
+                // Use CosmosDb if no ConnectionString is specified
+                else
+                {                    
+                    services.Configure<Repository.CosmosDb.RepositoryOptions>(options => Configuration.Bind("CosmosOptions", options));
+                    services.AddScoped<IContactRepository, Repository.CosmosDb.ContactRepository>();
+                }
             }
-            
-            services.AddScoped<IContactRepository, ContactRepository>();
+                        
             services.AddScoped<MapperService>();
             services.AddScoped<ClaimsProviderService>();
             services.Configure<EventServiceOptions>(options => Configuration.Bind("EventServiceOptions", options));
