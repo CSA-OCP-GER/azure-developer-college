@@ -10,13 +10,14 @@
     <v-container class="grid-list-xl">
       <v-toolbar class="px-0" flat color="transparent">
         <v-toolbar-title class="pt-0 px-0 headline">
-          <span class="ml-3 hidden-sm-and-down">Search Results</span>
+          <span v-if="phrase != ''" class="ml-3 hidden-sm-and-down">Search Results for: "{{phrase}}"</span>
+          <span v-else class="ml-3 hidden-sm-and-down">Search for Contacts</span>
         </v-toolbar-title>
         <div class="flex-grow-1"></div>
         <v-spacer></v-spacer>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" icon @click="clear()">
+            <v-btn v-on="on" icon @click="clearInternal()">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
@@ -24,7 +25,40 @@
         </v-tooltip>
       </v-toolbar>
       <v-layout row class="px-5">
-        <v-flex xs12>{{phrase}}</v-flex>
+        <v-flex v-for="contact in contacts" :key="contact.id" xs12 sm12 md6 lg6 xlg4>
+          <v-card class="mx-auto" max-width="344" raised>
+            <v-list-item three-line>
+              <v-list-item-content>
+                <div class="overline mb-4">CONTACT</div>
+                <v-list-item-title
+                  class="headline mb-1"
+                >{{contact.document.firstname}} {{contact.document.lastname}}</v-list-item-title>
+                <v-list-item-subtitle>
+                  <v-icon :size="15">mdi-domain</v-icon>
+                  {{contact.document.company}}
+                </v-list-item-subtitle>
+                <v-list-item-subtitle class="font-weight-light pt-2">
+                  <v-icon :size="15">mdi-map-marker</v-icon>
+                  {{contact.document.street}} / {{contact.document.city}}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+
+              <v-list-item-avatar tile size="80" color="grey">
+                <avatar
+                  :tile="true"
+                  :size="80"
+                  :image="contact.document.avatarlocation"
+                  :firstname="contact.document.firstname"
+                  :lastname="contact.document.lastname"
+                ></avatar>
+              </v-list-item-avatar>
+            </v-list-item>
+
+            <v-card-actions>
+              <v-btn text class="primary" @click="openContact(contact.document.id)">Open</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
       </v-layout>
     </v-container>
   </div>
@@ -32,15 +66,15 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-// import Avatar from "../avatar/Avatar";
+import Avatar from "../avatar/Avatar";
 
 export default {
   components: {
-    // Avatar
+    Avatar
   },
   computed: {
     ...mapGetters({
-      contacts: "search/searchresults"
+      contacts: "search/searchcontactsresults"
     })
   },
   beforeRouteUpdate(to, from, next) {
@@ -52,13 +86,20 @@ export default {
   },
   methods: {
     ...mapActions({
-      search: "search/search",
+      search: "search/searchContacts",
       clear: "search/clearresults"
     }),
     searchInternal(phrase) {
       this.loading = true;
       this.phrase = phrase;
-      this.search().then(() => (this.loading = false));
+      this.search({ phrase }).then(() => (this.loading = false));
+    },
+    openContact(id) {
+      this.$router.push({ name: "contactDetail", params: { id } });
+    },
+    clearInternal() {
+      this.phrase = "";
+      this.clear();
     }
   },
   data() {

@@ -1,25 +1,24 @@
 import { getSearchHttpClient } from "../../utils/http-client";
 
-const BASE_PATH = "/search";
+const BASE_PATH = "/";
 
 const state = {
-    searchresults: [],
-    metadata: {}
+    searchcontactsresults: []
 };
 
 // getters
 const getters = {
-    searchresults: state => state.searchresults,
-    metadata: state => state.metadata
+    searchcontactsresults: state => state.searchcontactsresults
 };
 
 // actions
 const actions = {
-    search({ commit, dispatch }) {
+    searchContacts({ commit, dispatch }, options) {
+        var { phrase } = options;
         dispatch("wait/start", "apicall", { root: true });
         var client = getSearchHttpClient();
-        return client.get(BASE_PATH).then(response => {
-            commit("setSearchResults", response.data);
+        return client.get(`${BASE_PATH}contacts?phrase=${phrase}`).then(response => {
+            commit("setSearchContactsResults", response.data);
             dispatch("wait/end", "apicall", { root: true });
         }).catch(err => {
             if (typeof err == "object" && err.code) {
@@ -41,11 +40,11 @@ const actions = {
 
 // mutations
 const mutations = {
-    setSearchResults(state, payload) {
-        state.searchresults = payload;
+    setSearchContactsResults(state, payload) {
+        state.searchcontactsresults = payload;
     },
     clearResults(state) {
-        state.searchresults = [];
+        state.searchcontactsresults = [];
     }
 }
 

@@ -52,7 +52,6 @@
       </v-toolbar-title>
       <v-text-field
         flat
-        solo-inverted
         hide-details
         prepend-inner-icon="mdi-magnify"
         label="Search"
@@ -80,7 +79,9 @@ export default {
   methods: {
     search() {
       if(this.searchphrase != "") {
-        this.$router.push({ name: "search", query: { phrase: encodeURIComponent(this.searchphrase) } });
+        var search = this.searchphrase;
+        this.searchphrase = "";
+        this.$router.push({ name: "search", query: { phrase: encodeURIComponent(search) } });
       }
     }
   },
