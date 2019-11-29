@@ -30,7 +30,15 @@ Test
 
 ## Prerequisites
 
-- todo
+### Common ###
+
+- Visual Studio Code: <https://code.visualstudio.com/download>
+- Azure Command Line Interface: <https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest>
+
+### Frontend ###
+
+- NodeJS: <https://nodejs.org/en/>
+- Vue CLI: <https://cli.vuejs.org/guide/installation.html>
 
 ## Training Days
 

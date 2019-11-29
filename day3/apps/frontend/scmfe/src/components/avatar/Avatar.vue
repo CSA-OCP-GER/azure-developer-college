@@ -1,8 +1,17 @@
 <template>
-  <v-avatar v-if="image && image != ''" :size="size">
-    <img :lazy-src="require('../../assets/no-user.png')" :src="image" :alt="`${firstname} ${lastname}`" />
+  <v-avatar :tile="tile" v-if="image && image != ''" :size="size">
+    <img
+      :lazy-src="require('../../assets/no-user.png')"
+      :src="image"
+      :alt="`${firstname} ${lastname}`"
+    />
   </v-avatar>
-  <v-avatar v-else :size="size" :color="color && color != '' ? color : calculatedColor">
+  <v-avatar
+    :tile="tile"
+    v-else
+    :size="size"
+    :color="color && color != '' ? color : calculatedColor"
+  >
     <span :class="textclass">{{initials}}</span>
   </v-avatar>
 </template>
@@ -49,6 +58,10 @@ export default {
     color: {
       type: String,
       default: ""
+    },
+    tile: {
+      type: Boolean,
+      default: false
     },
     textclass: {
       type: String,

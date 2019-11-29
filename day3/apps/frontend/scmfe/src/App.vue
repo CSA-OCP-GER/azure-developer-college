@@ -50,14 +50,15 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <span class="hidden-sm-and-down">SCM Contacts</span>
       </v-toolbar-title>
-      <!-- <v-text-field
+      <v-text-field
         flat
-        solo-inverted
         hide-details
         prepend-inner-icon="mdi-magnify"
         label="Search"
         class="hidden-sm-and-down"
-      />-->
+        v-model="searchphrase"
+        @keyup.enter="search()"
+      />
       <v-spacer />
     </v-app-bar>
     <v-content>
@@ -75,9 +76,18 @@ export default {
   components: {
     NotificationSnackbar
   },
-
+  methods: {
+    search() {
+      if(this.searchphrase != "") {
+        var search = this.searchphrase;
+        this.searchphrase = "";
+        this.$router.push({ name: "search", query: { phrase: encodeURIComponent(search) } });
+      }
+    }
+  },
   data: () => ({
     dialog: false,
+    searchphrase: "",
     drawer: null,
     items: [
       { icon: "mdi-desktop-mac", text: "Home", route: "/" },
