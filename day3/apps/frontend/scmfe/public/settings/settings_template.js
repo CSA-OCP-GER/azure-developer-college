@@ -1,5 +1,6 @@
 var uisettings = {
-    "endpoint": "https://adcday2scmapi-dev.azurewebsites.net/",
-    "resourcesEndpoint": "https://adcday2scmresourcesapi-dev.azurewebsites.net/",
+    "endpoint": "https://adcday3scmapi-dev.azurewebsites.net/",
+    "resourcesEndpoint": "https://adcday3scmresourcesapi-dev.azurewebsites.net/",
+    "searchEndpoint": "https://adcday3scmrsearchapi-dev.azurewebsites.net/",
     "aiKey": ""
 }

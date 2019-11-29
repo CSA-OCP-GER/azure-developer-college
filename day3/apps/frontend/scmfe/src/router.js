@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Home from "./components/home/Home";
 import ContactDetail from "./components/contacts/ContactDetail";
 import ContactsList from "./components/contacts/ContactsList";
+import Search from "./components/search/Search";
 import goTo from "vuetify/lib/services/goto";
 
 Vue.use(Router);
@@ -20,6 +21,11 @@ export default new Router({
       path: "/contacts",
       name: "contacts",
       component: ContactsList
+    },
+    {
+      path: "/search",
+      name: "search",
+      component: Search
     },
     {
       path: "/contacts/:id",
