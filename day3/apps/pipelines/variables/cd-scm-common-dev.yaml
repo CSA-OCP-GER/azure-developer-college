@@ -11,3 +11,5 @@ variables:
     value: adcd3sb-dev
   - name: serviceBusSKU
     value: Standard
+  - name: cosmosDbAccountName
+    value: adcd3cosmos-dev
