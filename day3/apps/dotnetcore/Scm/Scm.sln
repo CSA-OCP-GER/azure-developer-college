@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adc.Scm.Repository.EntityFr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adc.Scm.Api", "Adc.Scm.Api\Adc.Scm.Api.csproj", "{F44B5763-48E0-4438-97B1-442F48BD0878}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adc.Scm.Events", "Adc.Scm.Events\Adc.Scm.Events.csproj", "{A877E40C-7244-425C-AD8A-7DE5B0D4BEE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adc.Scm.Events", "Adc.Scm.Events\Adc.Scm.Events.csproj", "{A877E40C-7244-425C-AD8A-7DE5B0D4BEE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adc.Scm.Repository.CosmosDb", "Adc.Scm.Repository.CosmosDb\Adc.Scm.Repository.CosmosDb.csproj", "{3937781B-434C-4872-81AE-D5764923BDEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{A877E40C-7244-425C-AD8A-7DE5B0D4BEE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A877E40C-7244-425C-AD8A-7DE5B0D4BEE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A877E40C-7244-425C-AD8A-7DE5B0D4BEE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3937781B-434C-4872-81AE-D5764923BDEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3937781B-434C-4872-81AE-D5764923BDEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3937781B-434C-4872-81AE-D5764923BDEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3937781B-434C-4872-81AE-D5764923BDEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
