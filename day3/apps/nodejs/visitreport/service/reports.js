@@ -37,7 +37,7 @@ async function createReports(report) {
     report.type = "visitreport";
     try {
         const { item } = await client.database(databaseId).container(containerId).items.upsert(report);
-        return item.id;
+        return item;
     } catch (error) {
         throw new Error(error.message);
     }

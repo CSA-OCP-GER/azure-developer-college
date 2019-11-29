@@ -19,6 +19,7 @@ const readReportsSchema = {
                         id: { type: 'string' },
                         firstname: { type: 'string' },
                         lastname: { type: 'string' },
+                        avatarLocation: { type: 'string' },
                         company: { type: 'string' }
                     }
                 },
@@ -61,6 +62,7 @@ const listReportsSchema = {
                             id: { type: 'string' },
                             firstname: { type: 'string' },
                             lastname: { type: 'string' },
+                            avatarLocation: { type: 'string' },
                             company: { type: 'string' }
                         }
                     },
@@ -86,6 +88,7 @@ const createReportsSchema = {
                     id: { type: 'string' },
                     firstname: { type: 'string' },
                     lastname: { type: 'string' },
+                    avatarLocation: { type: 'string' },
                     company: { type: 'string' }
                 }
             },
@@ -120,6 +123,7 @@ const updateReportsSchema = {
                     id: { type: 'string' },
                     firstname: { type: 'string' },
                     lastname: { type: 'string' },
+                    avatarLocation: { type: 'string' },
                     company: { type: 'string' }
                 }
             },

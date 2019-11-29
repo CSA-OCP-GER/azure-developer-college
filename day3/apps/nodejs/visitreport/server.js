@@ -15,13 +15,17 @@ if (process.env.APPINSIGHTS_KEY) {
     appInsights.start();
     appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = process.env.APPINSIGHTS_ROLENAME || "visitreport";
 }
+fastify.register(require('fastify-cors'), {
+    exposedHeaders: ['Location'],
+    maxAge: 600
+});
 fastify.register(require('fastify-swagger'), {
     routePrefix: '/docs',
     exposeRoute: true
 });
 fastify.addHook('onRequest', async (request, reply) => {
     if (process.env.APPINSIGHTS_KEY != '') {
-        appInsights.defaultClient.trackNodeHttpRequest({request: request.req, response: reply.res});
+        appInsights.defaultClient.trackNodeHttpRequest({ request: request.req, response: reply.res });
     }
     return;
 });

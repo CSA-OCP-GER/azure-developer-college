@@ -55,7 +55,7 @@
             </v-list-item>
 
             <v-card-actions>
-              <v-btn text class="primary" @click="openContact(contact.document.id)">Open</v-btn>
+              <v-btn text @click="openContact(contact.document.id)">Open</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>

@@ -1,4 +1,3 @@
-const constants = require('../constants/constants');
 const { ServiceBusClient } = require("@azure/service-bus");
 
 module.exports = {
@@ -9,7 +8,7 @@ function init(connectionString) {
     return new Promise((resolve, reject) => {
         try {
             const serviceBusNs = ServiceBusClient.createFromConnectionString(connectionString);
-            const topic = serviceBusNs.createTopicClient(constants.events.topic_name).createSender();
+            const topic = serviceBusNs.createTopicClient('visitreporttopic').createSender();
             return resolve({ serviceBus: serviceBusNs, topic: topic });
         } catch {
             err => {

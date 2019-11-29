@@ -11,8 +11,8 @@ async function listReportsHandler(request, reply) {
 
 async function createReportsHandler(request, reply) {
     try {
-        var id = await service.createReports(request.body);
-        reply.header('Location', `/reports/${id}`);
+        var item = await service.createReports(request.body);
+        reply.header('Location', `${item.id}`);
         reply.code(201).send();
     } catch (err) {
         reply.code(500).send(err.message);
@@ -23,7 +23,7 @@ async function updateReportsHandler(request, reply) {
     const { id } = request.params;
     try {
         var result = await service.updateReports(id, request.body);
-        reply.header('Location', `/reports/${id}`);
+        reply.header('Location', `${id}`);
         reply.code(204).send();
     } catch (err) {
         reply.code(500).send(err.message);

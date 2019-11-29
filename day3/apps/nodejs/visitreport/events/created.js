@@ -1,16 +1,13 @@
-var constants = require('../constants/constants');
 var messageBus, logger;
 
-function handle(project) {
-    var p = project.constructor.name == 'model' ? project.toJSON() : project;
+function handle(visitreport) {
     var message = {
-        body: p,
+        body: visitreport,
         contentType: 'application/json',
         userProperties: {
-            type: 'project',
-            subtype: constants.events.created,
-            appId: 'getfdback',
-            'x-fdback-context': p.tenant.toString()
+            type: 'visitreport',
+            subtype: 'VisitReportAddedEvent',
+            version: '1'
         }
     };
     messageBus.topic.send(message);
