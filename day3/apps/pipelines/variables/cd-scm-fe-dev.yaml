@@ -13,5 +13,7 @@ variables:
     value: "https://adcday3scmresourcesapi-dev.azurewebsites.net/"
   - name: searchEndpoint
     value: "https://adcday3scmrsearchapi-dev.azurewebsites.net"
+  - name: reportsEndpoint
+    value: "https://adcday3scmvr-dev.azurewebsites.net"
   - name: applicationInsightsName
     value: appinsightsscmd3-dev
