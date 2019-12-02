@@ -1,0 +1,19 @@
+parameters:
+  artifactDropName: drop
+jobs:
+  - job: Build
+    displayName: Build Scm Frontend
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - template: ../../nodejs/build/scm-visitreports.yaml
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: day3/apps/infrastructure/templates
+          contents: |
+            scm-visitreport-nodejs.json
+          targetFolder: $(Build.ArtifactStagingDirectory)
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(Build.ArtifactStagingDirectory)
+          artifactName: ${{ parameters.artifactDropName }}
