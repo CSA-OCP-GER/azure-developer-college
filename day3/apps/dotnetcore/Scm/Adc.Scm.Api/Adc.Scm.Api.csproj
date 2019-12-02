@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Adc.Scm.DomainObjects\Adc.Scm.DomainObjects.csproj" />
     <ProjectReference Include="..\Adc.Scm.Events\Adc.Scm.Events.csproj" />
+    <ProjectReference Include="..\Adc.Scm.Repository.CosmosDb\Adc.Scm.Repository.CosmosDb.csproj" />
     <ProjectReference Include="..\Adc.Scm.Repository.EntityFrameworkCore\Adc.Scm.Repository.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Adc.Scm.Repository.Interfaces\Adc.Scm.Repository.Interfaces.csproj" />
   </ItemGroup>

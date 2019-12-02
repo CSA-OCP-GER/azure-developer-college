@@ -1,5 +1,5 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "applicationInsightsName": {
@@ -16,6 +16,9 @@
                 "Premium"
             ],
             "defaultValue": "Standard"
+        },
+        "cosmosDbAccountName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -29,12 +32,12 @@
         "sbThumbnailListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsListenRule'))]",
         "sbScmContactTopic": "scmtopic",
         "sbScmContactTopicSearchSubscription": "scmcontactsearch",
-        "sbScmContactTopicId": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'))]",
         "sbScmContactTopicSendAuthRule": "scmtopicsend",
         "sbScmContactTopicListenAuthRule": "scmtopiclisten",
         "sbScmContactTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicSendAuthRule'))]",
-        "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]"
-
+        "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]",
+        "cosmosAccountId": "[resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccountName'))]",
+        "cosmosVersion": "2019-08-01"
     },
     "resources": [
         {
@@ -56,118 +59,146 @@
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "[parameters('serviceBusSKU')]"
-            }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2017-04-01",
+                    "type": "queues",
+                    "name": "[variables('sbThumbnailsQueueName')]",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
+                    ],
+                    "properties": {
+                        "lockDuration": "PT5M",
+                        "maxSizeInMegabytes": 1024,
+                        "requiresDuplicateDetection": false,
+                        "requiresSession": false,
+                        "defaultMessageTimeToLive": "P2D",
+                        "deadLetteringOnMessageExpiration": true,
+                        "duplicateDetectionHistoryTimeWindow": "PT10M",
+                        "maxDeliveryCount": 10,
+                        "autoDeleteOnIdle": "P2D",
+                        "enablePartitioning": false,
+                        "enableExpress": false
+                    },
+                    "resources": [
+                        {
+                            "type": "authorizationRules",
+                            "apiVersion": "2017-04-01",
+                            "name": "[variables('sbThumbnailsListenRule')]",
+                            "location": "West Europe",
+                            "dependsOn": [
+                                "[variables('sbThumbnailsQueueName')]"
+                            ],
+                            "properties": {
+                                "rights": [
+                                    "Listen"
+                                ]
+                            }
+                        },
+                        {
+                            "type": "authorizationRules",
+                            "apiVersion": "2017-04-01",
+                            "name": "[variables('sbThumbnailsSendRule')]",
+                            "location": "West Europe",
+                            "dependsOn": [
+                                "[variables('sbThumbnailsQueueName')]"
+                            ],
+                            "properties": {
+                                "rights": [
+                                    "Send"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "topics",
+                    "apiVersion": "2017-04-01",
+                    "name": "[variables('sbScmContactTopic')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
+                    ],
+                    "properties": {
+                        "defaultMessageTimeToLive": "P2D",
+                        "maxSizeInMegabytes": 1024,
+                        "requiresDuplicateDetection": false,
+                        "duplicateDetectionHistoryTimeWindow": "PT10M",
+                        "enableBatchedOperations": false,
+                        "supportOrdering": false,
+                        "autoDeleteOnIdle": "P2D",
+                        "enablePartitioning": false,
+                        "enableExpress": false
+                    },
+                    "resources": [
+                        {
+                            "type": "authorizationRules",
+                            "apiVersion": "2017-04-01",
+                            "name": "[variables('sbScmContactTopicListenAuthRule')]",
+                            "dependsOn": [
+                                "[variables('sbScmContactTopic')]"
+                            ],
+                            "properties": {
+                                "rights": [
+                                    "Listen"
+                                ]
+                            }
+                        },
+                        {
+                            "type": "authorizationRules",
+                            "apiVersion": "2017-04-01",
+                            "name": "[variables('sbScmContactTopicSendAuthRule')]",
+                            "dependsOn": [
+                                "[variables('sbScmContactTopic')]"
+                            ],
+                            "properties": {
+                                "rights": [
+                                    "Send"
+                                ]
+                            }
+                        },
+                        {
+                            "type": "subscriptions",
+                            "apiVersion": "2017-04-01",
+                            "name": "[variables('sbScmContactTopicSearchSubscription')]",
+                            "dependsOn": [
+                                "[variables('sbScmContactTopic')]"
+                            ],
+                            "properties": {
+                                "lockDuration": "PT5M",
+                                "requiresSession": true,
+                                "defaultMessageTimeToLive": "P2D",
+                                "deadLetteringOnMessageExpiration": true,
+                                "maxDeliveryCount": 10,
+                                "enableBatchedOperations": false,
+                                "autoDeleteOnIdle": "P2D"
+                            }
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "apiVersion": "2017-04-01",
-            "type": "Microsoft.ServiceBus/namespaces/queues",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'))]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('cosmosDbAccountName')]",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
-            ],
+            "kind": "GlobalDocumentDB",
             "properties": {
-                "lockDuration": "PT5M",
-                "maxSizeInMegabytes": 1024,
-                "requiresDuplicateDetection": false,
-                "requiresSession": false,
-                "defaultMessageTimeToLive": "P2D",
-                "deadLetteringOnMessageExpiration": true,
-                "duplicateDetectionHistoryTimeWindow": "PT10M",
-                "maxDeliveryCount": 10,
-                "autoDeleteOnIdle": "P2D",
-                "enablePartitioning": false,
-                "enableExpress": false
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'), '/', variables('sbThumbnailsListenRule'))]",
-            "location": "West Europe",
-            "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'))]"
-            ],
-            "properties": {
-                "rights": [
-                    "Listen"
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbThumbnailsQueueName'), '/', variables('sbThumbnailsSendRule'))]",
-            "location": "West Europe",
-            "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'))]"
-            ],
-            "properties": {
-                "rights": [
-                    "Send"
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/topics",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
-            ],
-            "properties": {
-                "defaultMessageTimeToLive": "P2D",
-                "maxSizeInMegabytes": 1024,
-                "requiresDuplicateDetection": false,
-                "duplicateDetectionHistoryTimeWindow": "PT10M",
-                "enableBatchedOperations": false,
-                "supportOrdering": false,
-                "autoDeleteOnIdle": "P2D",
-                "enablePartitioning": false,
-                "enableExpress": false
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicListenAuthRule'))]",
-            "dependsOn": [
-                "[variables('sbScmContactTopicId')]"
-            ],
-            "properties": {
-                "rights": [
-                    "Listen"
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicSendAuthRule'))]",
-            "dependsOn": [
-                "[variables('sbScmContactTopicId')]"
-            ],
-            "properties": {
-                "rights": [
-                    "Send"
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicSearchSubscription'))]",
-            "dependsOn": [
-                "[variables('sbScmContactTopicId')]"
-            ],
-            "properties": {
-                "lockDuration": "PT5M",
-                "requiresSession": true,
-                "defaultMessageTimeToLive": "P2D",
-                "deadLetteringOnMessageExpiration": true,
-                "maxDeliveryCount": 10,
-                "enableBatchedOperations": false,
-                "autoDeleteOnIdle": "P2D"
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Eventual"
+                },
+                "databaseAccountOfferType": "Standard",
+                "locations": [
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false
             }
         }
     ],
@@ -195,6 +226,10 @@
         "ScmContactTopicSendRuleConnectionString": {
             "type": "string",
             "value": "[listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "CosmosDbConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('cosmosAccountId'), variables('cosmosVersion')).primaryMasterKey]"
         }
     }
 }
