@@ -91,7 +91,8 @@ export default {
     drawer: null,
     items: [
       { icon: "mdi-desktop-mac", text: "Home", route: "/" },
-      { icon: "mdi-contacts", text: "Contacts", route: "/contacts" }
+      { icon: "mdi-contacts", text: "Contacts", route: "/contacts" },
+      { icon: "mdi-file-document-outline", text: "Visit Reports", route: "/reports" }
     ]
   })
 };

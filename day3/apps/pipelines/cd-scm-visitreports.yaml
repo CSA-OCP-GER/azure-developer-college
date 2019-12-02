@@ -1,0 +1,50 @@
+pr: none
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - day3/apps/nodejs/visitreport/*
+      - day3/apps/infrastructure/templates/scm-visitreport-nodejs.json
+      - day3/apps/pipelines/cd-scm-visitreports.yaml
+
+variables:
+  azureSubscription: AzureDeveloperCollege
+
+stages:
+  - stage: Build
+    displayName: Build
+
+    jobs:
+      - template: jobs/build-scm-visitreports.yaml
+        parameters:
+          artifactDropName: drop
+
+  - stage: Development
+    displayName: Development
+    dependsOn: Build
+
+    jobs:
+      - template: jobs/deploy-scm-visitreports.yaml
+        parameters:
+          name: Deploy Scm Visitreports
+          variablesFile: ../variables/cd-scm-visitreports-dev.yaml
+          variableGroupName: Day3-VariableGroup
+          environmentName: ADC-DAY3-SCM-DEV
+          azureSubscription: $(azureSubscription)
+          artifactDropName: drop
+
+  - stage: Test
+    displayName: Test
+    dependsOn: Development
+
+    jobs:
+      - template: jobs/deploy-scm-visitreports.yaml
+        parameters:
+          name: Deploy Scm Visitreports
+          variablesFile: ../variables/cd-scm-visitreports-test.yaml
+          variableGroupName: Day3-VariableGroup
+          environmentName: ADC-DAY3-SCM-TEST
+          azureSubscription: $(azureSubscription)
+          artifactDropName: drop
