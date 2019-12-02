@@ -32,10 +32,18 @@
         "sbThumbnailListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbThumbnailsQueueName'), variables('sbThumbnailsListenRule'))]",
         "sbScmContactTopic": "scmtopic",
         "sbScmContactTopicSearchSubscription": "scmcontactsearch",
+        "sbScmContactTopicVisitReportSubscription": "scmcontactvisitreport",
+        "sbScmContactTopicId": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'))]",
         "sbScmContactTopicSendAuthRule": "scmtopicsend",
         "sbScmContactTopicListenAuthRule": "scmtopiclisten",
         "sbScmContactTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicSendAuthRule'))]",
         "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]",
+        "sbScmVisitReportTopic": "scmvrtopic",
+        "sbScmVisitReportTopicId": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'))]",
+        "sbScmVisitReportTopicSendAuthRule": "scmvrtopicsend",
+        "sbScmVisitReportTopicListenAuthRule": "scmvrtopiclisten",
+        "sbScmVisitReportTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'), variables('sbScmVisitReportTopicSendAuthRule'))]",
+        "sbScmVisitReportTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'), variables('sbScmVisitReportTopicListenAuthRule'))]",
         "cosmosAccountId": "[resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccountName'))]",
         "cosmosVersion": "2019-08-01"
     },
@@ -200,6 +208,68 @@
                 "enableAutomaticFailover": false,
                 "enableMultipleWriteLocations": false
             }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicVisitReportSubscription'))]",
+            "dependsOn": [
+                "[variables('sbScmContactTopicId')]"
+            ],
+            "properties": {
+                "lockDuration": "PT5M",
+                "requiresSession": true,
+                "defaultMessageTimeToLive": "P2D",
+                "deadLetteringOnMessageExpiration": true,
+                "maxDeliveryCount": 10,
+                "enableBatchedOperations": false,
+                "autoDeleteOnIdle": "P2D"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmVisitReportTopic'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('serviceBusNamespaceName'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P2D",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": false,
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P2D",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmVisitReportTopic'), '/', variables('sbScmVisitReportTopicListenAuthRule'))]",
+            "dependsOn": [
+                "[variables('sbScmVisitReportTopicId')]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmVisitReportTopic'), '/', variables('sbScmVisitReportTopicSendAuthRule'))]",
+            "dependsOn": [
+                "[variables('sbScmVisitReportTopicId')]"
+            ],
+            "properties": {
+                "rights": [
+                    "Send"
+                ]
+            }
         }
     ],
     "outputs": {
@@ -226,6 +296,14 @@
         "ScmContactTopicSendRuleConnectionString": {
             "type": "string",
             "value": "[listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "ScmVisitReportTopicListenRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbScmVisitReportTopicListenAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "ScmVisitReportTopicSendRuleConnectionString": {
+            "type": "string",
+            "value": "[listKeys(variables('sbScmVisitReportTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
         },
         "CosmosDbConnectionString": {
             "type": "string",
