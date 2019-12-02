@@ -42,7 +42,7 @@ jobs:
                 overrideParameters: >
                   -sku ${{ variables.appServicePlanSKU }} -skuCode ${{ variables.appServicePlanSKUCode }} -webAppName ${{ variables.apiAppName }} 
                   -applicationInsightsName ${{ variables.applicationInsightsName }} -cosmosDbAccount ${{variables.cosmosDbAccount}}
-                  -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }}
+                  -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }} -commonResGroup ${{ variables.resourceGroupName }}
             - task: AzureWebApp@1
               displayName: 'Deploy Nodejs App'
               inputs:
