@@ -28,7 +28,7 @@ stages:
     jobs:
       - template: jobs/deploy-scm-visitreports.yaml
         parameters:
-          name: Deploy Scm Api
+          name: Deploy Scm Visitreports
           variablesFile: ../variables/cd-scm-visitreports-dev.yaml
           variableGroupName: Day3-VariableGroup
           environmentName: ADC-DAY3-SCM-DEV
@@ -42,7 +42,7 @@ stages:
     jobs:
       - template: jobs/deploy-scm-visitreports.yaml
         parameters:
-          name: Deploy Scm Api
+          name: Deploy Scm Visitreports
           variablesFile: ../variables/cd-scm-visitreports-test.yaml
           variableGroupName: Day3-VariableGroup
           environmentName: ADC-DAY3-SCM-TEST
