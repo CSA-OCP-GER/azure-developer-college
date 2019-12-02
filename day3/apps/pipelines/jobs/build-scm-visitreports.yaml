@@ -11,7 +11,8 @@ jobs:
         inputs:
           sourceFolder: day3/apps/infrastructure/templates
           contents: |
-            scm-visitreport-nodejs.json
+            scm-visitreport-nodejs-db.json
+            scm-visitreport-nodejs-infra.json
           targetFolder: $(Build.ArtifactStagingDirectory)
       - task: PublishPipelineArtifact@1
         inputs:

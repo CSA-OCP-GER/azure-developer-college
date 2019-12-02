@@ -29,12 +29,6 @@
         "cosmosDbAccount": {
             "type": "string"
         },
-        "cosmosDatabaseName": {
-            "type": "string"
-        },
-        "cosmosDatabaseContainerName": {
-            "type": "string"
-        },
         "serviceBusNamespaceName": {
             "type": "string"
         }
@@ -48,50 +42,6 @@
         "sbScmVisitReportTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'), variables('sbScmVisitReportTopicSendAuthRule'))]"
     },
     "resources": [
-        {
-            "name": "[concat(parameters('cosmosDbAccount'), '/', parameters('cosmosDatabaseName'))]",
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-            "apiVersion": "2019-08-01",
-            "location": "[variables('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbAccount'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "id": "[parameters('cosmosDatabaseName')]"
-                },
-                "options": {
-                    "throughput": 400
-                }
-            }
-        },
-        {
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-            "name": "[concat(parameters('cosmosDbAccount'), '/', parameters('cosmosDatabaseName'), '/', parameters('cosmosDatabaseContainerName'))]",
-            "apiVersion": "2019-08-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('cosmosDbAccount'), parameters('cosmosDatabaseName'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "id": "[parameters('cosmosDatabaseContainerName')]",
-                    "partitionKey": {
-                        "paths": [
-                            "/type"
-                        ],
-                        "kind": "Hash"
-                    },
-                    "indexingPolicy": {
-                        "indexingMode": "consistent",
-                        "includedPaths": [
-                            {
-                                "path": "/*"
-                            }
-                        ]
-                    }
-                }
-            }
-        },
         {
             "apiVersion": "2019-08-01",
             "name": "[variables('appServicePlanName')]",

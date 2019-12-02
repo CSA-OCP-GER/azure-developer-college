@@ -3,6 +3,8 @@ variables:
     value: ubuntu-latest
   - name: resourceGroupName
     value: ADC-DAY3-SCM-DEV
+  - name: resourceGroupNameTux
+    value: ADC-DAY3-SCM-TUX-DEV
   - name: location
     value: westeurope
   - name: apiAppName

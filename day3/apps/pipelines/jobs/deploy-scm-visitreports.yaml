@@ -20,18 +20,28 @@ jobs:
         deploy:
           steps:
             - task: AzureResourceGroupDeployment@2
-              displayName: 'Create/update Infrastructure'
+              displayName: 'Create/update Infrastructure for CosmosDB'
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 action: "Create Or Update Resource Group"
                 resourceGroupName: ${{ variables.resourceGroupName }}
                 location: ${{ variables.location }}
                 templateLocation: "Linked artifact"
-                csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-visitreport-nodejs.json
+                csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-visitreport-nodejs-db.json
+                overrideParameters: >
+                  -cosmosDbAccount ${{variables.cosmosDbAccount}} -cosmosDatabaseName ${{ variables.cosmosDatabaseName }} -cosmosDatabaseContainerName ${{ variables.cosmosDatabaseContainerName }}
+            - task: AzureResourceGroupDeployment@2
+              displayName: 'Create/update Infrastructure for Linux WebApp'
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                action: "Create Or Update Resource Group"
+                resourceGroupName: ${{ variables.resourceGroupNameTux }}
+                location: ${{ variables.location }}
+                templateLocation: "Linked artifact"
+                csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-visitreport-nodejs-infra.json
                 overrideParameters: >
                   -sku ${{ variables.appServicePlanSKU }} -skuCode ${{ variables.appServicePlanSKUCode }} -webAppName ${{ variables.apiAppName }} 
-                  -applicationInsightsName ${{ variables.applicationInsightsName }} -cosmosDbAccount ${{variables.cosmosDbAccount}} 
-                  -cosmosDatabaseName ${{ variables.cosmosDatabaseName }} -cosmosDatabaseContainerName ${{ variables.cosmosDatabaseContainerName }} 
+                  -applicationInsightsName ${{ variables.applicationInsightsName }} -cosmosDbAccount ${{variables.cosmosDbAccount}}
                   -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }}
             - task: AzureWebApp@1
               displayName: 'Deploy Nodejs App'
