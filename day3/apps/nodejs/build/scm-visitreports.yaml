@@ -3,7 +3,7 @@ steps:
     inputs:
       versionSpec: '12.x'
     displayName: 'Install Node.js'
-  - bash:
+  - task: Bash@3
     inputs:
       workingDirectory: '$(Build.SourcesDirectory)/day3/apps/nodejs/visitreport'
       targetType: 'inline'
