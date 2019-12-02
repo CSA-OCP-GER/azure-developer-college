@@ -96,7 +96,7 @@
                         {
                             "name": "SBVRTOPIC_CONNSTR",
                             "connectionString": "[listKeys(variables('sbScmVisitReportTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]",
-                            "type": "ServiceBus"
+                            "type": "Custom"
                         }
                     ],
                     "linuxFxVersion": "NODE|12-lts",
