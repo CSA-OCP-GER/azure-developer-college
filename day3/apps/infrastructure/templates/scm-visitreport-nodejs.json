@@ -53,6 +53,9 @@
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
             "apiVersion": "2019-08-01",
             "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbAccount'))]"
+            ],
             "properties": {
                 "resource": {
                     "id": "[parameters('cosmosDatabaseName')]"
@@ -128,7 +131,7 @@
                         },
                         {
                             "name": "COSMOSDB",
-                            "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', parameters('cosmosDbAccount'))).documentEndpoint]"
+                            "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccount')), '2015-04-08').documentEndpoint]"
                         }
                     ],
                     "connectionStrings": [
