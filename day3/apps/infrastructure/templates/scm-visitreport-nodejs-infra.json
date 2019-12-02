@@ -26,6 +26,9 @@
         "applicationInsightsName": {
             "type": "string"
         },
+        "commonResGroup": {
+            "type": "string"
+        },
         "cosmosDbAccount": {
             "type": "string"
         },
@@ -39,7 +42,7 @@
         "sbVersion": "2017-04-01",
         "sbScmVisitReportTopicSendAuthRule": "scmvrtopicsend",
         "sbScmVisitReportTopic": "scmvrtopic",
-        "sbScmVisitReportTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'), variables('sbScmVisitReportTopicSendAuthRule'))]"
+        "sbScmVisitReportTopicSendAuthRuleId": "[resourceId(parameters('commonResGroup'), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'), variables('sbScmVisitReportTopicSendAuthRule'))]"
     },
     "resources": [
         {
@@ -77,17 +80,17 @@
                     "appSettings": [
                         {
                             "name": "APPINSIGHTS_KEY",
-                            "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                            "value": "[reference(resourceId(parameters('commonResGroup'), 'Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
                         },
                         {
                             "name": "COSMOSDB",
-                            "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccount')), '2015-04-08').documentEndpoint]"
+                            "value": "[reference(resourceId(parameters('commonResGroup'), 'Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccount')), '2015-04-08').documentEndpoint]"
                         }
                     ],
                     "connectionStrings": [
                         {
                             "name": "COSMOSKEY",
-                            "connectionString": "[listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccount')), '2015-04-08').primaryMasterKey]",
+                            "connectionString": "[listKeys(resourceId(parameters('commonResGroup'), 'Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccount')), '2015-04-08').primaryMasterKey]",
                             "type": "Custom"
                         },
                         {
