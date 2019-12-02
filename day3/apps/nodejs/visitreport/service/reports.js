@@ -1,7 +1,7 @@
 const CosmosClient = require('@azure/cosmos').CosmosClient;
 const client = new CosmosClient({ endpoint: process.env.COSMOSDB, key: process.env.CUSTOMCONNSTR_COSMOSKEY });
 const uuidv4 = require('uuid/v4');
-const databaseId = 'scm';
+const databaseId = 'scmvisitreports';
 const containerId = 'visitreports';
 
 async function listReports(contactid) {

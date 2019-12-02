@@ -42,7 +42,10 @@
         "sbVersion": "2017-04-01",
         "sbScmVisitReportTopicSendAuthRule": "scmvrtopicsend",
         "sbScmVisitReportTopic": "scmvrtopic",
-        "sbScmVisitReportTopicSendAuthRuleId": "[resourceId(parameters('commonResGroup'), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'), variables('sbScmVisitReportTopicSendAuthRule'))]"
+        "sbScmContactTopic": "scmtopic",
+        "sbScmContactTopicListenAuthRule": "scmtopiclisten",
+        "sbScmVisitReportTopicSendAuthRuleId": "[resourceId(parameters('commonResGroup'), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'), variables('sbScmVisitReportTopicSendAuthRule'))]",
+        "sbScmContactTopicListenAuthRuleId": "[resourceId(parameters('commonResGroup'), 'Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]"
     },
     "resources": [
         {
@@ -96,6 +99,11 @@
                         {
                             "name": "SBVRTOPIC_CONNSTR",
                             "connectionString": "[listKeys(variables('sbScmVisitReportTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]",
+                            "type": "Custom"
+                        },
+                        {
+                            "name": "SBCONTACTSTOPIC_CONNSTR",
+                            "connectionString": "[listKeys(variables('sbScmContactTopicListenAuthRuleId'), variables('sbVersion')).primaryConnectionString]",
                             "type": "Custom"
                         }
                     ],

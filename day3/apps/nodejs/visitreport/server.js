@@ -2,7 +2,13 @@ if (process.env.SCM_ENV && process.env.SCM_ENV.toLowerCase() != 'production') va
 const fastify = require('fastify')({
     logger: true
 });
+
+const eventEmitter = require('./events/emitter');
+const messageBus = require('./events/messagebus');
+const contactsListener = require('./events/contacts-listener');
+
 const appInsights = require("applicationinsights");
+
 if (process.env.APPINSIGHTS_KEY) {
     appInsights.setup(process.env.APPINSIGHTS_KEY)
         .setAutoDependencyCorrelation(true)
@@ -31,6 +37,19 @@ fastify.addHook('onRequest', async (request, reply) => {
 });
 
 fastify.register(require('./routes'));
+
+// Contacts
+messageBus.initialize(process.env.CUSTOMCONNSTR_SBCONTACTSTOPIC_CONNSTR).then((mb) => {
+    contactsListener.initialize(mb, fastify.log);
+    fastify.log.info('Messagebus for contacts initialized...');
+});
+
+// Visitreports
+// messageBus.initialize(process.env.CUSTOMCONNSTR_SBVRTOPIC_CONNSTR).then((mb) => {
+//     createdEvent.initialize(mb, fastify.log);
+//     eventEmitter.on(constants.events.created, createdEvent.handler);
+//     fastify.log.info('Messagebus for visitreports initialized...');
+// });
 
 const start = async () => {
     try {
