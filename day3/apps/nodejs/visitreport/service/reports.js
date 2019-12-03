@@ -6,7 +6,7 @@ const containerId = 'visitreports';
 
 async function listReports(contactid) {
     var querySpec = null;
-    if (contactid == undefined || contactid == null) {
+    if (contactid == undefined || contactid == null || contactid == '') {
         querySpec = {
             query: "SELECT c.id, c.contact, c.subject, c.visitDate FROM c where c.type = 'visitreport'"
         }

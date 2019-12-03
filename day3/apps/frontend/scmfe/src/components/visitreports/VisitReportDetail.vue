@@ -10,13 +10,13 @@
     <v-container class="grid-list-xl">
       <v-toolbar class="px-0" flat color="transparent">
         <v-toolbar-title class="pt-0 px-0 headline">
-          <span class="ml-3 hidden-sm-and-down">Contact Details</span>
+          <span class="ml-3 hidden-sm-and-down">Visit Report Details</span>
         </v-toolbar-title>
         <div class="flex-grow-1"></div>
         <v-spacer></v-spacer>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" icon @click="updateContact()">
+            <v-btn v-on="on" icon @click="updateReport()">
               <v-icon>mdi-content-save</v-icon>
             </v-btn>
           </template>
@@ -30,7 +30,7 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item @click="deleteContact()">
+            <v-list-item @click="deleteReport()">
               <v-list-item-avatar>
                 <v-icon color="red">mdi-delete</v-icon>
               </v-list-item-avatar>
@@ -48,105 +48,68 @@
                   <v-flex class="px-0" xs12>
                     <v-subheader>Details</v-subheader>
                   </v-flex>
-                  <v-flex xs12 md6 class="py-0">
+                  <v-flex xs12 class="py-0">
                     <v-text-field
-                      :error-messages="errors.collect('firstname')"
-                      data-vv-as="First Name"
-                      name="firstname"
+                      :error-messages="errors.collect('subject')"
+                      data-vv-as="Subject"
+                      name="subject"
                       v-validate="'required|max:255'"
-                      v-model="contactFields.firstname"
-                      label="First Name"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 md6 class="py-0">
-                    <v-text-field
-                      :error-messages="errors.collect('lastname')"
-                      data-vv-as="Last Name"
-                      name="lastname"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.lastname"
-                      label="Last Name"
+                      v-model="reportFields.subject"
+                      label="Subject"
                     ></v-text-field>
                   </v-flex>
                   <v-flex class="py-0" xs12>
-                    <v-text-field
-                      :error-messages="errors.collect('email')"
-                      data-vv-as="Email Address"
-                      name="email"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.email"
-                      label="Email Address"
-                    ></v-text-field>
+                    <v-dialog
+                      ref="dialog"
+                      v-model="modal"
+                      :return-value.sync="reportFields.visitDate"
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          name="visitDate"
+                          label="Visit Date"
+                          type="date"
+                          data-vv-as="Visit Date"
+                          v-model="reportFields.visitDate"
+                          v-validate="'required'"
+                          :error-messages="errors.collect('visitDate')"
+                          v-on="on"
+                          append-icon="mdi-calendar"
+                          required
+                          readonly
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="reportFields.visitDate" scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog.save(reportFields.visitDate)"
+                        >OK</v-btn>
+                      </v-date-picker>
+                    </v-dialog>
                   </v-flex>
                   <v-flex class="py-0" xs12>
                     <v-textarea
                       name="description"
-                      v-model="contactFields.description"
-                      label="My Comments / Description"
+                      v-model="reportFields.description"
+                      label="Description"
+                      data-vv-as="Description"
+                      v-validate="'max:1000'"
+                      :error-messages="errors.collect('description')"
                     ></v-textarea>
                   </v-flex>
-                  <v-flex class="px-0" xs12>
-                    <v-subheader>Company Details</v-subheader>
-                  </v-flex>
                   <v-flex class="py-0" xs12>
-                    <v-text-field
-                      :error-messages="errors.collect('company')"
-                      data-vv-as="Company"
-                      name="company"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.company"
-                      label="Company"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex class="py-0" md8 xs12>
-                    <v-text-field
-                      :error-messages="errors.collect('street')"
-                      data-vv-as="Street"
-                      name="street"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.street"
-                      label="Street"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex class="py-0" md4 xs12>
-                    <v-text-field
-                      :error-messages="errors.collect('houseNumber')"
-                      data-vv-as="House Number"
-                      name="houseNumber"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.houseNumber"
-                      label="House Number"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex class="py-0" md4 xs12>
-                    <v-text-field
-                      :error-messages="errors.collect('postalCode')"
-                      data-vv-as="Postal Code"
-                      name="postalCode"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.postalCode"
-                      label="Postal Code"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex class="py-0" md8 xs12>
-                    <v-text-field
-                      :error-messages="errors.collect('city')"
-                      data-vv-as="City"
-                      name="city"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.city"
-                      label="City"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex class="py-0" xs12>
-                    <v-text-field
-                      :error-messages="errors.collect('country')"
-                      data-vv-as="Country"
-                      name="country"
-                      v-validate="'required|max:255'"
-                      v-model="contactFields.country"
-                      label="Country"
-                    ></v-text-field>
+                    <v-textarea
+                      name="result"
+                      v-model="reportFields.result"
+                      label="Visit Result"
+                      data-vv-as="Visit Result"
+                      v-validate="'max:1000'"
+                      :error-messages="errors.collect('result')"
+                    ></v-textarea>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -155,18 +118,33 @@
         </v-flex>
         <v-flex xs12 md4 sm5>
           <v-card>
-            <v-subheader>Contact Avatar</v-subheader>
+            <v-subheader>Visiting Contact</v-subheader>
             <v-card-text class="text-center">
               <avatar
                 :size="140"
-                :image="contactFields.avatarLocation"
-                :firstname="contactFields.firstname"
-                :lastname="contactFields.lastname"
+                :image="reportFields.contact.avatarLocation"
+                :firstname="reportFields.contact.firstname"
+                :lastname="reportFields.contact.lastname"
               ></avatar>
             </v-card-text>
             <v-divider />
+            <v-list dense two-line subheader>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>{{reportFields.contact.firstname}} {{reportFields.contact.lastname}}</v-list-item-title>
+                  <v-list-item-subtitle>Name</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>{{reportFields.contact.company}}</v-list-item-title>
+                  <v-list-item-subtitle>Company</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <v-divider />
             <v-card-actions class="justify-center">
-              <v-btn color="primary" text @click="changeImage()">Change Avatar</v-btn>
+              <v-btn color="primary" text @click="showContact()">Open Contact</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -191,7 +169,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      contact: "contacts/contact"
+      report: "reports/report"
     }),
     isFormDirty() {
       return Object.keys(this.fields).some(key => this.fields[key].dirty);
@@ -215,39 +193,39 @@ export default {
   },
   methods: {
     ...mapActions({
-      read: "contacts/read",
-      update: "contacts/update",
-      delete: "contacts/delete"
+      read: "reports/read",
+      update: "reports/update",
+      delete: "reports/delete"
     }),
-    updateContact() {
-      this.update(this.contactFields).then(() => this.$validator.reset());
+    updateReport() {
+      this.update(this.reportFields).then(() => this.$validator.reset());
     },
-    deleteContact() {
+    showContact() {
+      this.$router.push({
+        name: "contactDetail",
+        params: { id: this.reportFields.contact.id }
+      });
+    },
+    deleteReport() {
       this.$refs.confirm
         .open(
-          "Delete Contact",
-          `Are you sure you want to delete contact ${this.contactFields.firstname} ${this.contactFields.lastname}?`,
+          "Delete Report",
+          `Are you sure you want to delete report ${this.reportFields.firstname} ${this.reportFields.lastname}?`,
           {
             color: "red"
           }
         )
         .then(confirm => {
           if (confirm)
-            this.delete(this.contactFields.id).then(() =>
-              this.$router.push({ name: "contacts" })
+            this.delete(this.reportFields.id).then(() =>
+              this.$router.push({ name: "reports" })
             );
         });
-    },
-    changeImage() {
-      this.$refs.logoupload.open().then(url => {
-        if (url) {
-          this.contactFields.avatarLocation = url;
-        }
-      });
     }
   },
   data() {
     return {
+      modal: false,
       items: [
         {
           text: "Home",
@@ -256,25 +234,27 @@ export default {
           exact: true
         },
         {
-          text: "Contacts",
+          text: "Visit Reports List",
           disabled: false,
-          to: "/contacts",
+          to: "/reports",
           exact: true
         },
         {
-          text: "Contact Detail",
+          text: "Report Detail",
           disabled: true
         }
       ],
       loading: false,
-      contactFields: {}
+      reportFields: {
+        contact: {}
+      }
     };
   },
   watch: {
-    contact: {
+    report: {
       handler() {
-        this.contactFields.avatarLocation = "";
-        this.contactFields = _.cloneDeep(this.contact);
+        this.reportFields.avatarLocation = "";
+        this.reportFields = _.cloneDeep(this.report);
       },
       deep: true
     }

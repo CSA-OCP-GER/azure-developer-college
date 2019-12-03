@@ -43,9 +43,9 @@
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     name="visitDate"
-                    label="Date"
+                    label="Visit Date"
                     type="visitDate"
-                    data-vv-as="Date"
+                    data-vv-as="Visit Date"
                     v-model="reportFields.visitDate"
                     v-validate="'required|max:255'"
                     :error-messages="errors.collect('visitDate')"
@@ -134,7 +134,7 @@ export default {
   }),
   computed: {
     ...mapGetters({
-      newReport: "contacts/newReport"
+      newReport: "reports/newReport"
     }),
     contact() {
       if (
@@ -191,7 +191,7 @@ export default {
       this.$validator.validateAll().then(valid => {
         if (valid) {
           this.create(this.reportFields).then(() => {
-            this.resolve(this.newContact);
+            this.resolve(this.newReport);
             this.dialog = false;
           });
         }
