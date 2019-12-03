@@ -3,6 +3,7 @@ const client = new CosmosClient({ endpoint: process.env.COSMOSDB, key: process.e
 const uuidv4 = require('uuid/v4');
 const databaseId = 'scmvisitreports';
 const containerId = 'visitreports';
+const eventEmitter = require('../events/emitter');
 
 async function listReports(contactid) {
     var querySpec = null;
@@ -37,6 +38,8 @@ async function createReports(report) {
     report.type = "visitreport";
     try {
         const { item } = await client.database(databaseId).container(containerId).items.upsert(report);
+        report.id = item.id;
+        eventEmitter.emit('created', report);
         return item;
     } catch (error) {
         throw new Error(error.message);
@@ -65,6 +68,7 @@ async function updateReports(id, report) {
     try {
         report.type = "visitreport";
         const { item } = await client.database(databaseId).container(containerId).item(report.id, 'visitreport').replace(report);
+        eventEmitter.emit('updated', report);
         return true;
     } catch (error) {
         throw new Error(error.message);
@@ -74,6 +78,7 @@ async function updateReports(id, report) {
 async function deleteReports(id) {
     try {
         const { item } = await client.database(databaseId).container(containerId).item(id, 'visitreport').delete();
+        eventEmitter.emit('deleted', { id: item.id });
         return true;
     } catch (error) {
         if (error.code == 404) {

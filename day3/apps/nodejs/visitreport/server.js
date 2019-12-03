@@ -5,6 +5,9 @@ const fastify = require('fastify')({
 
 const eventEmitter = require('./events/emitter');
 const messageBus = require('./events/messagebus');
+const createdEvent = require('./events/created');
+const updatedEvent = require('./events/updated');
+const deletedEvent = require('./events/deleted');
 const contactsListener = require('./events/contacts-listener');
 
 const appInsights = require("applicationinsights");
@@ -46,11 +49,15 @@ messageBus.initialize(process.env.CUSTOMCONNSTR_SBCONTACTSTOPIC_CONNSTR).then((m
 });
 
 // Visitreports
-// messageBus.initialize(process.env.CUSTOMCONNSTR_SBVRTOPIC_CONNSTR).then((mb) => {
-//     createdEvent.initialize(mb, fastify.log);
-//     eventEmitter.on(constants.events.created, createdEvent.handler);
-//     fastify.log.info('Messagebus for visitreports initialized...');
-// });
+messageBus.initialize(process.env.CUSTOMCONNSTR_SBVRTOPIC_CONNSTR).then((mb) => {
+    createdEvent.initialize(mb, fastify.log);
+    eventEmitter.on('created', createdEvent.handler);
+    updatedEvent.initialize(mb, fastify.log);
+    eventEmitter.on('updated', updatedEvent.handler);
+    deletedEvent.initialize(mb, fastify.log);
+    eventEmitter.on('deleted', deletedEvent.handler);
+    fastify.log.info('Messagebus for visitreports initialized...');
+});
 
 const start = async () => {
     try {
