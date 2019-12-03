@@ -40,8 +40,9 @@ fastify.register(require('./routes'));
 
 // Contacts
 messageBus.initialize(process.env.CUSTOMCONNSTR_SBCONTACTSTOPIC_CONNSTR).then((mb) => {
-    contactsListener.initialize(mb, fastify.log);
-    fastify.log.info('Messagebus for contacts initialized...');
+    contactsListener.initialize(mb, fastify.log).then(() => {
+        fastify.log.info('Messagebus for contacts initialized...');
+    }).catch(() => fastify.log.error("Error creating Subscription on Servicebus."));
 });
 
 // Visitreports

@@ -9,13 +9,30 @@ function init(messageBus, loggerinstance) {
     mb = messageBus;
     logger = loggerinstance;
 
-    const client = mb.serviceBus.createSubscriptionClient('scmtopic', 'scmcontactvisitreport');
-    const receiver = client.createReceiver(ReceiveMode.peekLock, { maxSessionAutoRenewLockDurationInSeconds: 300, sessionId: null });
-    receiver.registerMessageHandler((message, ) => {
-        consume(message);
-    }, (err) => {
-        console.log(err);
-    }, { autoComplete: false, });
+    return retry(internalInit);
+}
+
+function internalInit() {
+    return new Promise((resolve, reject) => {
+        try {
+            logger.info('Create new subscription client.');
+            const client = mb.serviceBus.createSubscriptionClient('scmtopic', 'scmcontactvisitreport');
+            logger.info('Create new receiver.');
+            const receiver = client.createReceiver(ReceiveMode.peekLock, { maxSessionAutoRenewLockDurationInSeconds: 300 });
+            logger.info('Listening for new messages...');
+            receiver.registerMessageHandler((message) => {
+                consume(message);
+            }, (err) => {
+                logger.error(err);
+                logger.info('Closing receiver. Reinitializing subscription client.');
+                receiver.close();
+                internalInit();
+            }, { autoComplete: false, });
+            resolve();
+        } catch (error) {
+            reject(error);
+        }
+    });
 }
 
 function consume(contactsMsg) {
@@ -71,4 +88,23 @@ function updateInBackground(querySpec, contactsMsg) {
 
 module.exports = {
     initialize: init
+}
+
+function retry(fn, retriesLeft = 5, interval = 1000) {
+    return new Promise((resolve, reject) => {
+        fn()
+            .then(resolve)
+            .catch((error) => {
+                setTimeout(() => {
+                    if (retriesLeft === 1) {
+                        // reject('maximum retries exceeded');
+                        reject(error);
+                        return;
+                    }
+
+                    // Passing on "reject" is the important part
+                    retry(fn, interval, retriesLeft - 1).then(resolve, reject);
+                }, interval);
+            });
+    });
 }
