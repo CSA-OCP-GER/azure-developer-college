@@ -39,6 +39,7 @@
         "sbScmContactTopicSendAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicSendAuthRule'))]",
         "sbScmContactTopicListenAuthRuleId": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('serviceBusNamespaceName'), variables('sbScmContactTopic'), variables('sbScmContactTopicListenAuthRule'))]",
         "sbScmVisitReportTopic": "scmvrtopic",
+        "sbScmVisitReportTopicTextAnalyticsSubscription": "scmvisitreporttextanalytics",
         "sbScmVisitReportTopicId": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('serviceBusNamespaceName'), variables('sbScmVisitReportTopic'))]",
         "sbScmVisitReportTopicSendAuthRule": "scmvrtopicsend",
         "sbScmVisitReportTopicListenAuthRule": "scmvrtopiclisten",
