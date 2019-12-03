@@ -1,8 +1,9 @@
 const service = require('../service/reports');
 
 async function listReportsHandler(request, reply) {
+    var { contactid } = request.query;
     try {
-        var results = await service.listReports();
+        var results = await service.listReports(contactid);
         reply.code(200).send(results);
     } catch (err) {
         reply.code(500).send();

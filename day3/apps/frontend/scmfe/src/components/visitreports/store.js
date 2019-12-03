@@ -3,7 +3,7 @@ import { getReportsHttpClient } from "../../utils/http-client";
 const BASE_PATH = "/reports";
 
 const state = {
-    reports: [],
+    reportsForContact: [],
     report: {},
     newReport: ""
 };
@@ -11,6 +11,7 @@ const state = {
 // getters
 const getters = {
     reports: state => state.reports,
+    reportsForContact: state => state.reportsForContact,
     report: state => state.report,
     newReport: state => state.newReport
 };
@@ -114,13 +115,39 @@ const actions = {
             }
             dispatch("wait/end", "apicall", { root: true });
         });
-    }
+    },
+    listContactVisits({ commit, dispatch }, contactid) {
+        dispatch("wait/start", "apicall", { root: true });
+        commit("clearReportsForContact");
+        var client = getReportsHttpClient();
+        return client.get(`${BASE_PATH}?contactid=${contactid}`).then(response => {
+            commit("setReportsForContact", response.data);
+            dispatch("wait/end", "apicall", { root: true });
+        }).catch(err => {
+            if (typeof err == "object" && err.code) {
+                if (err.code == "ECONNABORTED") {
+                    dispatch("notifications/addMessage", { type: "error", message: "Report Service unavailable.", read: false }, { root: true });
+                }
+            } else {
+                if (err && err.message) {
+                    dispatch("notifications/addMessage", { type: "error", message: err.message, read: false }, { root: true });
+                }
+            }
+            dispatch("wait/end", "apicall", { root: true });
+        });
+    },
 };
 
 // mutations
 const mutations = {
     setReports(state, payload) {
         state.reports = payload;
+    },
+    setReportsForContact(state, payload) {
+        state.reportsForContact = payload;
+    },
+    clearReportsForContact(state) {
+        state.reportsForContact = [];
     },
     setReport(state, payload) {
         state.report = payload;

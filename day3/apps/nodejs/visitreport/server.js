@@ -5,6 +5,9 @@ const fastify = require('fastify')({
 
 const eventEmitter = require('./events/emitter');
 const messageBus = require('./events/messagebus');
+const createdEvent = require('./events/created');
+const updatedEvent = require('./events/updated');
+const deletedEvent = require('./events/deleted');
 const contactsListener = require('./events/contacts-listener');
 
 const appInsights = require("applicationinsights");
@@ -40,16 +43,21 @@ fastify.register(require('./routes'));
 
 // Contacts
 messageBus.initialize(process.env.CUSTOMCONNSTR_SBCONTACTSTOPIC_CONNSTR).then((mb) => {
-    contactsListener.initialize(mb, fastify.log);
-    fastify.log.info('Messagebus for contacts initialized...');
+    contactsListener.initialize(mb, fastify.log).then(() => {
+        fastify.log.info('Messagebus for contacts initialized...');
+    }).catch(() => fastify.log.error("Error creating Subscription on Servicebus."));
 });
 
 // Visitreports
-// messageBus.initialize(process.env.CUSTOMCONNSTR_SBVRTOPIC_CONNSTR).then((mb) => {
-//     createdEvent.initialize(mb, fastify.log);
-//     eventEmitter.on(constants.events.created, createdEvent.handler);
-//     fastify.log.info('Messagebus for visitreports initialized...');
-// });
+messageBus.initialize(process.env.CUSTOMCONNSTR_SBVRTOPIC_CONNSTR).then((mb) => {
+    createdEvent.initialize(mb, fastify.log);
+    eventEmitter.on('created', createdEvent.handler);
+    updatedEvent.initialize(mb, fastify.log);
+    eventEmitter.on('updated', updatedEvent.handler);
+    deletedEvent.initialize(mb, fastify.log);
+    eventEmitter.on('deleted', deletedEvent.handler);
+    fastify.log.info('Messagebus for visitreports initialized...');
+});
 
 const start = async () => {
     try {

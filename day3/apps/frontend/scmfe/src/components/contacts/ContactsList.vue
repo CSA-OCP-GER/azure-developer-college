@@ -26,6 +26,12 @@
       <v-layout row class="px-5">
         <v-flex xs12>
           <v-data-table :headers="headers" :items="contacts" class="elevation-1">
+            <template v-slot:item.firstname="{item}">
+              <router-link style="padding-left: 5px;" :to="`contacts/${item.id}`">{{ item.firstname }}</router-link>
+            </template>
+            <template v-slot:item.lastname="{item}">
+              <router-link style="padding-left: 5px;" :to="`contacts/${item.id}`">{{ item.lastname }}</router-link>
+            </template>
             <template v-slot:item.avatar="{item}">
               <avatar
                 :image="item.avatarLocation"

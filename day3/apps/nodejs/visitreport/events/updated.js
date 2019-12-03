@@ -1,17 +1,17 @@
 var messageBus, logger;
 
 function handle(visitreport) {
+    visitreport.eventType = 'VisitReportUpdatedEvent';
+    visitreport.version = '1';
     var message = {
         body: visitreport,
-        contentType: 'application/json',
-        userProperties: {
-            type: 'visitreport',
-            subtype: 'VisitReportUpdatedEvent',
-            version: '1'
-        }
+        sessionId: '00000000-0000-0000-0000-000000000000' // as soon as we have a user, this will be replaced.
     };
-    messageBus.topic.send(message);
-    logger.info('updated_event');
+    messageBus.topic.send(message).then(() => {
+        logger.info('updated_event: successful.');
+    }).catch((error) => {
+        logger.error(error);
+    });
 }
 
 function init(mb, log) {

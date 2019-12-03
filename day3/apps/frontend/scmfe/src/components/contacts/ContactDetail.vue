@@ -169,6 +169,18 @@
               <v-btn color="primary" text @click="changeImage()">Change Avatar</v-btn>
             </v-card-actions>
           </v-card>
+          <v-card v-if="visits.length >0"  class="mt-8">
+            <v-subheader>Next Visits</v-subheader>
+            <v-list dense two-line subheader>
+              <v-list-item v-for="visit in visits" :key="visit.id" :to="`/reports/${visit.id}`">
+                <v-list-item-content>
+                  <v-list-item-title>{{visit.subject}}</v-list-item-title>
+                  <v-list-item-subtitle><v-icon :size="17">mdi-calendar</v-icon> {{visit.visitDate}}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
+
         </v-flex>
       </v-layout>
     </v-container>
@@ -191,14 +203,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      contact: "contacts/contact"
+      contact: "contacts/contact",
+      visits: "reports/reportsForContact"
     }),
     isFormDirty() {
       return Object.keys(this.fields).some(key => this.fields[key].dirty);
     }
   },
   created() {
-    return this.read(this.$route.params.id);
+    return this.read(this.$route.params.id).then(() => {
+      return this.readVisits(this.$route.params.id);
+    });
   },
   beforeRouteLeave(to, from, next) {
     if (this.isFormDirty) {
@@ -217,7 +232,8 @@ export default {
     ...mapActions({
       read: "contacts/read",
       update: "contacts/update",
-      delete: "contacts/delete"
+      delete: "contacts/delete",
+      readVisits: "reports/listContactVisits"
     }),
     updateContact() {
       this.update(this.contactFields).then(() => this.$validator.reset());

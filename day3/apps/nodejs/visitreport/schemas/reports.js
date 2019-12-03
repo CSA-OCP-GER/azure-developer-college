@@ -49,6 +49,15 @@ const deleteReportsSchema = {
 
 const listReportsSchema = {
     operationId: 'listReports',
+    querystring: {
+        type: 'object',
+        properties: {
+            contactid: {
+                type: 'string',
+                default: ''
+            }
+        }
+    },
     response: {
         200: {
             type: 'array',
