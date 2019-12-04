@@ -6,7 +6,7 @@
       "direction": "in",
       "topicName": "scmvrtopic",
       "subscriptionName": "scmvisitreporttextanalytics",
-      "connection": "VrServiceBusConnectionString"
+      "connection": "ServiceBusConnectionString"
     }
   ]
 }

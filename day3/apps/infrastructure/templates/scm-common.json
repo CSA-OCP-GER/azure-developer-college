@@ -183,6 +183,23 @@
                                 "enableBatchedOperations": false,
                                 "autoDeleteOnIdle": "P2D"
                             }
+                        },
+                        {
+                            "type": "subscriptions",
+                            "apiVersion": "2017-04-01",
+                            "name": "[variables('sbScmContactTopicVisitReportSubscription')]",
+                            "dependsOn": [
+                                "[variables('sbScmContactTopicId')]"
+                            ],
+                            "properties": {
+                                "lockDuration": "PT5M",
+                                "requiresSession": true,
+                                "defaultMessageTimeToLive": "P2D",
+                                "deadLetteringOnMessageExpiration": true,
+                                "maxDeliveryCount": 10,
+                                "enableBatchedOperations": false,
+                                "autoDeleteOnIdle": "P2D"
+                            }
                         }
                     ]
                 }
@@ -211,23 +228,6 @@
             }
         },
         {
-            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmContactTopic'), '/', variables('sbScmContactTopicVisitReportSubscription'))]",
-            "dependsOn": [
-                "[variables('sbScmContactTopicId')]"
-            ],
-            "properties": {
-                "lockDuration": "PT5M",
-                "requiresSession": true,
-                "defaultMessageTimeToLive": "P2D",
-                "deadLetteringOnMessageExpiration": true,
-                "maxDeliveryCount": 10,
-                "enableBatchedOperations": false,
-                "autoDeleteOnIdle": "P2D"
-            }
-        },
-        {
             "type": "Microsoft.ServiceBus/namespaces/topics",
             "apiVersion": "2017-04-01",
             "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmVisitReportTopic'))]",
@@ -244,33 +244,52 @@
                 "autoDeleteOnIdle": "P2D",
                 "enablePartitioning": false,
                 "enableExpress": false
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmVisitReportTopic'), '/', variables('sbScmVisitReportTopicListenAuthRule'))]",
-            "dependsOn": [
-                "[variables('sbScmVisitReportTopicId')]"
-            ],
-            "properties": {
-                "rights": [
-                    "Listen"
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
-            "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('serviceBusNamespaceName'), '/', variables('sbScmVisitReportTopic'), '/', variables('sbScmVisitReportTopicSendAuthRule'))]",
-            "dependsOn": [
-                "[variables('sbScmVisitReportTopicId')]"
-            ],
-            "properties": {
-                "rights": [
-                    "Send"
-                ]
-            }
+            },
+            "resources": [
+                {
+                    "type": "authorizationRules",
+                    "apiVersion": "2017-04-01",
+                    "name": "[variables('sbScmVisitReportTopicListenAuthRule')]",
+                    "dependsOn": [
+                        "[variables('sbScmVisitReportTopicId')]"
+                    ],
+                    "properties": {
+                        "rights": [
+                            "Listen"
+                        ]
+                    }
+                },
+                {
+                    "type": "authorizationRules",
+                    "apiVersion": "2017-04-01",
+                    "name": "[variables('sbScmVisitReportTopicSendAuthRule')]",
+                    "dependsOn": [
+                        "[variables('sbScmVisitReportTopicId')]"
+                    ],
+                    "properties": {
+                        "rights": [
+                            "Send"
+                        ]
+                    }
+                },
+                {
+                    "apiVersion": "2017-04-01",
+                    "name": "[variables('sbScmVisitReportTopicTextAnalyticsSubscription')]",
+                    "type": "Subscriptions",
+                    "dependsOn": [
+                        "[variables('sbScmVisitReportTopic')]"
+                    ],
+                    "properties": {
+                        "lockDuration": "PT5M",
+                        "requiresSession": false,
+                        "defaultMessageTimeToLive": "P2D",
+                        "deadLetteringOnMessageExpiration": true,
+                        "maxDeliveryCount": 10,
+                        "enableBatchedOperations": false,
+                        "autoDeleteOnIdle": "P2D"
+                    }
+                }
+            ]
         }
     ],
     "outputs": {
