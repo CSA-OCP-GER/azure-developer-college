@@ -13,7 +13,7 @@ stages:
 
     jobs:
     - job: Build
-      displayName: Build Scm Visitreport
+      displayName: Build Scm Textanalytics
       pool:
         vmImage: ubuntu-latest
       steps:
