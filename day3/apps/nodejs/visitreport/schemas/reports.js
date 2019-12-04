@@ -29,6 +29,14 @@ const readReportsSchema = {
                 visitDate: {
                     type: 'string',
                     format: 'date'
+                },
+                detectedLanguage: { type: 'string' },
+                visitResultSentimentScore: { type: 'number' },
+                visitResultKeyPhrases: {
+                    type: 'array',
+                    items: {
+                        type: 'string'
+                    }
                 }
             }
         }
