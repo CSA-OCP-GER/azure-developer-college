@@ -1,7 +1,7 @@
 parameters:
   buildConfiguration: release
   buildNumber: ""
-  publishDockerImage: True
+  publishDockerImage: true
   containerRegistryServiceConnection: ""
 
 steps:
@@ -32,3 +32,11 @@ steps:
       dockerfile: day3/apps/dotnetcore/Scm/Adc.Scm.Api/Dockerfile
       buildContext: day3/apps/dotnetcore/Scm
       tags: ${{parameters.buildNumber}}
+  - task: Docker@2
+    displayName: Push Docker image
+    condition: ${{parameters.publishDockerImage}}
+    inputs:
+      repository: adcday3/scmapi
+      command: push
+      containerRegistry: ${{ parameters.containerRegistryServiceConnection }}
+      tags: ${{ parameters.buildNumber }}
