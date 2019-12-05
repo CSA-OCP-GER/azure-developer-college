@@ -159,15 +159,6 @@ const updateReportsSchema = {
 
 const statsByContactSchema = {
     operationId: 'statsByContact',
-    querystring: {
-        type: 'object',
-        required: ['contactid'],
-        properties: {
-            contactid: {
-                type: 'string'
-            }
-        }
-    },
     response: {
         200: {
             type: 'array',

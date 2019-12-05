@@ -109,7 +109,7 @@ async function statsOverall() {
     }
 }
 
-async function statsByContact() {
+async function statsByContact(contactid) {
     var querySpec = {
         query: "SELECT \
             c.contact.id, \
@@ -119,7 +119,7 @@ async function statsByContact() {
             MIN(c.visitResultSentimentScore) as minScore  \
           FROM c \
           WHERE c.type = 'visitreport' and c.result != ''  AND c.contact.id = @contactid \
-          GROUP BY c.type",
+          GROUP BY c.contact.id",
         parameters: [
             {
                 name: "@contactid",

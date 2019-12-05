@@ -188,6 +188,15 @@
               </v-list-item>
             </v-list>
           </v-card>
+          <v-card v-if="$uisettings.enableStats && stats.length > 0"  class="mt-8">
+            <v-toolbar flat dense color="transparent">
+              <span class="font-weight-light">Visit Results: Sentiment Analysis</span>
+            </v-toolbar>
+            <v-divider></v-divider>
+            <v-card-text class="text-center pa-0">
+              <scm-score :score="currentScore" />
+            </v-card-text>
+          </v-card>
         </v-flex>
       </v-layout>
     </v-container>
@@ -201,20 +210,26 @@ import _ from "lodash";
 import Avatar from "../avatar/Avatar";
 import ConfirmationDialog from "../dialog/ConfirmationDialog";
 import ImageUploadDialog from "../resources/ImageUploadDialog";
-
+import ScmScore from "../charts/ScmScore";
 export default {
   components: {
     Avatar,
     ConfirmationDialog,
-    ImageUploadDialog
+    ImageUploadDialog,
+    ScmScore
+
   },
   computed: {
     ...mapGetters({
       contact: "contacts/contact",
-      visits: "reports/reportsForContact"
+      visits: "reports/reportsForContact",
+      stats: "stats/statsByContact",
     }),
     isFormDirty() {
       return Object.keys(this.fields).some(key => this.fields[key].dirty);
+    },
+    currentScore: function() {
+      return this.stats.length > 0 ? this.stats[0].avgScore : 0;
     }
   },
   created() {
@@ -223,7 +238,12 @@ export default {
         this.$uisettings.reportsEndpoint &&
         this.$uisettings.reportsEndpoint != ""
       ) {
-        return this.readVisits(this.$route.params.id);
+        this.readVisits(this.$route.params.id);
+      }
+      if (
+        this.$uisettings.enableStats
+      ) {
+        this.statsByContact(this.$route.params.id);
       }
     });
   },
@@ -245,7 +265,8 @@ export default {
       read: "contacts/read",
       update: "contacts/update",
       delete: "contacts/delete",
-      readVisits: "reports/listContactVisits"
+      readVisits: "reports/listContactVisits",
+      statsByContact: "stats/statsByContact"
     }),
     updateContact() {
       this.update(this.contactFields).then(() => this.$validator.reset());
