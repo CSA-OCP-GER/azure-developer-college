@@ -1,17 +1,17 @@
 var messageBus, logger;
 
 function handle(visitreport) {
+    visitreport.eventType = 'VisitReportDeletedEvent';
+    visitreport.version = '1';
     var message = {
         body: visitreport,
-        contentType: 'application/json',
-        userProperties: {
-            type: 'visitreport',
-            subtype: 'VisitReportDeletedEvent',
-            version: '1'
-        }
+        sessionId: '00000000-0000-0000-0000-000000000000' // as soon as we have a user, this will be replaced.
     };
-    messageBus.topic.send(message);
-    logger.info('deleted_event');
+    messageBus.topic.send(message).then(() => {
+        logger.info('deleted_event: successful.');
+    }).catch((error) => {
+        logger.error(error);
+    });
 }
 
 function init(mb, log) {

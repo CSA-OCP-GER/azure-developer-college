@@ -1,8 +1,9 @@
 const service = require('../service/reports');
 
 async function listReportsHandler(request, reply) {
+    var { contactid } = request.query;
     try {
-        var results = await service.listReports();
+        var results = await service.listReports(contactid);
         reply.code(200).send(results);
     } catch (err) {
         reply.code(500).send();
@@ -58,10 +59,43 @@ async function readReportsHandler(request, reply) {
     }
 };
 
+// Stats
+
+async function statsByContactHandler(request, reply) {
+    var { contactid } = request.params;
+    try {
+        var results = await service.statsByContact(contactid);
+        reply.code(200).send(results);
+    } catch (err) {
+        reply.code(500).send();
+    }
+};
+
+async function statsOverallHandler(request, reply) {
+    try {
+        var results = await service.statsOverall();
+        reply.code(200).send(results);
+    } catch (err) {
+        reply.code(500).send();
+    }
+};
+
+async function statsTimelineHandler(request, reply) {
+    try {
+        var results = await service.statsTimeline();
+        reply.code(200).send(results);
+    } catch (err) {
+        reply.code(500).send();
+    }
+};
+
 module.exports = {
     listReportsHandler,
     createReportsHandler,
     deleteReportsHandler,
     readReportsHandler,
-    updateReportsHandler
+    updateReportsHandler,
+    statsByContactHandler,
+    statsOverallHandler,
+    statsTimelineHandler
 }

@@ -164,10 +164,38 @@
                 :lastname="contactFields.lastname"
               ></avatar>
             </v-card-text>
-            <v-divider />
+            <v-divider v-if="$uisettings.resourcesEndpoint && $uisettings.resourcesEndpoint != ''" />
             <v-card-actions class="justify-center">
-              <v-btn color="primary" text @click="changeImage()">Change Avatar</v-btn>
+              <v-btn
+                v-if="$uisettings.resourcesEndpoint && $uisettings.resourcesEndpoint != ''"
+                color="primary"
+                text
+                @click="changeImage()"
+              >Change Avatar</v-btn>
             </v-card-actions>
+          </v-card>
+          <v-card v-if="visits.length >0" class="mt-8">
+            <v-subheader>Next Visits</v-subheader>
+            <v-list dense two-line subheader>
+              <v-list-item v-for="visit in visits" :key="visit.id" :to="`/reports/${visit.id}`">
+                <v-list-item-content>
+                  <v-list-item-title>{{visit.subject}}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    <v-icon :size="17">mdi-calendar</v-icon>
+                    {{visit.visitDate}}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
+          <v-card v-if="$uisettings.enableStats && stats.length > 0"  class="mt-8">
+            <v-toolbar flat dense color="transparent">
+              <span class="font-weight-light">Visit Results: Sentiment Analysis</span>
+            </v-toolbar>
+            <v-divider></v-divider>
+            <v-card-text class="text-center pa-0">
+              <scm-score :score="currentScore" />
+            </v-card-text>
           </v-card>
         </v-flex>
       </v-layout>
@@ -182,23 +210,42 @@ import _ from "lodash";
 import Avatar from "../avatar/Avatar";
 import ConfirmationDialog from "../dialog/ConfirmationDialog";
 import ImageUploadDialog from "../resources/ImageUploadDialog";
-
+import ScmScore from "../charts/ScmScore";
 export default {
   components: {
     Avatar,
     ConfirmationDialog,
-    ImageUploadDialog
+    ImageUploadDialog,
+    ScmScore
+
   },
   computed: {
     ...mapGetters({
-      contact: "contacts/contact"
+      contact: "contacts/contact",
+      visits: "reports/reportsForContact",
+      stats: "stats/statsByContact",
     }),
     isFormDirty() {
       return Object.keys(this.fields).some(key => this.fields[key].dirty);
+    },
+    currentScore: function() {
+      return this.stats.length > 0 ? this.stats[0].avgScore : 0;
     }
   },
   created() {
-    return this.read(this.$route.params.id);
+    return this.read(this.$route.params.id).then(() => {
+      if (
+        this.$uisettings.reportsEndpoint &&
+        this.$uisettings.reportsEndpoint != ""
+      ) {
+        this.readVisits(this.$route.params.id);
+      }
+      if (
+        this.$uisettings.enableStats
+      ) {
+        this.statsByContact(this.$route.params.id);
+      }
+    });
   },
   beforeRouteLeave(to, from, next) {
     if (this.isFormDirty) {
@@ -217,7 +264,9 @@ export default {
     ...mapActions({
       read: "contacts/read",
       update: "contacts/update",
-      delete: "contacts/delete"
+      delete: "contacts/delete",
+      readVisits: "reports/listContactVisits",
+      statsByContact: "stats/statsByContact"
     }),
     updateContact() {
       this.update(this.contactFields).then(() => this.$validator.reset());

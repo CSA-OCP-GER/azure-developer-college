@@ -3,7 +3,9 @@ import Router from "vue-router";
 import Home from "./components/home/Home";
 import ContactDetail from "./components/contacts/ContactDetail";
 import ContactsList from "./components/contacts/ContactsList";
+import Stats from "./components/stats/Stats";
 import VisitReportsList from "./components/visitreports/VisitReportsList";
+import VisitReportDetail from "./components/visitreports/VisitReportDetail";
 import Search from "./components/search/Search";
 import goTo from "vuetify/lib/services/goto";
 
@@ -27,6 +29,16 @@ export default new Router({
       path: "/reports",
       name: "reports",
       component: VisitReportsList
+    },
+    {
+      path: "/reports/:id",
+      name: "reportDetail",
+      component: VisitReportDetail
+    },
+    {
+      path: "/stats",
+      name: "stats",
+      component: Stats
     },
     {
       path: "/search",

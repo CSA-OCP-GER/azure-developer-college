@@ -5,6 +5,7 @@ import contactsStore from "./components/contacts/store";
 import notificationsStore from "./components/notifications/store";
 import resourcesStore from "./components/resources/store";
 import searchStore from "./components/search/store";
+import statsStore from "./components/stats/store";
 import reportsStore from "./components/visitreports/store";
 
 Vue.use(Vuex);
@@ -29,7 +30,8 @@ export default new Vuex.Store({
     notifications: notificationsStore,
     search: searchStore,
     resources: resourcesStore,
-    reports: reportsStore
+    reports: reportsStore,
+    stats: statsStore
   },
   state: {
 

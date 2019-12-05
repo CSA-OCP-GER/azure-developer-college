@@ -29,6 +29,14 @@ const readReportsSchema = {
                 visitDate: {
                     type: 'string',
                     format: 'date'
+                },
+                detectedLanguage: { type: 'string' },
+                visitResultSentimentScore: { type: 'number' },
+                visitResultKeyPhrases: {
+                    type: 'array',
+                    items: {
+                        type: 'string'
+                    }
                 }
             }
         }
@@ -49,6 +57,15 @@ const deleteReportsSchema = {
 
 const listReportsSchema = {
     operationId: 'listReports',
+    querystring: {
+        type: 'object',
+        properties: {
+            contactid: {
+                type: 'string',
+                default: ''
+            }
+        }
+    },
     response: {
         200: {
             type: 'array',
@@ -138,10 +155,71 @@ const updateReportsSchema = {
     }
 };
 
+// Stats
+
+const statsByContactSchema = {
+    operationId: 'statsByContact',
+    response: {
+        200: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string' },
+                    countScore: { type: 'number' },
+                    minScore: { type: 'number' },
+                    maxScore: { type: 'number' },
+                    avgScore: { type: 'number' }
+                }
+            }
+        }
+    }
+};
+
+const statsOverallSchema = {
+    operationId: 'statsOverall',
+    response: {
+        200: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    countScore: { type: 'number' },
+                    minScore: { type: 'number' },
+                    maxScore: { type: 'number' },
+                    avgScore: { type: 'number' }
+                }
+            }
+        }
+    }
+};
+
+const statsTimelineSchema = {
+    operationId: 'statsTimeline',
+    response: {
+        200: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    visits: { type: 'number' },
+                    visitDate: {
+                        type: 'string',
+                        format: 'date'
+                    }
+                }
+            }
+        }
+    }
+};
+
 module.exports = {
     listReportsSchema,
     createReportsSchema,
     readReportsSchema,
     deleteReportsSchema,
-    updateReportsSchema
+    updateReportsSchema,
+    statsByContactSchema,
+    statsOverallSchema,
+    statsTimelineSchema
 }
