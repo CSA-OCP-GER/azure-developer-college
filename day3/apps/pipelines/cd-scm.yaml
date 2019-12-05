@@ -24,7 +24,7 @@ stages:
           configuration: $(configuration)
           artifactDropName: drop
           buildNumber: $(Build.BuildNumber)
-          containerRegistryServiceConnection: $(ADC-ContainerRegistry)
+          containerRegistryServiceConnection: $(containerRegistry)
 
   - stage: Development
     displayName: Development
