@@ -26,6 +26,7 @@ steps:
 
   - task: Docker@2
     displayName: Build Docker image
+    condition: eq(${{ parameters.publishDockerImage }}, false)
     inputs:
       repository: adcday3/scmapi
       command: build
@@ -33,10 +34,10 @@ steps:
       buildContext: day3/apps/dotnetcore/Scm
       tags: ${{parameters.buildNumber}}
   - task: Docker@2
-    displayName: Push Docker image
-    condition: ${{parameters.publishDockerImage}}
+    displayName: Build and Puish Docker image
+    condition: ${{ parameters.publishDockerImage }}
     inputs:
       repository: adcday3/scmapi
-      command: push
+      command: buildAndPush
       containerRegistry: ${{ parameters.containerRegistryServiceConnection }}
       tags: ${{ parameters.buildNumber }}
