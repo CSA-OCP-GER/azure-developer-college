@@ -88,10 +88,81 @@ async function deleteReports(id) {
     }
 }
 
+async function statsOverall() {
+    var querySpec = {
+        query: "SELECT \
+            COUNT(1) as countScore, \
+            AVG(c.visitResultSentimentScore) as avgScore, \
+            MAX(c.visitResultSentimentScore) as maxScore, \
+            MIN(c.visitResultSentimentScore) as minScore  \
+          FROM c \
+          WHERE c.type = 'visitreport' and c.result != '' \
+          GROUP BY c.type"
+    }
+
+    try {
+        const { resources } =
+            await client.database(databaseId).container(containerId).items.query(querySpec).fetchAll();
+        return resources;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function statsByContact(contactid) {
+    var querySpec = {
+        query: "SELECT \
+            c.contact.id, \
+            COUNT(1) as countScore, \
+            AVG(c.visitResultSentimentScore) as avgScore, \
+            MAX(c.visitResultSentimentScore) as maxScore, \
+            MIN(c.visitResultSentimentScore) as minScore  \
+          FROM c \
+          WHERE c.type = 'visitreport' and c.result != ''  AND c.contact.id = @contactid \
+          GROUP BY c.contact.id",
+        parameters: [
+            {
+                name: "@contactid",
+                value: contactid
+            }
+        ]
+    }
+
+    try {
+        const { resources } =
+            await client.database(databaseId).container(containerId).items.query(querySpec).fetchAll();
+        return resources;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function statsTimeline() {
+    var querySpec = {
+        query: "SELECT \
+            c.visitDate, \
+            COUNT(1) as visits \
+            FROM c \
+            WHERE c.type = 'visitreport' AND c.result != '' \
+            GROUP BY c.visitDate"
+    }
+
+    try {
+        const { resources } =
+            await client.database(databaseId).container(containerId).items.query(querySpec).fetchAll();
+        return resources;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 module.exports = {
     listReports,
     createReports,
     deleteReports,
     readReports,
-    updateReports
+    updateReports,
+    statsByContact,
+    statsOverall,
+    statsTimeline
 }

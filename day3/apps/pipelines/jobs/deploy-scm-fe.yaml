@@ -60,7 +60,7 @@ jobs:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  echo "var uisettings = { \"endpoint\": \"${{ variables.spaEndpoint }}\", \"resourcesEndpoint\": \"${{ variables.resourcesEndpoint }}\", \"searchEndpoint\": \"${{ variables.searchEndpoint }}\", \"reportsEndpoint\": \"${{ variables.reportsEndpoint }}\", \"aiKey\": \"`az resource show -g ${{ variables.resourceGroupName }} -n ${{ variables.applicationInsightsName }} --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js
+                  echo "var uisettings = { \"enableStats\": true, \"endpoint\": \"${{ variables.spaEndpoint }}\", \"resourcesEndpoint\": \"${{ variables.resourcesEndpoint }}\", \"searchEndpoint\": \"${{ variables.searchEndpoint }}\", \"reportsEndpoint\": \"${{ variables.reportsEndpoint }}\", \"aiKey\": \"`az resource show -g ${{ variables.resourceGroupName }} -n ${{ variables.applicationInsightsName }} --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js
             - task: AzureCLI@2
               displayName: Copy SPA to blob storage
               inputs:

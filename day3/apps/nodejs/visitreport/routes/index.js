@@ -3,7 +3,10 @@ const {
     createReportsSchema,
     readReportsSchema,
     deleteReportsSchema,
-    updateReportsSchema
+    updateReportsSchema,
+    statsByContactSchema,
+    statsOverallSchema,
+    statsTimelineSchema
 } = require('../schemas/reports');
 
 
@@ -12,7 +15,10 @@ const {
     createReportsHandler,
     deleteReportsHandler,
     readReportsHandler,
-    updateReportsHandler
+    updateReportsHandler,
+    statsByContactHandler,
+    statsOverallHandler,
+    statsTimelineHandler
 } = require('../handler/reports');
 
 module.exports = async function (fastify, opts) {
@@ -57,5 +63,28 @@ module.exports = async function (fastify, opts) {
         url: '/reports/:id',
         schema: deleteReportsSchema,
         handler: deleteReportsHandler
+    });
+
+    // Stats
+    
+    fastify.route({
+        method: 'GET',
+        url: '/stats/timeline',
+        schema: statsTimelineSchema,
+        handler: statsTimelineHandler
+    });
+
+    fastify.route({
+        method: 'GET',
+        url: '/stats/:contactid',
+        schema: statsByContactSchema,
+        handler: statsByContactHandler
+    });
+
+    fastify.route({
+        method: 'GET',
+        url: '/stats',
+        schema: statsOverallSchema,
+        handler: statsOverallHandler
     });
 };

@@ -51,6 +51,7 @@
         <span class="hidden-sm-and-down">SCM Contacts</span>
       </v-toolbar-title>
       <v-text-field
+        v-if="$uisettings.searchEndpoint && $uisettings.searchEndpoint != ''"
         flat
         hide-details
         prepend-inner-icon="mdi-magnify"
@@ -72,16 +73,38 @@
 import NotificationSnackbar from "./components/notifications/NotificationSnackbar";
 export default {
   name: "App",
+  created() {
+    if (
+      this.$uisettings.reportsEndpoint &&
+      this.$uisettings.reportsEndpoint != ""
+    ) {
+      this.items.push({
+        icon: "mdi-file-document-outline",
+        text: "Visit Reports",
+        route: "/reports"
+      });
+    }
 
+    if (this.$uisettings.enableStats) {
+      this.items.push({
+        icon: "mdi-finance",
+        text: "Statistics",
+        route: "/stats"
+      });
+    }
+  },
   components: {
     NotificationSnackbar
   },
   methods: {
     search() {
-      if(this.searchphrase != "") {
+      if (this.searchphrase != "") {
         var search = this.searchphrase;
         this.searchphrase = "";
-        this.$router.push({ name: "search", query: { phrase: encodeURIComponent(search) } });
+        this.$router.push({
+          name: "search",
+          query: { phrase: encodeURIComponent(search) }
+        });
       }
     }
   },
@@ -91,8 +114,7 @@ export default {
     drawer: null,
     items: [
       { icon: "mdi-desktop-mac", text: "Home", route: "/" },
-      { icon: "mdi-contacts", text: "Contacts", route: "/contacts" },
-      { icon: "mdi-file-document-outline", text: "Visit Reports", route: "/reports" }
+      { icon: "mdi-contacts", text: "Contacts", route: "/contacts" }
     ]
   })
 };
