@@ -29,6 +29,6 @@ steps:
     inputs:
       repository: adcday3/scmapi
       command: build
-      dockerfile: day3/apps/dotnetcore/scm/Adc.Scm.Api/Dockerfile
-      buildContext: day3/apps/dotnetcore/scm/Adc.Scm.Api/Dockerfile
+      dockerfile: day3/apps/dotnetcore/Scm/Adc.Scm.Api/Dockerfile
+      buildContext: day3/apps/dotnetcore/Scm
       tags: ${{parameters.buildNumber}}
