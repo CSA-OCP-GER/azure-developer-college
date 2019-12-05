@@ -23,6 +23,8 @@ stages:
           - template: ../dotnetcore/build/scm-api.yaml
             parameters:
               buildConfiguration: $(configuration)
+              buildNumber: $(Build.BuildNumber)
+              publishDockerImage: false              
           - template: ../dotnetcore/build/scm-resources-api.yaml
             parameters:
               buildConfiguration: $(configuration)

@@ -12,6 +12,7 @@ trigger:
 variables:
   configuration: release
   azureSubscription: AzureDeveloperCollege
+  containerRegistry: ADC-ContainerRegistry
 
 stages:
   - stage: Build
@@ -22,6 +23,8 @@ stages:
         parameters:
           configuration: $(configuration)
           artifactDropName: drop
+          buildNumber: $(Build.BuildNumber)
+          containerRegistryServiceConnection: $(ADC-ContainerRegistry)
 
   - stage: Development
     displayName: Development
