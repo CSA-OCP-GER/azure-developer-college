@@ -1,8 +1,8 @@
 parameters:
   buildConfiguration: release
-  buildNumber: ''
+  buildNumber: ""
   publishDockerImage: True
-  containerRegistryServiceConnection: ''
+  containerRegistryServiceConnection: ""
 
 steps:
   - task: DotNetCoreCLI@2
@@ -23,12 +23,12 @@ steps:
       projects: day3/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj
       arguments: --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
       zipAfterPublish: True
-  
+
   - task: Docker@2
     displayName: Build Docker image
     inputs:
       repository: adcday3/scmapi
       command: build
-      dockerfile: $(Build.SourceDirectory)/day3/apps/dotnetcore/scm/Adc.Scm.Api/Dockerfile
-      buildContext: $(Build.SourceDirectory)/day3/apps/dotnetcore/scm/Adc.Scm.Api/Dockerfile
+      dockerfile: day3/apps/dotnetcore/scm/Adc.Scm.Api/Dockerfile
+      buildContext: day3/apps/dotnetcore/scm/Adc.Scm.Api/Dockerfile
       tags: ${{parameters.buildNumber}}
