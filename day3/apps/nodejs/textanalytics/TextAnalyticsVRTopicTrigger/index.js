@@ -22,7 +22,7 @@ module.exports = async function (context, mySbMsg) {
     var current_keyphrases = [];
 
     if (mySbMsg != null) {
-        if (mySbMsg.eventType == "VisitReportUpdatedEvent" || mySbMsg.eventType == "VisitReportUpdatedEvent") {
+        if (mySbMsg.eventType == "VisitReportUpdatedEvent" || mySbMsg.eventType == "VisitReportCreatedEvent") {
             context.log('Message is of type "create" or "update".');
             if (mySbMsg.result != null && mySbMsg.result != undefined && mySbMsg.result != '') {
                 current_language = await detectLanguage(mySbMsg, context);
@@ -65,7 +65,8 @@ module.exports = async function (context, mySbMsg) {
 async function getKeyPhrases(mySbMsg, current_language, context) {
     var current_keyphrases = []; // default.
     try {
-        var response_keyphrases = await axios.post(`${TA_SUBSCRIPTIONENDPOINT}${TA_KEYPHRASE_PATH}`, { documents: [{ id: mySbMsg.id, language: current_language, text: mySbMsg.result }] }, {
+        var response_keyphrases = await axios.post(`${TA_SUBSCRIPTIONENDPOINT}${TA_KEYPHRASE_PATH}`,
+            { documents: [{ id: mySbMsg.id, language: current_language, text: mySbMsg.result }] }, {
             headers: HEADERS_TEMPLATE
         });
         var docs_kp = response_keyphrases.data.documents || [];
@@ -81,7 +82,8 @@ async function getKeyPhrases(mySbMsg, current_language, context) {
 async function getSentimentScore(mySbMsg, current_language, context) {
     var current_sentiment_score = 0.0; // default.
     try {
-        var response_sen = await axios.post(`${TA_SUBSCRIPTIONENDPOINT}${TA_SENTIMENT_PATH}`, { documents: [{ id: mySbMsg.id, language: current_language, text: mySbMsg.result }] }, {
+        var response_sen = await axios.post(`${TA_SUBSCRIPTIONENDPOINT}${TA_SENTIMENT_PATH}`,
+            { documents: [{ id: mySbMsg.id, language: current_language, text: mySbMsg.result }] }, {
             headers: HEADERS_TEMPLATE
         });
         var docs_sen = response_sen.data.documents || [];

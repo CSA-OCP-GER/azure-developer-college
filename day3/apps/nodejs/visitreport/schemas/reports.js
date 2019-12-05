@@ -155,10 +155,80 @@ const updateReportsSchema = {
     }
 };
 
+// Stats
+
+const statsByContactSchema = {
+    operationId: 'statsByContact',
+    querystring: {
+        type: 'object',
+        required: ['contactid'],
+        properties: {
+            contactid: {
+                type: 'string'
+            }
+        }
+    },
+    response: {
+        200: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string' },
+                    countScore: { type: 'number' },
+                    minScore: { type: 'number' },
+                    maxScore: { type: 'number' },
+                    avgScore: { type: 'number' }
+                }
+            }
+        }
+    }
+};
+
+const statsOverallSchema = {
+    operationId: 'statsOverall',
+    response: {
+        200: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    countScore: { type: 'number' },
+                    minScore: { type: 'number' },
+                    maxScore: { type: 'number' },
+                    avgScore: { type: 'number' }
+                }
+            }
+        }
+    }
+};
+
+const statsTimelineSchema = {
+    operationId: 'statsTimeline',
+    response: {
+        200: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    visits: { type: 'number' },
+                    visitDate: {
+                        type: 'string',
+                        format: 'date'
+                    }
+                }
+            }
+        }
+    }
+};
+
 module.exports = {
     listReportsSchema,
     createReportsSchema,
     readReportsSchema,
     deleteReportsSchema,
-    updateReportsSchema
+    updateReportsSchema,
+    statsByContactSchema,
+    statsOverallSchema,
+    statsTimelineSchema
 }

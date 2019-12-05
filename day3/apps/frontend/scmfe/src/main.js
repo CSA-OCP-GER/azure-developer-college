@@ -14,6 +14,7 @@ Vue.use(VueAppInsights, {
   id: window.uisettings.aiKey,
   router
 });
+Vue.prototype.$uisettings = window.uisettings;
 
 new Vue({
   vuetify,
