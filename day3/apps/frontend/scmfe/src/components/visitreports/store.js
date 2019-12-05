@@ -5,6 +5,7 @@ const BASE_PATH = "/reports";
 const state = {
     reportsForContact: [],
     report: {},
+    reports: [],
     newReport: ""
 };
 
