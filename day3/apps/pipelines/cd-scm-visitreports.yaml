@@ -39,6 +39,7 @@ stages:
   - stage: Test
     displayName: Test
     dependsOn: Development
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
     jobs:
       - template: jobs/deploy-scm-visitreports.yaml
