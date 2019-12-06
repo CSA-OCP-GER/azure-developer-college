@@ -1,5 +1,7 @@
 parameters:
   artifactDropName: drop
+  buildNumber: ""
+  containerRegistryServiceConnection: ""
 
 jobs:
   - job: Build
@@ -8,6 +10,10 @@ jobs:
       vmImage: ubuntu-latest
     steps:
       - template: ../../frontend/build/scm-fe.yaml
+        parameters:
+          buildNumber: ${{ parameters.buildNumber }}
+          publishDockerImage: true
+          containerRegistryServiceConnection: ${{ parameters.containerRegistryServiceConnection }}
       - task: CopyFiles@2
         inputs:
           SourceFolder: "day3/apps/frontend/scmfe/dist"

@@ -39,5 +39,7 @@ steps:
     inputs:
       repository: adcday3/scmapi
       command: buildAndPush
+      dockerfile: day3/apps/dotnetcore/Scm/Adc.Scm.Api/Dockerfile
+      buildContext: day3/apps/dotnetcore/Scm
       containerRegistry: ${{ parameters.containerRegistryServiceConnection }}
       tags: ${{ parameters.buildNumber }}

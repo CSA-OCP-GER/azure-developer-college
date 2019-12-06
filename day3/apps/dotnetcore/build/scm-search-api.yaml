@@ -47,5 +47,7 @@ steps:
     inputs:
       repository: adcday3/scmsearchapi
       command: buildAndPush
+      dockerfile: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Dockerfile
+      buildContext: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api
       containerRegistry: ${{ parameters.containerRegistryServiceConnection }}
       tags: ${{ parameters.buildNumber }}

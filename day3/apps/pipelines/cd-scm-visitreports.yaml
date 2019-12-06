@@ -12,6 +12,7 @@ trigger:
 
 variables:
   azureSubscription: AzureDeveloperCollege
+  containerRegistry: ADC-ContainerRegistry
 
 stages:
   - stage: Build
@@ -21,6 +22,8 @@ stages:
       - template: jobs/build-scm-visitreports.yaml
         parameters:
           artifactDropName: drop
+          buildNumber: $(Build.BuildNumber)
+          containerRegistryServiceConnection: $(containerRegistry)
 
   - stage: Development
     displayName: Development
