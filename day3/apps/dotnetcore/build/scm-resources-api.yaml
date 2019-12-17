@@ -1,5 +1,8 @@
 parameters:
   buildConfiguration: release
+  buildNumber: ""
+  publishDockerImage: true
+  containerRegistryServiceConnection: ""
 
 steps:
   - task: DotNetCoreCLI@2
@@ -28,3 +31,23 @@ steps:
       projects: day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/Adc.Scm.Resources.ImageResizer.csproj
       arguments: --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
       zipAfterPublish: True
+
+  - task: Docker@2
+    displayName: Build Docker image
+    condition: eq(${{ parameters.publishDockerImage }}, false)
+    inputs:
+      repository: adcday3/scmresourcesapi
+      command: build
+      dockerfile: day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api/Dockerfile
+      buildContext: day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api
+      tags: ${{parameters.buildNumber}}
+  - task: Docker@2
+    displayName: Build and Puish Docker image
+    condition: ${{ parameters.publishDockerImage }}
+    inputs:
+      repository: adcday3/scmresourceapi
+      command: buildAndPush
+      dockerfile: day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api/Dockerfile
+      buildContext: day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api
+      containerRegistry: ${{ parameters.containerRegistryServiceConnection }}
+      tags: ${{ parameters.buildNumber }}

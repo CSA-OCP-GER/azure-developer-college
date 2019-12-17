@@ -1,5 +1,7 @@
 parameters:
   artifactDropName: drop
+  buildNumber: ""
+  containerRegistryServiceConnection: ""
 jobs:
   - job: Build
     displayName: Build Scm Frontend
@@ -7,6 +9,10 @@ jobs:
       vmImage: ubuntu-latest
     steps:
       - template: ../../nodejs/build/scm-visitreports.yaml
+        parameters:
+          buildNumber: ${{ parameters.buildNumber }}
+          publishDockerImage: true
+          containerRegistryServiceConnection: ${{ parameters.containerRegistryServiceConnection }}
       - task: CopyFiles@2
         inputs:
           sourceFolder: day3/apps/infrastructure/templates

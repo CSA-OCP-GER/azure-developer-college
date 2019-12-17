@@ -11,6 +11,7 @@ trigger:
 
 variables:
   azureSubscription: AzureDeveloperCollege
+  containerRegistry: ADC-ContainerRegistry
 
 stages:
   - stage: Build
@@ -20,6 +21,8 @@ stages:
       - template: jobs/build-scm-fe.yaml
         parameters:
           artifactDropName: drop
+          buildNumber: $(Build.BuildNumber)
+          containerRegistryServiceConnection: $(containerRegistry)
 
   - stage: Development
     displayName: Development
@@ -37,6 +40,7 @@ stages:
   - stage: Test
     displayName: Test
     dependsOn: Development
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
     jobs:
       - template: jobs/deploy-scm-fe.yaml
