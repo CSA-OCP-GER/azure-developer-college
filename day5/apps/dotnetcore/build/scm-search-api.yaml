@@ -9,18 +9,18 @@ steps:
     displayName: Restore
     inputs:
       command: restore
-      projects: "day3/apps/dotnetcore/Scm.Search/**/*.csproj"
+      projects: "day5/apps/dotnetcore/Scm.Search/**/*.csproj"
   - task: DotNetCoreCLI@2
     displayName: Build
     inputs:
-      projects: "day3/apps/dotnetcore/Scm.Search/**/*.csproj"
+      projects: "day5/apps/dotnetcore/Scm.Search/**/*.csproj"
       arguments: --configuration ${{ parameters.buildConfiguration }}
   - task: DotNetCoreCLI@2
     displayName: Publish
     inputs:
       command: publish
       publishWebProjects: false
-      projects: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Adc.Scm.Search.Api.csproj
+      projects: day5/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Adc.Scm.Search.Api.csproj
       arguments: --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
       zipAfterPublish: True
   - task: DotNetCoreCLI@2
@@ -28,7 +28,7 @@ steps:
     inputs:
       command: publish
       publishWebProjects: false
-      projects: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Indexer/Adc.Scm.Search.Indexer.csproj
+      projects: day5/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Indexer/Adc.Scm.Search.Indexer.csproj
       arguments: --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
       zipAfterPublish: True
 
@@ -36,18 +36,18 @@ steps:
     displayName: Build Docker image
     condition: eq(${{ parameters.publishDockerImage }}, false)
     inputs:
-      repository: adcday3/scmsearchapi
+      repository: adcday5/scmsearchapi
       command: build
-      dockerfile: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Dockerfile
-      buildContext: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api
+      dockerfile: day5/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Dockerfile
+      buildContext: day5/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api
       tags: ${{parameters.buildNumber}}
   - task: Docker@2
     displayName: Build and Puish Docker image
     condition: ${{ parameters.publishDockerImage }}
     inputs:
-      repository: adcday3/scmsearchapi
+      repository: adcday5/scmsearchapi
       command: buildAndPush
-      dockerfile: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Dockerfile
-      buildContext: day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api
+      dockerfile: day5/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Dockerfile
+      buildContext: day5/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api
       containerRegistry: ${{ parameters.containerRegistryServiceConnection }}
       tags: ${{ parameters.buildNumber }}
