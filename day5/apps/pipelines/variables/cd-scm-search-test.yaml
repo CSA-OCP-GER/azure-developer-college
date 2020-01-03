@@ -29,3 +29,5 @@ variables:
     value: 1
   - name: azureSearchPartitionCount
     value: 1
+  - name: aadInstance
+    value: "https://login.microsoftonline.com"
