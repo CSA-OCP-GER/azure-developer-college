@@ -45,6 +45,21 @@
         },
         "serviceBusNamespaceName": {
             "type": "string"
+        },
+        "aadInstance": {
+            "type": "string"
+        },
+        "aadClientId": {
+            "type": "string"
+        },
+        "aadTenantId": {
+            "type": "string"
+        },
+        "aadDomain": {
+            "type": "string"
+        },
+        "aadClientIdUri": {
+            "type": "string"
         }
     },
     "variables": {
@@ -115,7 +130,12 @@
             ],
             "properties": {
                 "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]",
-                "EventServiceOptions__ServiceBusConnectionString": "[listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]"
+                "EventServiceOptions__ServiceBusConnectionString": "[listKeys(variables('sbScmContactTopicSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]",
+                "AzureAdOptions__Instance": "[parameters('aadInstance')]",
+                "AzureAdOptions__Domain": "[parameters('aadDomain')]",
+                "AzureAdOptions__TenantId": "[parameters('aadTenantId')]",
+                "AzureAdOptions__ClientId": "[parameters('aadClientId')]",
+                "AzureAdOptions__ClientIdUri": "[parameters('aadClientIdUri')]"
             }
         },
         {
