@@ -46,6 +46,21 @@
         },
         "serviceBusNamespaceName": {
             "type": "string"
+        },
+        "aadInstance": {
+            "type": "string"
+        },
+        "aadClientId": {
+            "type": "string"
+        },
+        "aadTenantId": {
+            "type": "string"
+        },
+        "aadDomain": {
+            "type": "string"
+        },
+        "aadClientIdUri": {
+            "type": "string"
         }
     },
     "variables": {
@@ -137,7 +152,12 @@
                 "ServiceBusQueueOptions__ThumbnailQueueConnectionString": "[listKeys(variables('sbThumbnailSendAuthRuleId'), variables('sbVersion')).primaryConnectionString]",
                 "ServiceBusQueueOptions__ImageContainer": "rawimages",
                 "ServiceBusQueueOptions__ThumbnailContainer": "thumbnails",
-                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]",
+                "AzureAdOptions__Instance": "[parameters('aadInstance')]",
+                "AzureAdOptions__Domain": "[parameters('aadDomain')]",
+                "AzureAdOptions__TenantId": "[parameters('aadTenantId')]",
+                "AzureAdOptions__ClientId": "[parameters('aadClientId')]",
+                "AzureAdOptions__ClientIdUri": "[parameters('aadClientIdUri')]"
             }
         },
         {
