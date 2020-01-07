@@ -19,6 +19,16 @@ Create a Cosmos DB:
 
 ## Add Data to Cosmos DB ##
 
+- TODO: Martha Doku
+
 
 ## Create a Partition Key ##
 
+- TODO: Martha Doku
+- Chose unique Partition Key
+- Use DP 200/201 Doku
+
+
+## Use ARM Template for automated deployment ##
+
+- TODO: Martha Doku
