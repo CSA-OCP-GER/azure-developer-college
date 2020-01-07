@@ -4,11 +4,14 @@ parameters:
   environmentName: ""
   azureSubscription: ""
   artifactDropName: drop
+  aadVariableGroupName: ""
+  
 
 jobs:
   - deployment: Deploy
     displayName: ${{ parameters.name }}
     variables:
+      - group: ${{ parameters.aadVariableGroupName }}
       - template: ${{ parameters.variablesFile }}
     pool:
       vmImage: ${{ variables.vmImage }}
@@ -25,7 +28,11 @@ jobs:
                 location: ${{ variables.location }}
                 templateLocation: "Linked artifact"
                 csmFile: $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/scm-resources-api-dotnetcore.json
-                overrideParameters: -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} -alwaysOn ${{ variables.alwaysOn }} -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.resizerFunctionName }} -applicationInsightsName ${{ variables.applicationInsightsName }} -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }}
+                overrideParameters: > 
+                  -sku ${{ variables.appServicePlanSKU }} -webAppName ${{ variables.apiAppName }} -use32bitworker ${{ variables.use32bitworker }} 
+                  -alwaysOn ${{ variables.alwaysOn }} -storageAccountName ${{ variables.storageAccountName }} -functionAppName ${{ variables.resizerFunctionName }} 
+                  -applicationInsightsName ${{ variables.applicationInsightsName }} -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }}
+                  -aadInstance ${{ variables.aadInstance }} -aadClientId $(aadApiClientId) -aadTenantId $(aadTenantId) -aadDomain $(aadDomain) -aadClientIdUri $(aadApiClientIdUri)
             - task: AzureRmWebAppDeployment@4
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
