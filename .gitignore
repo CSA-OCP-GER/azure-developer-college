@@ -332,3 +332,4 @@ day2/apps/frontend/scmfe/dist
 .DS_Store
 day3/apps/nodejs/visitreport/.env
 day3/apps/nodejs/textanalytics/local.settings.json
+day5/apps/nodejs/visitreport/.env

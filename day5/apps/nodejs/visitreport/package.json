@@ -29,6 +29,8 @@
     "fastify-cors": "^3.0.0",
     "fastify-plugin": "^1.6.0",
     "fastify-swagger": "^2.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.6.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "uuid": "^3.3.3"

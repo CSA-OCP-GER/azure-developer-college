@@ -19,9 +19,9 @@ const getters = {
 
 // actions
 const actions = {
-    list({ commit, dispatch }) {
+    list({ commit, dispatch, rootGetters }) {
         dispatch("wait/start", "apicall", { root: true });
-        var client = getHttpClient();
+        var client = getHttpClient(rootGetters["auth/accessToken"]);
         return client.get(BASE_PATH).then(response => {
             commit("setContacts", response.data);
             dispatch("wait/end", "apicall", { root: true });
@@ -38,9 +38,9 @@ const actions = {
             dispatch("wait/end", "apicall", { root: true });
         });
     },
-    listPicker({ commit, dispatch }) {
+    listPicker({ commit, dispatch, rootGetters }) {
         dispatch("wait/start", "apicall", { root: true });
-        var client = getHttpClient();
+        var client = getHttpClient(rootGetters["auth/accessToken"]);
         return client.get(BASE_PATH).then(response => {
             commit("setContactsList", response.data);
             dispatch("wait/end", "apicall", { root: true });
@@ -57,9 +57,9 @@ const actions = {
             dispatch("wait/end", "apicall", { root: true });
         });
     },
-    read({ commit, dispatch }, id) {
+    read({ commit, dispatch, rootGetters }, id) {
         dispatch("wait/start", "apicall", { root: true });
-        var client = getHttpClient();
+        var client = getHttpClient(rootGetters["auth/accessToken"]);
         return client.get(`${BASE_PATH}/${id}`).then(response => {
             commit("setContact", response.data);
             dispatch("wait/end", "apicall", { root: true });
@@ -76,9 +76,9 @@ const actions = {
             dispatch("wait/end", "apicall", { root: true });
         });
     },
-    update({ dispatch }, payload) {
+    update({ dispatch, rootGetters }, payload) {
         dispatch("wait/start", "apicall", { root: true });
-        var client = getHttpClient();
+        var client = getHttpClient(rootGetters["auth/accessToken"]);
         return client.put(`${BASE_PATH}/${payload.id}`, payload).then(() => {
             dispatch("wait/end", "apicall", { root: true });
             dispatch("notifications/addMessage", { type: "success", message: "Contact successfully updated.", read: false }, { root: true });
@@ -96,9 +96,9 @@ const actions = {
             dispatch("wait/end", "apicall", { root: true });
         });
     },
-    create({ commit, dispatch }, payload) {
+    create({ commit, dispatch, rootGetters }, payload) {
         dispatch("wait/start", "apicall", { root: true });
-        var client = getHttpClient();
+        var client = getHttpClient(rootGetters["auth/accessToken"]);
         return client.post(`${BASE_PATH}`, payload).then(response => {
             var newcontact = response.data.id;
             commit("setNewContact", newcontact);
@@ -117,9 +117,9 @@ const actions = {
             dispatch("wait/end", "apicall", { root: true });
         });
     },
-    delete({ dispatch }, id) {
+    delete({ dispatch, rootGetters }, id) {
         dispatch("wait/start", "apicall", { root: true });
-        var client = getHttpClient();
+        var client = getHttpClient(rootGetters["auth/accessToken"]);
         return client.delete(`${BASE_PATH}/${id}`).then(() => {
             dispatch("notifications/addMessage", { type: "success", message: "Contact successfully deleted.", read: false }, { root: true });
             dispatch("wait/end", "apicall", { root: true });
