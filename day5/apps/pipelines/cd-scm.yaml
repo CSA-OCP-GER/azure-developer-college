@@ -36,6 +36,7 @@ stages:
           name: Deploy Scm Api
           variablesFile: ../variables/cd-scm-dev.yaml
           variableGroupName: Day5-VariableGroup
+          aadVariableGroupName: Day5-AAD-Dev
           environmentName: ADC-DAY5-SCM-DEV
           azureSubscription: $(azureSubscription)
           artifactDropName: drop
@@ -51,6 +52,7 @@ stages:
           name: Deploy Scm Api
           variablesFile: ../variables/cd-scm-test.yaml
           variableGroupName: Day5-VariableGroup
+          aadVariableGroupName: Day5-AAD-Test
           environmentName: ADC-DAY5-SCM-TEST
           azureSubscription: $(azureSubscription)
           artifactDropName: drop

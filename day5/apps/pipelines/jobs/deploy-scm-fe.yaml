@@ -4,6 +4,7 @@ parameters:
   environmentName: ''
   azureSubscription: ''
   artifactDropName: drop
+  aadVariableGroupName: ""
 
 jobs:
   - deployment: Deploy
@@ -12,6 +13,7 @@ jobs:
       - template: ${{ parameters.variablesFile }}
       - name: appinsightsKey
         value: ""
+      - group: ${{ parameters.aadVariableGroupName }}
     pool:
       vmImage: ${{ variables.vmImage }}
     environment: ${{ parameters.environmentName }}
@@ -60,7 +62,7 @@ jobs:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  echo "var uisettings = { \"enableStats\": true, \"endpoint\": \"${{ variables.spaEndpoint }}\", \"resourcesEndpoint\": \"${{ variables.resourcesEndpoint }}\", \"searchEndpoint\": \"${{ variables.searchEndpoint }}\", \"reportsEndpoint\": \"${{ variables.reportsEndpoint }}\", \"aiKey\": \"`az resource show -g ${{ variables.resourceGroupName }} -n ${{ variables.applicationInsightsName }} --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js
+                  echo "var uisettings = { \"tenantId\": \"$(aadTenantId)\", \"audience\": \"$(aadApiClientIdUri)\", \"clientId\": \"$(aadFrontendClientId)\", \"enableStats\": true, \"endpoint\": \"${{ variables.spaEndpoint }}\", \"resourcesEndpoint\": \"${{ variables.resourcesEndpoint }}\", \"searchEndpoint\": \"${{ variables.searchEndpoint }}\", \"reportsEndpoint\": \"${{ variables.reportsEndpoint }}\", \"aiKey\": \"`az resource show -g ${{ variables.resourceGroupName }} -n ${{ variables.applicationInsightsName }} --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`\" };" > $(Pipeline.Workspace)/${{ parameters.artifactDropName }}/dist/settings/settings.js
             - task: AzureCLI@2
               displayName: Copy SPA to blob storage
               inputs:

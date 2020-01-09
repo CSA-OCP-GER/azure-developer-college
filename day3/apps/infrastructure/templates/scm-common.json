@@ -193,7 +193,7 @@
                             ],
                             "properties": {
                                 "lockDuration": "PT5M",
-                                "requiresSession": true,
+                                "requiresSession": false,
                                 "defaultMessageTimeToLive": "P2D",
                                 "deadLetteringOnMessageExpiration": true,
                                 "maxDeliveryCount": 10,

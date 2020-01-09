@@ -4,5 +4,8 @@ var uisettings = {
     "searchEndpoint": "https://adcday5scmrsearchapi-dev.azurewebsites.net/",
     "reportsEndpoint": "https://adcday5scmvr-dev.azurewebsites.net",
     "enableStats": false,
-    "aiKey": ""
+    "aiKey": "",
+    "clientId": "",
+    "tenantId": "",
+    "audience": "http://scmapi-dev"
 }

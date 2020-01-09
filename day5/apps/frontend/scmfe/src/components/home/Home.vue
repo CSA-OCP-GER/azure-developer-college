@@ -10,7 +10,9 @@
     <v-container grid-list-md>
       <v-layout row text-center align-center wrap>
         <v-flex xs12 my-4>
-          <h1 class="display-2 font-weight-bold mb-3">Welcome to SCM Contacts App</h1>
+          <h1
+            class="display-2 font-weight-bold mb-3"
+          >Welcome, {{msal.user.name}}, to SCM Contacts App</h1>
         </v-flex>
         <v-flex xs12 my-4>
           <v-icon :size="120">mdi-contacts</v-icon>
@@ -38,7 +40,9 @@
 </template>
 
 <script>
+import { msalMixin } from "vue-msal";
 export default {
+  mixins: [msalMixin],
   data() {
     return {
       items: [
