@@ -19,21 +19,7 @@ In short:
 
 ## Create an Azure AD application
 
-Before we can authenticate an user we have to register an application in our AAD tenant. We can either use the PowerShell Module Az or the Azure CLI.
-
-### PowerShell
-
-```powershell
-New-AzADApplication -DisplayName ChallengeIdToken -IdentifierUris https://challengeidtoken -ReplyUrls http://localhost:5001/api/tokenecho
-```
-
-**Note:** The `IdentifierUris` needs to be unique within an instance of AAD.
-
-Now, retrieve the ID of your current AAD tenant via:
-
-```powershell
-Get-AzContext
-```
+Before we can authenticate an user we have to register an application in our Azure AD tenant.
 
 ### Azure CLI
 
@@ -85,12 +71,6 @@ Copy the `id_token` value from your browser output, go to [https://jwt.ms](https
 If you need further information about the issued claims take a look [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens#header-claims).
 
 ## Cleanup resources
-
-### PowerShell
-
-```powershell
-Remove-AzAdApplication -ApplicationId <applicationid> -Force
-```
 
 ### Azure CLI
 
