@@ -48,7 +48,9 @@ fastify.register(require('fastify-swagger'), {
     exposeRoute: true
 });
 fastify.addHook('onRequest', (request, reply, done) => {
-    if (request.headers.authorization) {
+    if (request.headers.authorization != null &&
+        request.headers.authorization != undefined &&
+        request.headers.authorization != "") {
         var token = request.headers.authorization.split(' ')[1];
         var x = jwt.verify(token, getKey, {
             complete: true,
@@ -68,7 +70,11 @@ fastify.addHook('onRequest', (request, reply, done) => {
             done();
         });
     } else {
-        reply.code(403).send(err.message);
+        if (request.req.url == '/') { // Startup probe!
+            reply.code(200).send();
+            return done();
+        }
+        reply.code(403).send();
         return done();
     }
 });
