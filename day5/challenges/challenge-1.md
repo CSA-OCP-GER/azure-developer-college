@@ -52,12 +52,6 @@ If you need further information about the issued claims take a look [here](https
 
 ## Cleanup resources
 
-### PowerShell
-
-```powershell
-Remove-AzAdApplication -ApplicationId <applicationid> -Force
-```
-
 ### Azure CLI
 
 ```shell

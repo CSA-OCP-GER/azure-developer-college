@@ -116,6 +116,7 @@ More details on how the OAuth2 Implicit Grant Flow request can be used is docume
 
 ```shell
 az ad app delete --id <applicationid>
+az ad app delete --id $API_APP_ID
 ```
 
 ## Summary
