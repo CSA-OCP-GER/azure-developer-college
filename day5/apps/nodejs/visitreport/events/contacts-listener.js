@@ -18,10 +18,7 @@ function internalInit() {
             logger.info('Create new subscription client.');
             const client = mb.serviceBus.createSubscriptionClient('scmtopic', 'scmcontactvisitreport');
             logger.info('Create new receiver.');
-            const receiver = client.createReceiver(ReceiveMode.peekLock, {
-                maxSessionAutoRenewLockDurationInSeconds: 300,
-                sessionId: '00000000-0000-0000-0000-000000000000'
-            });
+            const receiver = client.createReceiver(ReceiveMode.peekLock);
             logger.info('Listening for new messages...');
             receiver.registerMessageHandler((message) => {
                 consume(message);
