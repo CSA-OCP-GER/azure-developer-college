@@ -24,6 +24,21 @@ if (process.env.APPINSIGHTS_KEY) {
     appInsights.start();
     appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = process.env.APPINSIGHTS_ROLENAME || "visitreport";
 }
+
+const jwksClient = require('jwks-rsa');
+const client = jwksClient({
+    jwksUri: `https://login.microsoftonline.com/${process.env.TENANT_ID}/discovery/v2.0/keys`
+});
+
+function getKey(header, callback) {
+    client.getSigningKey(header.kid, function (err, key) {
+        var signingKey = key.publicKey || key.rsaPublicKey;
+        callback(null, signingKey);
+    });
+}
+
+const jwt = require('jsonwebtoken');
+
 fastify.register(require('fastify-cors'), {
     exposedHeaders: ['Location'],
     maxAge: 600
@@ -32,11 +47,25 @@ fastify.register(require('fastify-swagger'), {
     routePrefix: '/docs',
     exposeRoute: true
 });
-fastify.addHook('onRequest', async (request, reply) => {
-    if (process.env.APPINSIGHTS_KEY != '') {
-        appInsights.defaultClient.trackNodeHttpRequest({ request: request.req, response: reply.res });
-    }
-    return;
+fastify.addHook('onRequest', (request, reply, done) => {
+    var token = request.headers.authorization.split(' ')[1];
+    var x = jwt.verify(token, getKey, {
+        complete: true,
+        issuer: `https://sts.windows.net/${process.env.TENANT_ID}/`,
+        audience: process.env.AUDIENCE
+    }, function (err, decoded) {
+        if (err) {
+            reply.code(403).send(err.message);
+            return done();
+        }
+        request.scm = {};
+        request.scm.scopes = decoded.payload.scp;
+        request.scm.sub = decoded.payload.sub;
+        if (process.env.APPINSIGHTS_KEY != '') {
+            appInsights.defaultClient.trackNodeHttpRequest({ request: request.req, response: reply.res });
+        }
+        done();
+    });
 });
 
 fastify.register(require('./routes'));

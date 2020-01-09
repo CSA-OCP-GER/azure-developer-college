@@ -13,10 +13,10 @@ const getters = {
 
 // actions
 const actions = {
-    searchContacts({ commit, dispatch }, options) {
+    searchContacts({ commit, dispatch, rootGetters }, options) {
         var { phrase } = options;
         dispatch("wait/start", "apicall", { root: true });
-        var client = getSearchHttpClient();
+        var client = getSearchHttpClient(rootGetters["auth/accessToken"]);
         return client.get(`${BASE_PATH}contacts?phrase=${phrase}`).then(response => {
             commit("setSearchContactsResults", response.data);
             dispatch("wait/end", "apicall", { root: true });
