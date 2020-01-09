@@ -48,24 +48,29 @@ fastify.register(require('fastify-swagger'), {
     exposeRoute: true
 });
 fastify.addHook('onRequest', (request, reply, done) => {
-    var token = request.headers.authorization.split(' ')[1];
-    var x = jwt.verify(token, getKey, {
-        complete: true,
-        issuer: `https://sts.windows.net/${process.env.TENANT_ID}/`,
-        audience: process.env.AUDIENCE
-    }, function (err, decoded) {
-        if (err) {
-            reply.code(403).send(err.message);
-            return done();
-        }
-        request.scm = {};
-        request.scm.scopes = decoded.payload.scp;
-        request.scm.sub = decoded.payload.sub;
-        if (process.env.APPINSIGHTS_KEY != '') {
-            appInsights.defaultClient.trackNodeHttpRequest({ request: request.req, response: reply.res });
-        }
-        done();
-    });
+    if (request.headers.authorization) {
+        var token = request.headers.authorization.split(' ')[1];
+        var x = jwt.verify(token, getKey, {
+            complete: true,
+            issuer: `https://sts.windows.net/${process.env.TENANT_ID}/`,
+            audience: process.env.AUDIENCE
+        }, function (err, decoded) {
+            if (err) {
+                reply.code(403).send(err.message);
+                return done();
+            }
+            request.scm = {};
+            request.scm.scopes = decoded.payload.scp;
+            request.scm.sub = decoded.payload.sub;
+            if (process.env.APPINSIGHTS_KEY != '') {
+                appInsights.defaultClient.trackNodeHttpRequest({ request: request.req, response: reply.res });
+            }
+            done();
+        });
+    } else {
+        reply.code(403).send(err.message);
+        return done();
+    }
 });
 
 fastify.register(require('./routes'));
