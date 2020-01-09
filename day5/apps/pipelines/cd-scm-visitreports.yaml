@@ -35,6 +35,7 @@ stages:
           name: Deploy Scm Visitreports
           variablesFile: ../variables/cd-scm-visitreports-dev.yaml
           variableGroupName: Day5-VariableGroup
+          aadVariableGroupName: Day5-AAD-Dev
           environmentName: ADC-DAY5-SCM-DEV
           azureSubscription: $(azureSubscription)
           artifactDropName: drop
@@ -50,6 +51,7 @@ stages:
           name: Deploy Scm Visitreports
           variablesFile: ../variables/cd-scm-visitreports-test.yaml
           variableGroupName: Day5-VariableGroup
+          aadVariableGroupName: Day5-AAD-Test
           environmentName: ADC-DAY5-SCM-TEST
           azureSubscription: $(azureSubscription)
           artifactDropName: drop

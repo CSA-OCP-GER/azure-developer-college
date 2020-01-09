@@ -5,12 +5,14 @@ parameters:
   azureSubscription: ""
   artifactDropName: drop
   variableGroupName: ""
+  aadVariableGroupName: ""
 
 jobs:
   - deployment: Deploy
     displayName: ${{ parameters.name }}
     variables:
       - group: ${{ parameters.variableGroupName }}
+      - group: ${{ parameters.aadVariableGroupName }}
       - template: ${{ parameters.variablesFile }}
     pool:
       vmImage: ${{ variables.vmImage }}
@@ -43,6 +45,7 @@ jobs:
                   -sku ${{ variables.appServicePlanSKU }} -skuCode ${{ variables.appServicePlanSKUCode }} -webAppName ${{ variables.apiAppName }} 
                   -applicationInsightsName ${{ variables.applicationInsightsName }} -cosmosDbAccount ${{variables.cosmosDbAccount}}
                   -serviceBusNamespaceName ${{ variables.serviceBusNamespaceName }} -commonResGroup ${{ variables.resourceGroupName }}
+                  -aadTenantId $(aadTenantId) -aadClientIdUri $(aadApiClientIdUri)
             - task: AzureWebApp@1
               displayName: 'Deploy Nodejs App'
               inputs:
