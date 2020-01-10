@@ -11,9 +11,9 @@
 
 You can solve these tasks in a programming language of your choice (some even in `curl` :hammer:). For sake of convenience,we are providing hints in `Python`, which you can easily (and for free) run in [Azure Notebooks](https://notebooks.azure.com). SDK Support for `C#` or `.NET Core` is available for most challenges. Especially Azure Search features an easy-to-use `.NET SDK`. You can find code examples in the Azure documentation for the associated services.
 
-|Service|Information|
+|Azure Cognitive Services|Information|
 |---|---|
-|Azure Cognitive Services - [Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)|https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/|
+|[Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)|https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/quickstarts/python|
 
 
 :triangular_flag_on_post: **Goal:** Leverage Text Analytics API for extracting language, sentiment, key phrases, and entities from text
@@ -288,10 +288,10 @@ Stop the container
 
 ## Create and use Computer Vision Service and Custom Vision ##
 
-|Service|Information|
+|Azure Cognitive Services|Information|
 |---|---|
-|Azure Cognitive Services - [Computer Vision API](https://azure.microsoft.com/en-us/services/cognitive-services/computer-vision)|https://azure.microsoft.com/en-us/services/cognitive-services/computer-vision
-|[Custom Vision Service](https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/)|https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/
+|[Computer Vision API](https://azure.microsoft.com/en-us/services/cognitive-services/computer-vision)|https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/home
+|[Custom Vision Service](https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/)|https://docs.microsoft.com/en-us/azure/cognitive-services/custom-vision-service/home
 
 
 :triangular_flag_on_post: **Goal:** Leverage OCR to make a hand-written or printed text document in images machine-readable
@@ -319,9 +319,7 @@ Create a new `Python 3.6 Notebook` in [Azure Notebooks](https://notebooks.azure.
 
 ## Optical Character Recognition - Images to Text - Handwritten content
 
-First, create a `Computer Vision` API Key in the Azure Portal:
-
-![alt text](../images/vision_service.png "Computer Vision Service")
+First, create a `Computer Vision` API Key in the Azure Portal
 
 As we're dealing with images, we need a few Python packages to help with this:
 
@@ -454,15 +452,9 @@ First, log in to [Custom Vision](https://www.customvision.ai/) with your Azure c
 
 Create a new project of type `Object detection` and make sure to use the `Limited Trial` (object detection is currently only supported as a free trial, since it is not GA yet).
 
-![alt text](../images/customvision_project.png "Custom Vision Project")
-
 Next, add all the training images from the [dataset](). Once added, we need to tag all the beer glasses in the images. If there are multiple glasses in one image, tag each one individually:
 
-![alt text](../images/customvision_tagging.png "Tagging the training images")
-
 Once we've tagged all 15 images (that's the minimum), we can hit the `Train` button. After 1-2 minutes, we'll see the training statistics:
-
-![alt text](../images/customvision_performance.png "Object Detection performance")
 
 Let's briefly look at the results and make sure we understand them:
 
