@@ -96,6 +96,10 @@ AD authentication:
   
 4. Monitor the DB
   - activate Azrue SQL DB Monitoring
+  ```New-AzOperationalInsightsWorkspace -Location westeurope -Name [Name of your Workspace] -Sku Standard -ResourceGroupName [Name of your RG]```
+  ```Set-AzDiagnosticSetting -ResourceID [your resource Id] -StorageAccountId [your storage account Id] -Enabled $true```
+  ```Set-AzDiagnisticSettubgs -ResourceID [your resource Id] -WorkspaceId [your Workspace Id]```
+  
   - Advanced Data Security
 
 
