@@ -165,6 +165,7 @@ For sake of time today we won't be able to go into more detail here, but feel fr
 
 
 
+https://azjobsdemo.azurewebsites.net/
 
 
-
+https://docs.microsoft.com/en-us/samples/azure-samples/search-dotnet-asp-net-mvc-jobs/search-dotnet-asp-net-mvc-jobs/

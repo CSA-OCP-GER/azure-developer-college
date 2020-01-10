@@ -11,6 +11,7 @@
 
 Create a Cosmos DB:
 
+```
 - Create a resource group
   - westeurope
 - Add Cosmos DB
@@ -21,11 +22,13 @@ Create a Cosmos DB:
 - Multi-region Writes: Enable
 - Availability Zones: Disable 
 - Hit "Create"
+```
 
 ## Add Data to Cosmos DB ##
 
 - Select Data Explorer from the left navigation on your Azure Cosmos DB account page, and then select New Container.
 - In the Add container pane, enter the settings for the new container.
+```
   - Database ID: name
   - Throughput: 400
   - Container ID: Items
@@ -40,7 +43,7 @@ Create a Cosmos DB:
     "description": "Pick up apples and strawberries.",
     "isComplete": false
     }
-
+```
 - Hit "Save"
 
 - Select New Document again, and create and save another document with a unique id, and any other properties and values you   want. Your documents can have any structure, because Azure Cosmos DB doesn't impose any schema on your data.
@@ -51,23 +54,30 @@ Create a Cosmos DB:
 
 ## Create a Partition Key ##
 
-- A single logical partition has an upper limit of 10 GB of storage.
-- Azure Cosmos containers have a minimum throughput of 400 request units per second (RU/s). When throughput is provisioned on a   database, minimum RUs per container is 100 request units per second (RU/s). Requests to the same partition key can't exceed     the throughput that's allocated to a partition. If requests exceed the allocated throughput, requests are rate-limited. So,     it's important to pick a partition key that doesn't result in "hot spots" within your application.
-- Choose a partition key that has a wide range of values and access patterns that are evenly spread across logical partitions.    This helps spread the data and the activity in your container across the set of logical partitions, so that resources for       data storage and throughput can be distributed across the logical partitions.
-- Choose a partition key that spreads the workload evenly across all partitions and evenly over time. Your choice of partition    key should balance the need for efficient partition queries and transactions against the goal of distributing items across      multiple partitions to achieve scalability.
-- Candidates for partition keys might include properties that appear frequently as a filter in your queries. Queries can be       efficiently routed by including the partition key in the filter predicate.
-- Create unique Partition Key
-- You can form a partition key by concatenating multiple property values into a single artificial partitionKey property. These    keys are referred to as synthetic keys. For example, consider the following example document:
-    - {
-    "deviceId": "abc-123",
-    "date": 2018
-    }
-- For the previous document, one option is to set /deviceId or /date as the partition key. Use this option, if you want to        partition your container based on either device ID or date. Another option is to concatenate these two values into a            synthetic partitionKey property that's used as the partition key.
-    - {
-    "deviceId": "abc-123",
-    "date": 2018,
-    "partitionKey": "abc-123-2018"
-    }
+Why do we need partitioning?
+    - Azure Cosmos containers have a minimum throughput of 400 request units per second (RU/s). When throughput is provisioned   on a database, minimum RUs per container is 100 request units per second (RU/s). Requests to the same partition key        can't  exceed the throughput that's allocated to a partition. If requests exceed the allocated throughput, requests are    rate-limited. So, it's important to pick a partition key that doesn't result in "hot spots" within your application.
+
+How to choose a partiton key?
+    - Choose a partition key that has a wide range of values and access patterns that are evenly spread across logical           partitions. 
+    - Choose a partition key that spreads the workload evenly across all partitions and evenly over time. 
+    - Candidates for partition keys might include properties that appear frequently as a filter in your queries. Queries can     be efficiently routed by including the partition key in the filter predicate.
+    - Create unique Partition Key
+    - You can form a partition key by concatenating multiple property values into a single artificial partitionKey property.     These keys are referred to as synthetic keys. 
+    - For example, consider the following example document:
+    ```
+        - {
+        "deviceId": "abc-123",
+        "date": 2018
+        }
+    ```
+    - For the previous document, one option is to set /deviceId or /date as the partition key. Use this option, if you want to   partition your container based on either device ID or date. Another option is to concatenate these two values into a       synthetic partitionKey property that's used as the partition key.
+    ```
+        - {
+        "deviceId": "abc-123",
+        "date": 2018,
+        "partitionKey": "abc-123-2018"
+        }
+    ```
 
 
 ## Use ARM Template for automated deployment ##
@@ -79,18 +89,16 @@ Create a Cosmos DB:
 - To create the Azure Cosmos DB resources, copy the following example template and deploy it as described, 
   either via PowerShell or Azure CLI.
 
-- [ARM Template Cosmos DB](/cosmos.json)
-
 - To use Azure CLI to deploy the Azure Resource Manager template:
-    - Copy the script.
+    - Copy the script [ARM Template Cosmos DB](/cosmos.json)
     - Select Try it to open Azure Cloud Shell.
     - Right-click in the Azure Cloud Shell window, and then select Paste.
-
+```
          -  read -p 'Enter the Resource Group name: ' resourceGroupName
-            read -p 'Enter the location (i.e. westus2): ' location
+            read -p 'Enter the location (i.e. westeurope): ' location
             read -p 'Enter the account name: ' accountName
             read -p 'Enter the primary region (i.e. westus2): ' primaryRegion
-            read -p 'Enter the secondary region (i.e. eastus2): ' secondaryRegion
+            read -p 'Enter the secondary region (i.e. easteurope): ' secondaryRegion
             read -p 'Enter the database name: ' databaseName
             read -p 'Enter the shared database throughput: sharedThroughput
             read -p 'Enter the first shared container name: ' sharedContainer1Name
@@ -113,7 +121,7 @@ Create a Cosmos DB:
 
             az cosmosdb show --resource-group $resourceGroupName --name accountName --output tsv
 
-
+```
 ## Integrate Cosmos DB into Node.JS App ##
 
 - Open a command prompt, create a new folder named git-samples, then close the command prompt.
@@ -133,6 +141,7 @@ Create a Cosmos DB:
     - const { item } = await client.database(databaseId).container(containerId).items.create(itemBody);
 
 - A SQL query over JSON is performed on the family database. The query returns all the children of the "Anderson" family.
+```
     - const querySpec = {
   	query: 'SELECT VALUE r.children FROM root r WHERE r.lastName = @lastName',
   	parameters: [
@@ -151,716 +160,97 @@ Create a Cosmos DB:
   	let resultString = JSON.stringify(queryResult)
   	console.log(`\tQuery returned ${resultString}\n`)
     }
+```
 
 ## Update your connection string ##
 
 - Update your connection string
-- In the Azure portal, in your Azure Cosmos account, in the left navigation click Keys, and then click Read-write Keys. You'll use the copy buttons on the right side of the screen to copy the URI and Primary Key into the config.js file in the next step.
-- In Open the config.js file.
+- In the Azure portal, in your Azure Cosmos account, in the left navigation click Keys, and then click Read-write Keys. You'll   use the copy buttons on the right side of the screen to copy the URI and Primary Key into the config.js file in the next       step.
+- Open the config.js file.
 - Copy your URI value from the portal (using the copy button) and make it the value of the endpoint key in config.js.
   config.endpoint = "https://FILLME.documents.azure.com"
-- Then copy your PRIMARY KEY value from the portal and make it the value of the config.key in config.js. You've now updated     your app with all the info it needs to communicate with Azure Cosmos DB.
-config.key = "FILLME"
-
-
-## Cross Partition Read ##
-
-
-## Use Cosmos DB in Data Explorer ##
-
-
-
-## Creating a Partitioned Container with .NET SDK ##
-
-In this lab, you will create multiple Azure Cosmos DB containers using different partition keys and settings. In later labs, you will then use the SQL API and .NET SDK to query specific containers using a single partition key or across multiple partition keys.
-
-> If you have not already completed setup for the lab content see the instructions for [Account Setup](00-account_setup.md) before starting this lab.
-
-## Create Containers using the .NET SDK
-
-> You will start by using the .NET SDK to create containers to use in the lab.
-
-### Create a .NET Core Project
-
-1. On your local machine, locate the CosmosLabs folder in your Documents folder and open the Lab01 folder that will be used to contain the content of your .NET Core project. If you are completing this lab through Microsoft Hands-on Labs, the CosmosLabs folder will be located at the path: **C:\labs\CosmosLabs**
-
-1. In the Lab01 folder, right-click the folder and select the **Open with Code** menu option.
-
-    ![Open with Visual Studio Code](../media/02-open_with_code.jpg)
-
-    > Alternatively, you can run a terminal in your current directory and execute the ``code .`` command.
-
-1. In the Visual Studio Code window that appears, right-click the **Explorer** pane and select the **Open in Terminal** menu option.
-
-    ![Open in Terminal](../media/open_in_terminal.jpg)
-
-1. In the open terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet new console --output .
-    ```
-
-    > This command will create a new .NET Core 2.2 project. The project will be a **console** project and the project will be created in the current directly since you used the ``--output .`` option.
-
-1. Visual Studio Code will most likely prompt you to install various extensions related to **.NET Core** or **Azure Cosmos DB** development. None of these extensions are required to complete the labs.
-
-1. In the terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet add package Microsoft.Azure.Cosmos --version 3.0.0
-    ```
-
-    > This command will add the [Microsoft.Azure.Cosmos](https://www.nuget.org/packages/Microsoft.Azure.Cosmos/) NuGet package as a project dependency. The lab instructions have been tested using the ``3.0.0`` version of this NuGet package.
-
-1. In the terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet add package Bogus --version 22.0.8
-    ```
-
-    > This command will add the [Bogus](../media/https://www.nuget.org/packages/Bogus/) NuGet package as a project dependency. This library will allow us to quickly generate test data using a fluent syntax and minimal code. We will use this library to generate test documents to upload to our Azure Cosmos DB instance. The lab instructions have been tested using the ``22.0.8`` version of this NuGet package.
-
-1. In the terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet restore
-    ```
-
-    > This command will restore all packages specified as dependencies in the project.
-
-1. In the terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet build
-    ```
-
-    > This command will build the project.
-
-1. Click the **🗙** symbol to close the terminal pane.
-
-1. Observe the **Program.cs** and **[folder name].csproj** files created by the .NET Core CLI.
-
-    ![Project files](../media/02-project_files.jpg)
-
-1. Double-click the **[folder name].csproj** link in the **Explorer** pane to open the file in the editor.
-
-1. We will now add a new **PropertyGroup** XML element to the project configuration within the **Project** element. To add a new **PropertyGroup**, insert the following lines of code under the line that reads ``<Project Sdk="Microsoft.NET.Sdk">``:
-
-    ```xml
-    <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
-    ```
-
-1. Your new XML should look like this:
-
-    ```xml
-    <Project Sdk="Microsoft.NET.Sdk">        
-        <PropertyGroup>
-            <LangVersion>latest</LangVersion>
-        </PropertyGroup>        
-        <PropertyGroup>
-            <OutputType>Exe</OutputType>
-            <TargetFramework>netcoreapp2.2</TargetFramework>
-        </PropertyGroup>        
-        <ItemGroup>
-            <PackageReference Include="Bogus" Version="22.0.8" />
-            <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.0.0" />
-        </ItemGroup>        
-    </Project>
-    ```
-
-1. Double-click the **Program.cs** link in the **Explorer** pane to open the file in the editor.
-
-    ![Open editor](../media/02-program_editor.jpg)
-
-### Create CosmosClient Instance
-
-*The CosmosClient class is the main "entry point" to using the SQL API in Azure Cosmos DB. We are going to create an instance of the **CosmosClient** class by passing in connection metadata as parameters of the class' constructor. We will then use this class instance throughout the lab.*
-
-1. Within the **Program.cs** editor tab, Add the following using blocks to the top of the editor:
-
-    ```csharp
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.Azure.Cosmos;
-    ```
-
-1. Locate the **Program** class and replace it with the following class:
-
-    ```csharp
-    public class Program
-    {
-        public static async Task Main(string[] args)
-        {         
-        }
-    }
-    ```
-
-1. Within the **Program** class, add the following lines of code to create variables for your connection information:
-
-    ```csharp
-    private static readonly string _endpointUri = "";
-    private static readonly string _primaryKey = "";
-    ```
-
-1. For the ``_endpointUri`` variable, replace the placeholder value with the **URI** value and for the ``_primaryKey`` variable, replace the placeholder value with the **PRIMARY KEY** value from your Azure Cosmos DB account. Use [these instructions](00-account_setup.md) to get these values if you do not already have them:
-
-    > For example, if your **uri** is ``https://cosmosacct.documents.azure.com:443/``, your new variable assignment will look like this: ``private static readonly string _endpointUri = "https://cosmosacct.documents.azure.com:443/";``.
-
-    > For example, if your **primary key** is ``elzirrKCnXlacvh1CRAnQdYVbVLspmYHQyYrhx0PltHi8wn5lHVHFnd1Xm3ad5cn4TUcH4U0MSeHsVykkFPHpQ==``, your new variable assignment will look like this: ``private static readonly string _primaryKey = "elzirrKCnXlacvh1CRAnQdYVbVLspmYHQyYrhx0PltHi8wn5lHVHFnd1Xm3ad5cn4TUcH4U0MSeHsVykkFPHpQ==";``.
-
-    > Keep the **URI** and **PRIMARY KEY** values recorded, you will use them again later in this lab.
-
-1. Locate the **Main** method:
-
-    ```csharp
-    public static async Task Main(string[] args)
-    { 
-    }
-    ```
-
-1. Within the **Main** method, add the following lines of code to author a using block that creates and disposes a **CosmosClient** instance:
-
-    ```csharp
-    using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-    {        
-    }
-    ```
-
-1. Your ``Program`` class definition should now look like this:
-
-    ```csharp
-    public class Program
-    { 
-        private static readonly string _endpointUri = "<your uri>";
-        private static readonly string _primaryKey = "<your key>";
-        public static async Task Main(string[] args)
-        {    
-            using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-            {
-            }     
-        }
-    }
-    ```
-
-    > We will now execute a build of the application to make sure our code compiles successfully.
-
-1. Save all of your open editor tabs.
-
-1. In the Visual Studio Code window, right-click the **Explorer** pane and select the **Open in Terminal** menu option.
-
-1. In the open terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet build
-    ```
-
-    > This command will build the console project.
-
-1. Click the **🗙** symbol to close the terminal pane.
-
-1. Close all open editor tabs.
-
-### Create Database using the SDK
-
-1. Locate the using block within the **Main** method:
-
-    ```csharp
-    using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-    {                        
-    }
-    ```
-
-1. Add the following code to the method to create a new ``Database`` instance if one does not already exist:
-
-    ```csharp
-    DatabaseResponse databaseResponse = await client.CreateDatabaseIfNotExistsAsync("EntertainmentDatabase");
-    Database targetDatabase = databaseResponse.Database;
-    ```
-
-    > This code will check to see if a database exists in your Azure Cosmos DB account that meets the specified parameters. If a database that matches does not exist, it will create a new database.
-
-1. Add the following code to print out the ID of the database:
-
-    ```csharp
-    await Console.Out.WriteLineAsync($"Database Id:\t{targetDatabase.Id}");
-    ```
-
-    > The ``targetDatabase`` variable will have metadata about the database whether a new database is created or an existing one is read.
-
-1. Save all of your open editor tabs.
-
-1. In the Visual Studio Code window, right-click the **Explorer** pane and select the **Open in Terminal** menu option.
-
-1. In the open terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet run
-    ```
-
-    > This command will build and execute the console project.
-
-1. Observe the output of the running command.
-
-    > In the console window, you will see the ID string for the database resource in your Azure Cosmos DB account.
-
-1. In the open terminal pane, enter and execute the following command again:
-
-    ```sh
-    dotnet run
-    ```
-
-    > This command will build and execute the console project.
-
-1. Again, observe the output of the running command.
-
-    > Since the database already exists, the SDK detected that the database already exists and used the existing database instance instead of creating a new instance of the database.
-
-1. Click the **🗙** symbol to close the terminal pane.
-
-
-### Create a Partitioned Container using the SDK
-
-*To create a container, you must specify a name and a partition key path. You will specify those values when creating a container in this task. A partition key is a logical hint for distributing data onto a scaled out underlying set of physical partitions and for efficiently routing queries to the appropriate underlying partition. To learn more, refer to [/docs.microsoft.com/azure/cosmos-db/partition-data](../media/https://docs.microsoft.com/en-us/azure/cosmos-db/partition-data).*
-
-1. Locate the using block within the **Main** method and delete any existing code:
-
-    ```csharp
-    using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-    {
-    }
-    ```
-
-1. Add the following code to the method to create a reference to an existing database:
-
-    ```csharp
-    Database targetDatabase = client.GetDatabase("EntertainmentDatabase");
-    ```
-
-1. Add the following code to create a new ``IndexingPolicy`` instance with a custom indexing policy configured:
-
-    ```csharp
-    IndexingPolicy indexingPolicy = new IndexingPolicy
-    {
-        IndexingMode = IndexingMode.Consistent,
-        Automatic = true,
-        IncludedPaths =
-        {
-            new IncludedPath
-            {
-                Path = "/*"
-            }
-        }
-    };
-    ```
-
-    > By default, all Azure Cosmos DB data is indexed. Although many customers are happy to let Azure Cosmos DB automatically handle all aspects of indexing, you can specify a custom indexing policy for containers. This indexing policy is very similar to the default indexing policy created by the SDK.
-
-1. Add the following code to create a new ``ContainerProperties`` instance with a single partition key of ``/type`` defined and including the previously created ``IndexingPolicy``:
-
-    ```csharp
-    var containerProperties = new ContainerProperties("CustomCollection", "/type")
-    {
-        IndexingPolicy = indexingPolicy
-    };
-    ```
-
-    > This definition will create a partition key on the ``/type`` path. Partition key paths are case sensitive. This is especially important when you consider JSON property casing in the context of .NET CLR object to JSON object serialization.
-
-1. Add the following lines of code to create a new ``Container`` instance if one does not already exist within your database. Specify the previously created settings and a value for **throughput**:
-
-    ```csharp
-    var containerResponse = await targetDatabase.CreateContainerIfNotExistsAsync(containerProperties, 10000);
-    var customContainer = containerResponse.Container;
-    ```
-
-    > This code will check to see if a container exists in your database that meets all of the specified parameters. If a container that matches does not exist, it will create a new container. Here is where we can specify the RU/s allocated for a newly created container. If this is not specified, the SDK has a default value for RU/s assigned to a container.
-
-1. Add the following code to print out the ID of the database:
-
-    ```csharp
-    await Console.Out.WriteLineAsync($"Custom Container Id:\t{customContainer.Id}");
-    ```
-
-    > The ``customContainer`` variable will have metadata about the container whether a new container is created or an existing one is read.
-
-1. Save all of your open editor tabs.
-
-1. In the Visual Studio Code window, right-click the **Explorer** pane and select the **Open in Terminal** menu option.
-
-1. In the open terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet run
-    ```
-
-    > This command will build and execute the console project.
-
-1. Observe the output of the running command.
-
-1. Click the **🗙** symbol to close the terminal pane.
-
-1. Close all open editor tabs.
-
-
-## Populate a Container with Items using the SDK
-
-> You will now use the .NET SDK to populate your container with various items of varying schemas. These items will be serialized instances of multiple C# classes in your project.
-
-### Populate Container with Data
-
-1. In the Visual Studio Code window, look in the **Explorer** pane and verify that you have a **DataTypes.cs** file in your project folder.
-
-    > This file contains the data classes you will be working with in the following steps.
-
-1. Double-click the **Program.cs** link in the **Explorer** pane to open the file in the editor.
-
-1. Locate the using block within the **Main** method and delete any existing code:
-
-    ```csharp
-    using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-    {                        
-    }
-    ```
-
-1. Add the following code to the method to create a reference to an existing container:
-
-    ```csharp
-    var targetDatabase = client.GetDatabase("EntertainmentDatabase");
-    var customContainer = targetDatabase.GetContainer("CustomCollection");
-    ```
-
-1. Observe the code in the **Main** method.
-
-    > For the next few instructions, we will use the **Bogus** library to create test data. This library allows you to create a collection of objects with fake data set on each object's property. For this lab, our intent is to **focus on Azure Cosmos DB** instead of this library. With that intent in mind, the next set of instructions will expedite the process of creating test data.
-
-1. Add the following code to create a collection of ``PurchaseFoodOrBeverage`` instances:
-
-    ```csharp
-    var foodInteractions = new Bogus.Faker<PurchaseFoodOrBeverage>()
-        .RuleFor(i => i.id, (fake) => Guid.NewGuid().ToString())
-        .RuleFor(i => i.type, (fake) => nameof(PurchaseFoodOrBeverage))
-        .RuleFor(i => i.unitPrice, (fake) => Math.Round(fake.Random.Decimal(1.99m, 15.99m), 2))
-        .RuleFor(i => i.quantity, (fake) => fake.Random.Number(1, 5))
-        .RuleFor(i => i.totalPrice, (fake, user) => Math.Round(user.unitPrice * user.quantity, 2))
-        .GenerateLazy(500);
-    ```
-
-    > As a reminder, the Bogus library generates a set of test data. In this example, you are creating 500 items using the Bogus library and the rules listed above. The **GenerateLazy** method tells the Bogus library to prepare for a request of 500 items by returning a variable of type **IEnumerable**. Since LINQ uses deferred execution by default, the items aren't actually created until the collection is iterated.
-    
-1. Add the following foreach block to iterate over the ``PurchaseFoodOrBeverage`` instances:
-
-    ```csharp
-    foreach(var interaction in foodInteractions)
-    {
-    }
-    ```
-
-1. Within the ``foreach`` block, add the following line of code to asynchronously create a container item and save the result of the creation task to a variable:
-
-    ```csharp
-    ItemResponse<PurchaseFoodOrBeverage> result = await customContainer.CreateItemAsync(interaction);
-    ```
-
-    > The ``CreateItemAsync`` method of the ``CosmosItems`` class takes in an object that you would like to serialize into JSON and store as a document within the specified container. The ``id`` property, which here we've assigned to a unique Guid on each object, is a special required value in Cosmos DB that is used for indexing and must be unique for every item in a container.
-
-1. Still within the ``foreach`` block, add the following line of code to write the value of the newly created resource's ``id`` property to the console:
-
-    ```csharp
-    await Console.Out.WriteLineAsync($"Item Created\t{result.Resource.id}");
-    ```
-
-    > The ``CosmosItemResponse`` type has a property named ``Resource`` that contains the object representing the item as well as other properties to give you access to interesting data about an item such as its ETag.
-
-1. Your **Main** method should look like this:
-
-    ```csharp
-    public static async Task Main(string[] args)
-    {    
-        using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-        {
-            var targetDatabase = client.GetDatabase("EntertainmentDatabase");
-            var customContainer = targetDatabase.GetContainer("CustomCollection");
-            var foodInteractions = new Bogus.Faker<PurchaseFoodOrBeverage>()
-                .RuleFor(i => i.id, (fake) => Guid.NewGuid().ToString())
-                .RuleFor(i => i.type, (fake) => nameof(PurchaseFoodOrBeverage))
-                .RuleFor(i => i.unitPrice, (fake) => Math.Round(fake.Random.Decimal(1.99m, 15.99m), 2))
-                .RuleFor(i => i.quantity, (fake) => fake.Random.Number(1, 5))
-                .RuleFor(i => i.totalPrice, (fake, user) => Math.Round(user.unitPrice * user.quantity, 2))
-                .GenerateLazy(500);
-            foreach(var interaction in foodInteractions)
-            {
-                ItemResponse<PurchaseFoodOrBeverage> result = await customContainer.CreateItemAsync(interaction);
-                await Console.Out.WriteLineAsync($"Item Created\t{result.Resource.id}");
-            }
-        }     
-    }
-    ```
-
-    > As a reminder, the Bogus library generates a set of test data. In this example, you are creating 500 items using the Bogus library and the rules listed above. The **GenerateLazy** method tells the Bogus library to prepare for a request of 500 items by returning a variable of type **IEnumerable**. Since LINQ uses deferred execution by default, the items aren't actually created until the collection is iterated. The **foreach** loop at the end of this code block iterates over the collection and creates items in Azure Cosmos DB.
-
-1. Save all of your open editor tabs.
-
-1. In the Visual Studio Code window, right-click the **Explorer** pane and select the **Open in Terminal** menu option.
-
-1. In the open terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet run
-    ```
-
-    > This command will build and execute the console project.
-
-1. Observe the output of the console application.
-
-    > You should see a list of item ids associated with new items that are being created by this tool.
-
-1. Click the **🗙** symbol to close the terminal pane.
-
-### Populate Container with Data of Different Types
-
-1. Locate the **Main** method and delete any existing code:
-
-    ```csharp
-    public static async Task Main(string[] args)
-    {                           
-    }
-    ```
-
-1. Replace the **Main** method with the following implementation:
-
-    ```csharp
-    public static async Task Main(string[] args)
-    {  
-        using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-        {
-            var targetDatabase = client.GetDatabase("EntertainmentDatabase");
-            var customContainer = targetDatabase.GetContainer("CustomCollection");
-            var tvInteractions = new Bogus.Faker<WatchLiveTelevisionChannel>()
-                .RuleFor(i => i.id, (fake) => Guid.NewGuid().ToString())
-                .RuleFor(i => i.type, (fake) => nameof(WatchLiveTelevisionChannel))
-                .RuleFor(i => i.minutesViewed, (fake) => fake.Random.Number(1, 45))
-                .RuleFor(i => i.channelName, (fake) => fake.PickRandom(new List<string> { "NEWS-6", "DRAMA-15", "ACTION-12", "DOCUMENTARY-4", "SPORTS-8" }))
-                .GenerateLazy(500);
-            foreach(var interaction in tvInteractions)
-            {
-                ItemResponse<WatchLiveTelevisionChannel> result = await customContainer.CreateItemAsync(interaction);
-                await Console.Out.WriteLineAsync($"Item Created\t{result.Resource.id}");
-            }
-        }
-    }
-    ```
-
-    > As a reminder, the Bogus library generates a set of test data. In this example, you are creating 500 items using the Bogus library and the rules listed above. The **GenerateLazy** method tells the Bogus library to prepare for a request of 500 items by returning a variable of type **IEnumerable**. Since LINQ uses deferred execution by default, the items aren't actually created until the collection is iterated. The **foreach** loop at the end of this code block iterates over the collection and creates items in Azure Cosmos DB.
-
-1. Save all of your open editor tabs.
-
-1. In the Visual Studio Code window, right-click the **Explorer** pane and select the **Open in Terminal** menu option.
-
-1. In the open terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet run
-    ```
-
-    > This command will build and execute the console project.
-
-1. Observe the output of the console application.
-
-    > You should see a list of item ids associated with new items that are being created.
-
-1. Click the **🗙** symbol to close the terminal pane.
-
-1. Locate the **Main** method and delete any existing code:
-
-    ```csharp
-    public static async Task Main(string[] args)
-    {                            
-    }
-    ```
-
-1. Replace the **Main** method with the following implementation:
-
-    ```csharp
-    public static async Task Main(string[] args)
-    {  
-        using (CosmosClient client = new CosmosClient(_endpointUri, _primaryKey))
-        {
-            var targetDatabase = client.GetDatabase("EntertainmentDatabase");
-            var customContainer = targetDatabase.GetContainer("CustomCollection");
-            var mapInteractions = new Bogus.Faker<ViewMap>()
-                .RuleFor(i => i.id, (fake) => Guid.NewGuid().ToString())
-                .RuleFor(i => i.type, (fake) => nameof(ViewMap))
-                .RuleFor(i => i.minutesViewed, (fake) => fake.Random.Number(1, 45))
-                .GenerateLazy(500);
-            foreach(var interaction in mapInteractions)
-            {
-                ItemResponse<ViewMap> result = await customContainer.CreateItemAsync(interaction);
-                await Console.Out.WriteLineAsync($"Document Created\t{result.Resource.id}");
-            }
-        }
-    }
-    ```
-
-    > As a reminder, the Bogus library generates a set of test data. In this example, you are creating 500 items using the Bogus library and the rules listed above. The **GenerateLazy** method tells the Bogus library to prepare for a request of 500 items by returning a variable of type **IEnumerable**. Since LINQ uses deferred execution by default, the items aren't actually created until the collection is iterated. The **foreach** loop at the end of this code block iterates over the collection and creates items in Azure Cosmos DB.
-
-1. Save all of your open editor tabs.
-
-1. In the Visual Studio Code window, right-click the **Explorer** pane and select the **Open in Terminal** menu option.
-
-1. In the open terminal pane, enter and execute the following command:
-
-    ```sh
-    dotnet run
-    ```
-
-    > This command will build and execute the console project.
-
-1. Observe the output of the console application.
-
-    > You should see a list of item ids associated with new items that are being created.
-
-1. Click the **🗙** symbol to close the terminal pane.
-
-1. Close all open editor tabs.
-
-1. Close the Visual Studio Code application.
-
-> If this is your final lab, follow the steps in [Removing Lab Assets](11-cleaning_up.md) to remove all lab resources. 
-
-
-# Load Data Into Cosmos DB with ADF
-
-In this lab, you will populate an Azure Cosmos DB container from an existing set of data using tools built in to Azure. After importing, you will use the Azure portal to view your imported data.
-
-> Before you start this lab, you will need to create an Azure Cosmos DB database and container that you will use throughout the lab. You will also use the **Azure Data Factory (ADF)** to import existing data into your container.
+- Then copy your PRIMARY KEY value from the portal and make it the value of the config.key in config.js. You've now updated      your app with all the info it needs to communicate with Azure Cosmos DB.
+- config.key = "FILLME"
 
 ## Create Azure Cosmos DB Database and Container
 
 *You will now create a database and container within your Azure Cosmos DB account.*
 
 1. On the left side of the portal, click the **Resource groups** link.
+2. In the **Resource groups** blade, locate and select the **yourResourceGroup** *Resource Group*.
+3. In the **yourResourceGroup** blade, select the **Azure Cosmos DB** account you recently created.
+4. In the **Azure Cosmos DB** blade, locate and click the **Overview** link on the left side of the blade. At the top click the **Add Container** button.
 
-    ![Resource groups](../media/03-resource_groups.jpg)
-
-1. In the **Resource groups** blade, locate and select the **cosmoslabs** *Resource Group*.
-
-    ![Lab resource group](../media/03-lab_resource_group.jpg)
-
-1. In the **cosmoslabs** blade, select the **Azure Cosmos DB** account you recently created.
-
-    ![Cosmos resource](../media/03-cosmos_resource.jpg)
-
-1. In the **Azure Cosmos DB** blade, locate and click the **Overview** link on the left side of the blade. At the top click the **Add Container** button.
-
-    ![Add container](../media/03-add_collection.jpg)
-
-1. In the **Add Container** popup, perform the following actions:
+5. In the **Add Container** popup, perform the following actions:
 
     1. In the **Database id** field, select the **Create new** option and enter the value **ImportDatabase**.
 
-    1. Do not check the **Provision database throughput** option.
+    2. Do not check the **Provision database throughput** option.
 
         > Provisioning throughput for a database allows you to share the throughput among all the containers that belong to that database. Within an Azure Cosmos DB database, you can have a set of containers which shares the throughput as well as containers, which have dedicated throughput.
 
-    1. In the **Container Id** field, enter the value **FoodCollection**.
+    3. In the **Container Id** field, enter the value **FoodCollection**.
 
-    1. In the **Partition key** field, enter the value ``/foodGroup``.
+    4. In the **Partition key** field, enter the value ``/foodGroup``.
 
-    1. In the **Throughput** field, enter the value ``11000``.
+    5. In the **Throughput** field, enter the value ``11000``.
 
-    1. Click the **OK** button.
+    6. Click the **OK** button.
 
-1. Wait for the creation of the new **database** and **container** to finish before moving on with this lab.
+6. Wait for the creation of the new **database** and **container** to finish before moving on with this lab.
 
 ## Import Lab Data Into Container
 
-You will use **Azure Data Factory (ADF)** to import the JSON array stored in the **nutrition.json** file from Azure Blob Storage. If you are completing the lab through Microsoft Hands-on Labs, you can use the pre-created Data Factory within your resource group. You do not need to do Steps 1-4 in this section and can proceed to Step 5 by opening your Data Factory (named importNutritionData with a random number suffix).
+You will use **Azure Data Factory (ADF)** to import the JSON array stored in the **nutrition.json** file from Azure Blob Storage. 
 
 1. On the left side of the portal, click the **Resource groups** link.
 
     > To learn more about copying data to Cosmos DB with ADF, please read [ADF's documentation](https://docs.microsoft.com/en-us/azure/data-factory/connector-azure-cosmos-db). 
 
-    ![Resource groups](../media/03-resource_groups.jpg)
+2. In the **Resource groups** blade, locate and select the **yourResourceGroup** *Resource Group*.
 
-1. In the **Resource groups** blade, locate and select the **cosmoslabs** *Resource Group*.
+3. Click **Add** to add a new resource
 
-1. Click **Add** to add a new resource
+4. Search for **Data Factory** and select it. Create a new **Data Factory**. You should name this data factory **importnutritiondata** with a unique number appended and select the relevant Azure subscription. You should ensure your existing **yourResourceGroup** resource group is selected as well as a Version **V2**. Select **westeurope** as the region. Do not select **Enable GIT** (this may be checked by default). Click **create**.
 
-    ![Add adf](../media/03-add_adf.jpg)
+5. After creation, open your newly created Data Factory. Select **Author & Monitor** and you will launch ADF. You should see a screen similar to the screenshot below. Select **Copy Data**. We will be using ADF for a one-time copy of data from a source JSON file on Azure Blob Storage to a database in Cosmos DB’s SQL API. ADF can also be used for more frequent data transfers from Cosmos DB to other data stores.
 
-1. Search for **Data Factory** and select it. Create a new **Data Factory**. You should name this data factory **importnutritiondata** with a unique number appended and select the relevant Azure subscription. You should ensure your existing **cosmoslabs** resource group is selected as well as a Version **V2**. Select **East US** as the region. Do not select **Enable GIT** (this may be checked by default). Click **create**.
+6. Edit basic properties for this data copy. You should name the task **ImportNutrition** and select to **Run once now**. Do not select **enable git**.
 
-    ![df](../media/03-adf_selections.jpg)
 
-1. After creation, open your newly created Data Factory. Select **Author & Monitor** and you will launch ADF. You should see a screen similar to the screenshot below. Select **Copy Data**. We will be using ADF for a one-time copy of data from a source JSON file on Azure Blob Storage to a database in Cosmos DB’s SQL API. ADF can also be used for more frequent data transfers from Cosmos DB to other data stores.
-    ![](../media/03-adf_author&monitor.jpg)
-    ![](../media/03-adf_copydata.jpg)
+7. **Create a new connection** and select **Azure Blob Storage**. We will import data from a json file on Azure Blob Storage. In addition to Blob Storage, you can use ADF to migrate from a wide variety of sources. We will not cover migration from these sources in this tutorial.
 
-1. Edit basic properties for this data copy. You should name the task **ImportNutrition** and select to **Run once now**. Do not select **enable git**.
 
-   ![adf-properties](../media/03-adf_properties.jpg)
-
-1. **Create a new connection** and select **Azure Blob Storage**. We will import data from a json file on Azure Blob Storage. In addition to Blob Storage, you can use ADF to migrate from a wide variety of sources. We will not cover migration from these sources in this tutorial.
-
-    ![](../media/03-adf_blob.jpg)
-
-    ![](../media/03-adf_blob2.jpg)
-
-1. Name the source **NutritionJson** and select **SAS URI** as the Authentication method. Please use the following SAS URI for read-only access to this Blob Storage container: 
+8. Name the source **NutritionJson** and select **SAS URI** as the Authentication method. Please use the following SAS URI for read-only access to this Blob Storage container: 
 
     `https://cosmosdblabsv3.blob.core.windows.net/?sv=2018-03-28&ss=bfqt&srt=sco&sp=rlp&se=2022-01-01T04:55:28Z&st=2019-08-05T20:02:28Z&spr=https&sig=%2FVbismlTQ7INplqo6WfU8o266le72o2bFdZt1Y51PZo%3D`
 
-    ![](../media/03-adf_connecttoblob.jpg)
 
-1. Click **Next** and then **Browse** to select the **nutritiondata** folder. Then select **NutritionData.json**.
+9. Click **Next** and then **Browse** to select the **nutritiondata** folder. Then select **NutritionData.json**.
 
-    ![](../media/03-adf_choosestudents.jpg)
+10. Do not check **Copy file recursively** or **Binary Copy**. Also ensure that other fields are empty.
 
-1. Do not check **Copy file recursively** or **Binary Copy**. Also ensure that other fields are empty.
+11. Select the file format as **JSON format**. Then select **Next**.
 
-    ![](../media/03-adf_source_next.jpg)
+12. You have now successfully connected the Blob Storage container with the nutrition.json file as the source.
 
-1. Select the file format as **JSON format**. Then select **Next**.
+13. For the **Destination data store** add the Cosmos DB target data store by selecting **Create new connection** and selecting **Azure Cosmos DB (SQL API)**.
 
-    ![](../media/03-adf_source_dataset_format.jpg)
+14. Name the linked service **targetcosmosdb** and select your Azure subscription and Cosmos DB account. You should also select the Cosmos DB **ImportDatabase** that you created earlier.
 
-1. You have now successfully connected the Blob Storage container with the nutrition.json file as the source.
+15. Select your newly created **targetcosmosdb** connection as the Destination date store.
 
-1. For the **Destination data store** add the Cosmos DB target data store by selecting **Create new connection** and selecting **Azure Cosmos DB (SQL API)**.
+16. Select your **FoodCollection** container from the drop-down menu. You will map your Blob storage file to the correct Cosmos DB container. Click **Next** to continue.
 
-    ![](../media/03-adf_selecttarget.jpg)
+17. Click through this screen.
 
-1. Name the linked service **targetcosmosdb** and select your Azure subscription and Cosmos DB account. You should also select the Cosmos DB **ImportDatabase** that you created earlier.
+18. There is no need to change any settings. Click **next**.
 
-    ![](../media/03-adf_selecttargetdb.jpg)
+19. Click **Next** to begin deployment After deployment is complete, select **Monitor**.
 
-1. Select your newly created **targetcosmosdb** connection as the Destination date store.
+20. After a few minutes, refresh the page and the status for the ImportNutrition pipeline should be listed as **Succeeded**.
 
-    ![](../media/03-adf_destconnectionnext.jpg)
-
-1. Select your **FoodCollection** container from the drop-down menu. You will map your Blob storage file to the correct Cosmos DB container. Click **Next** to continue.
-
-    ![](../media/03-adf_correcttable.jpg)
-
-1. Click through this screen.
-
-    ![](../media/03-adf_destinationconnectionfinal.jpg)
-
-1. There is no need to change any settings. Click **next**.
-
-    ![](../media/03-adf_settings.jpg)
-
-1. Click **Next** to begin deployment After deployment is complete, select **Monitor**.
-
-    ![](../media/03-adf_deployment.jpg)
-
-1. After a few minutes, refresh the page and the status for the ImportNutrition pipeline should be listed as **Succeeded**.
-
-1. Once the import process has completed, close the ADF. You will now proceed to validate your imported data. 
+21. Once the import process has completed, close the ADF. You will now proceed to validate your imported data. 
 
 ## Validate Imported Data
 
@@ -870,39 +260,22 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 
 1. Return to the **Azure Portal** (<http://portal.azure.com>).
 
-1. On the left side of the portal, click the **Resource groups** link.
+2. On the left side of the portal, click the **Resource groups** link.
 
-    ![Resource groups](../media/03-resource_groups.jpg)
+3. In the **Resource groups** blade, locate and select the **yourResourceGroup** *Resource Group*.
 
-1. In the **Resource groups** blade, locate and select the **cosmoslabs** *Resource Group*.
+4. In the **yourResourceGroup** blade, select the **Azure Cosmos DB** account you recently created.
 
-    ![Lab resource group](../media/03-lab_resource_group.jpg)
+5. In the **Azure Cosmos DB** blade, locate and click the **Data Explorer** link on the left side of the blade.
 
-1. In the **cosmoslabs** blade, select the **Azure Cosmos DB** account you recently created.
+6. In the **Data Explorer** section, expand the **ImportDatabase** database node and then expand the **FoodCollection** container node. 
 
-    ![Cosmos resource](../media/03-cosmos_resource.jpg)
-
-1. In the **Azure Cosmos DB** blade, locate and click the **Data Explorer** link on the left side of the blade.
-
-    ![Data Explorer pane](../media/03-data_explorer_pane.jpg)
-
-1. In the **Data Explorer** section, expand the **ImportDatabase** database node and then expand the **FoodCollection** container node. 
-
-    ![Container node](../media/03-collection_node.jpg)
-
-1. Within the **FoodCollection** node, click the **Items** link to view a subset of the various documents in the container. Select a few of the documents and observe the properties and structure of the documents.
-
-    ![Documents](../media/03-documents.jpg)
-
-    ![Example document](../media/03-example_document.jpg)
-
+7. Within the **FoodCollection** node, click the **Items** link to view a subset of the various documents in the container. Select a few of the documents and observe the properties and structure of the documents.
 
 
 # Querying in Azure Cosmos DB
 
 Azure Cosmos DB SQL API accounts provide support for querying items using the Structured Query Language (SQL), one of the most familiar and popular query languages, as a JSON query language. In this lab, you will explore how to use these rich query capabilities directly through the Azure Portal. No separate tools or client side code are required.
-
-If this is your first lab and you have not already completed the setup for the lab content see the instructions for [Account Setup](00-account_setup.md) before starting this lab.
 
 ## Query Overview
 
@@ -1204,8 +577,6 @@ WHERE n.units= "mg" AND n.nutritionValue > 0
 
 In this lab, you will modify the indexing policy of an Azure Cosmos DB container. You will explore how you can optimize indexing policy for write or read heavy workloads as well as understand the indexing requirements for different SQL API query features.
 
-> If this is your first lab and you have not already completed the setup for the lab content see the instructions for [Account Setup](00-account_setup.md) before starting this lab.
-
 ## Indexing Overview
 
 Azure Cosmos DB is a schema-agnostic database that allows you to iterate on your application without having to deal with schema or index management. By default, Azure Cosmos DB automatically indexes every property for all items in your container without the need to define any schema or configure secondary indexes. If you chose to leave indexing policy at the default settings, you can run most queries with optimal performance and never have to explicitly consider indexing. However, if you want control over adding or removing properties from the index, modification is possible through the Azure Portal or any SQL API SDK.
@@ -1220,9 +591,9 @@ In this lab section, you will view and modify the indexing policy for your **Foo
 
 1. On the left side of the portal, click the **Resource groups** link.
 
-2. In the **Resource groups** blade, locate and select the **cosmoslabs** *Resource Group*.
+2. In the **Resource groups** blade, locate and select the **yourResourceGroup** *Resource Group*.
 
-3. In the **cosmoslabs** blade, select your **Azure Cosmos DB** account.
+3. In the **yourResourceGroup** blade, select your **Azure Cosmos DB** account.
 
 4. In the **Azure Cosmos DB** blade, locate and click the **Data Explorer** link on the left side of the blade.
 
@@ -1233,8 +604,6 @@ In this lab section, you will view and modify the indexing policy for your **Foo
 7. View the items within the container. Observe how these documents have many properties, including arrays. If we do not use a particular property in the WHERE clause, ORDER BY clause, or a JOIN, indexing the property does not provide any performance benefit.
 
 8. Still within the **FoodCollection** node, click the **Scale & Settings** link. In the **Indexing Policy** section, you can edit the JSON file that defines your container's index. Indexing policy can also be modified through any Azure Cosmos DB SDK, but during this lab we will modify the indexing policy through the Azure Portal.
-
-   ![indexingpolicy-initial](../media/04-indexingpolicy-initial.jpg)
 
 ### Including and excluding Range Indexes
 
@@ -1391,10 +760,6 @@ SELECT * FROM c WHERE c.description = "Bread, blue corn, somiviki (Hopi)"
 ```
 
 You should observe that this query has a very high RU charge even though only a single document is returned. This is because no range index is currently defined for the `description` property.
-
-Also observe the **Query Metrics** below:
-
-![query-metrics](../media/04-querymetrics.JPG)
 
 If a query does not use the index, the **Index hit document count** will be 0. We can see above that the query needed to retrieve 5,187 documents and ultimately ended up only returning 1 document.
 
@@ -1565,179 +930,23 @@ This query will not run without an additional composite index. You can modify th
 
 You should now be able to run the query. After completing the lab, you can [learn more about defining composite indexes](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-indexing-policy#composite-indexing-policy-examples).
 
-## Adding a spatial index
-
-### Create a new container with volcano data
-
-First, you will create a new Cosmos container named volcanoes inside a new database. Azure Cosmos DB supports querying of data in the GeoJSON format. During this lab, you will upload sample data to this container that is specified in this format. This volcano.json sample data is a better fit for geo-spatial queries than our existing nutrition dataset. The dataset contains the coordinates and basic information for many volcanoes around the world.
-
-For this lab, we will only need to upload a few sample documents.
-
-1. In the **Azure Cosmos DB** blade, locate and click the **Data Explorer** link on the left side of the blade.
-
-2. Select the icon to add a **New Container**
-
-3. In the **Add Container** popup, perform the following actions:
-
-   1. In the **Database id** field, select the **Create new** option and enter the value **VolcanoDatabase**.
-
-   2. Ensure the **Provision database throughput** option is not selected.
-
-      > Provisioning throughput for a database allows you to share the throughput among all the containers that belong to that database. Within an Azure Cosmos DB database, you can have a set of containers which shares the throughput as well as containers, which have dedicated throughput.
-
-   3. In the **Container Id** field, enter the value **VolcanoContainer**.
-
-   4. In the **Partition key** field, enter the value ``/Country``.
-
-   5. In the **Throughput** field, enter the value ``5000``.
-
-   6. Click the **OK** button.
-
-### Upload Sample Data
-
-When you upload sample data, Azure Cosmos DB will automatically create a geo-spatial index for any GeoJSON data with the types "Point", "Polygon", or "LineString".
-
-1. Navigate back to the **VolcanoesContainer** in the Azure Portal and click the **Items** section.
-2. Select **Upload Item**
-3. In the popup, navigate to the volcano.json file. This file is available [here](../setup/VolcanoData.json). If you followed the prelab steps, you already downloaded this file in your **setup** folder.
-
-### Create geo-spatial indexes in the **Volcanoes** container
-
-1. Navigate back to the **VolcanoesContainer** in the Azure Portal and click the **Scale & Settings** link. In the **Indexing Policy** section, replace the existing json file with the following:
-
-```json
-{
-    "indexingMode": "consistent",
-    "automatic": true,
-    "includedPaths": [
-        {
-            "path": "/*"
-        }
-    ],
-    "excludedPaths": [
-        {
-            "path": "/\"_etag\"/?"
-        }
-    ],
-    "spatialIndexes": [
-        {
-            "path": "/*",
-            "types": [
-                "Point",
-                "Polygon",
-                "MultiPolygon",
-                "LineString"
-            ]
-        }
-    ]
-}
-```
-
-Geo-spatial indexing is by default, disabled. This indexing policy will turn on geo-spatial indexing for all possible GeoJSON types which include Points, Polygons, MultiPolygon, and LineStrings. Similar to range indexes and composite indexes, there are no precision settings for geo-spatial indexes.
-
-[Learn more about querying geo-spatial data in Azure Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/geospatial#introduction-to-spatial-data).
-
-### Query the Volcano Data
-
-1. Navigate back to the **VolcanoesContainer** in the Azure Portal and click the **New SQL Query**. Paste the following SQL query and select **Execute Query**.
-
-```sql
-SELECT *
-FROM volcanoes v
-WHERE ST_DISTANCE(v.Location, {
-"type": "Point",
-"coordinates": [-122.19, 47.36]
-}) < 100 * 1000
-AND v.Type = "Stratovolcano"
-AND v["Last Known Eruption"] = "Last known eruption from 1800-1899, inclusive"
-```
-
-Observe the **Query Stats** for this operation. Because the container has a geo-spatial index for Points, this query consumed a small amount of RU's.
-
-> This query returns all the Stratovolcanoes that last erupted between 1800 and 1899 that are within 100 km of the coordinates (122.19, 47.36). These are the coordinates of Redmond, WA.
-
-### Query sample polygon data
-
-If you specify points within a Polygon in a counter-clockwise order, you will define the area within the coordinates as the polygon area. A Polygon specified in clockwise order represents the inverse of the region within it.
-
-We can explore this concept through sample queries.
-
-1. Navigate back to the **VolcanoesContainer** in the Azure Portal and click the **New SQL Query**. Paste the following SQL query and select **Execute Query**.
-
-```sql
-SELECT *
-FROM volcanoes v
-WHERE ST_WITHIN(v.Location, {
-    "type":"Polygon",
-    "coordinates":[[
-        [-123.8, 48.8],
-        [-123.8, 44.8],
-        [-119.8, 44.8],
-        [-119.8, 48.8],
-        [-123.8, 48.8]
-    ]]
-    })
-```
-
-In this case, there are 8 volcanoes located within this rectangle.
-
-2. In the *Query Editor* replace the text with the following query:
-
-```sql
-SELECT *
-FROM volcanoes v
-WHERE ST_WITHIN(v.Location, {
-    "type":"Polygon",
-    "coordinates":[[
-        [-123.8, 48.8],
-        [-119.8, 48.8],
-        [-119.8, 44.8],
-        [-123.8, 44.8],
-        [-123.8, 48.8]
-    ]]
-    })
-```
-
-You should now see many items returned. There are thousands of volcanoes located outside our small rectangle region.
-
-When creating a GeoJSON polygon, whether it be inside a query or item, the order of the coordinates specified matters. Azure Cosmos DB will not reject coordinates that indicate the inverse of a polygon's shape. In addition, GeoJSON requires that you specify coordinates in the format: (latitude, longitude).
 
 ## Lab Cleanup
 
-### Restoring the **FoodCollection** Indexing Policy
+### Use Azure CLI to Delete Resource Group
 
-You should restore the **FoodCollection** indexing policy to the default setting where all paths are indexed. 
+1. In the **Cloud Shell** command prompt at the bottom of the portal, type in the following command and press **Enter** to list all resource groups in the subscription:
 
-1. In the **Azure Cosmos DB** blade, locate and click the **Data Explorer** link on the left side of the blade.
-2. In the **Data Explorer** section, expand the **NutritionDatabase** database node and then expand the **FoodCollection** container node.
-3. Within the **FoodCollection** node, click the **Scale & Settings** link. In the **Indexing Policy** section, replace the existing JSON file with the following:
+    ```sh
+    az group list
+    ```
 
-```json
-{
-    "indexingMode": "consistent",
-    "automatic": true,
-    "includedPaths": [
-        {
-            "path": "/*"
-        }
-    ],
-    "excludedPaths": [
-        {
-            "path": "/\"_etag\"/?"
-        }
-    ]
-}
-```
+1. Type in the following command and press **Enter** to delete the **yourResourceGroup** *Resource Group*:
 
-1. Select **Save** to apply these changes. This Indexing Policy is the same Indexing Policy as when we began the lab. It is required for subsequent labs.
+    ```sh
+    az group delete --name "yourResourceGroup" --no-wait --yes
+    ```
 
-### Delete the **VolcanoContainer**
+1. Close the **Cloud Shell** prompt at the bottom of the portal.
 
-You will not need the **VolcanoContainer** during additional lab sections. You should delete this container now.
-
-1. Navigate to the **Data Explorer**
-2. Select the three dots near your **VolcanoContainer**. From the menu, select **Delete Container**. 
-3. Confirm the container's name and delete the container.
-4. Close your browser window. You have now completed the indexing lab section.
-
-> If this is your final lab, follow the steps in [Removing Lab Assets](11-cleaning_up.md) to remove all lab resources. 
+1. Close your browser application.
