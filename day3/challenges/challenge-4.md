@@ -288,21 +288,11 @@ Stop the container
 
 ## Create and use Computer Vision Service and Custom Vision ##
 
-|Service|
-|---|
-|Azure Cognitive Services - [Computer Vision API](https://azure.microsoft.com/en-us/services/cognitive-services/computer-vision)
-|[Custom Vision Service](https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/)
+|Service|Information|
+|---|---|
+|Azure Cognitive Services - [Computer Vision API](https://azure.microsoft.com/en-us/services/cognitive-services/computer-vision)|https://azure.microsoft.com/en-us/services/cognitive-services/computer-vision
+|[Custom Vision Service](https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/)|https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/
 
-Create a Computer Vision Service:
-
-- Create a resource group
-  - westeurope
-- Add Computer Vision
-- TODO: Martha Doku
-- Hit "Create"
-
-
-## Integrate Computer Vision API into Application ##
 
 :triangular_flag_on_post: **Goal:** Leverage OCR to make a hand-written or printed text document in images machine-readable
 
@@ -324,8 +314,6 @@ In the language of your choice (Python solution is provided), write two small sc
 
 1. What could we do to increase the detection performance?
 1. What happens if the beer glasses are really small in the image?
-
-# Hints for Challenge 2
 
 Create a new `Python 3.6 Notebook` in [Azure Notebooks](https://notebooks.azure.com/).
 
@@ -413,8 +401,6 @@ https://bootcamps.blob.core.windows.net/ml-test-images/ocr_handwritten_1.jpg
 https://bootcamps.blob.core.windows.net/ml-test-images/ocr_handwritten_2.jpg
 ```
 
-
-
 ## Optical Character Recognition - Images to Text - Printed content
 
 Extracting text from printed text in images is very similar - except that is a synchronous call, hence we directly get back the recognition result:
@@ -492,3 +478,41 @@ Results:
 Under `Quick Test`, we can briefly upload our testing images and see what the service will detect. As we only added 15 training images with a lot of variance, the results are not great yet. By adding more images, we could most likely improve the detection performance significantly.
 
 If we go to the `Performance` tab, we can get the `Prediction URL` and the `Prediction-Key`. We can use this endpoint to programmatically access the service.
+
+## Install and run Computer Vision Service as Container ##
+
+Docker pull for the Computer Vision container
+
+Use the docker pull command to download a container image from Microsoft Container Registry.
+
+```
+docker pull containerpreview.azurecr.io/microsoft/cognitive-services-read:latest
+```
+
+How to use the container
+- Once the container is on the host computer, use the following process to work with the container.
+- Run the container, with the required billing settings. More examples of the docker run command are available.
+- Query the container's prediction endpoint.
+
+Run the container with docker run
+- Use the docker run command to run the container. Refer to gathering required parameters for details on how to get the {ENDPOINT_URI} and {API_KEY} values.
+
+```
+docker run --rm -it -p 5000:5000 --memory 16g --cpus 8 \
+containerpreview.azurecr.io/microsoft/cognitive-services-read \
+Eula=accept \
+Billing={ENDPOINT_URI} \
+ApiKey={API_KEY}
+```
+This command:
+- Runs the Read container from the container image.
+- Allocates 8 CPU core and 16 gigabytes (GB) of memory.
+- Exposes TCP port 5000 and allocates a pseudo-TTY for the container.
+- Automatically removes the container after it exits. The container image is still available on the host computer.
+
+Query the container's prediction endpoint
+- The container provides REST-based query prediction endpoint APIs.
+- Use the host, http://localhost:5000, for container APIs.
+
+Stop the container
+- To shut down the container, in the command-line environment where the container is running, select Ctrl+C
