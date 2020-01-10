@@ -108,7 +108,7 @@ A browser window ill open, login to Azure and go back to the command prompt. You
 }
 ```
 
-If you have multiple subscriptions, make sure your are working with the correct one! 
+If you have multiple subscriptions, make sure your are working with the correct one!
 
 ```shell
 $ az account show
