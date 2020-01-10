@@ -164,7 +164,6 @@ We've been lazy and did everything through the portal - obviously not the way we
 For sake of time today we won't be able to go into more detail here, but feel free to have a look at it.
 
 
-
 https://azjobsdemo.azurewebsites.net/
 
 
