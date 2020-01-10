@@ -6,7 +6,10 @@
 - Add Data to Cosmos DB
 - Create a Partition Key
 - Use ARM Template for automated deployment
-
+- Integrate Cosmos DB into Node.JS App
+- Add Data using Azure Data Factory
+- Query Data using Data Explorer
+- Indexing in Azure Cosmos DB using Data Explorer
 ## Create a Cosmos DB ##
 
 Create a Cosmos DB:

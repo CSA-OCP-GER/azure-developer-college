@@ -3,9 +3,10 @@
 ## Here is what you will learn ##
 
 - Create and use a Text Analysis Service
-- Integrate Text Analytics API into Application
+- Install and run Sentiment Analysis Service as Container
 - Create and use a Computer Vision Services
-- Integrate Computer Vision API into Application
+- Create and use a Custom Vision Services
+- Install and run Computer Vision Service as Container
 
 ## Create and use a Text Analysis Service ##
 
