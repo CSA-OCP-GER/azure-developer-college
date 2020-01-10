@@ -22,9 +22,6 @@ You can either use the portal or the Azure Cloud Shell
 
 ```az sql server create --name [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --admin-user [Name of your Server Admin] --admin-password [Your Admin Password]```
 
-optional:
-```az sql server firewall-rule create --name [Name of a firewall-rule] --server [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --start-ip-address [choose IP address] --end-ip-address [choose IP address]```
-
 3. Create an Azure SQL DB
 
 ```az sql db create --name MicrosoftEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
@@ -78,10 +75,24 @@ We are going to have to use either the Azure portal or PowerShell for parts of s
   - Zone-redundancy configuration - change tier, Accelerated Database Recovery
 
 1. Restrict Network access with firewall-rules
-  - Easy way: Portal
-2. Restrict Database access
+
+```az aql server firewall-rule list --server [Name of your SQL Server] --resource-group [Name of your RG]```
+```az sql server firewall-rule create --name [Name of a firewall-rule] --server [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --start-ip-address [choose IP address] --end-ip-address [choose IP address]```
+
+2. Restrict Database access (SSMS)
+
+SQL authentication:
+```CREATE USER ApplicationUser WITH PASSWORD = ['another password'];```
+```ALTER ROLE db_datareader ADD MEMBER ApplicationUser; ALTER ROLE db_datawriter ADD MEMBER ApplicationUser;```
+
+AD authentication:
+```CREATE USER [Azure AD principal name] FROM EXTERNAL PROVIDERS;```
+
 3. Encrypt Data
   - Mask data
+  
+  ```Set-AzSqlDatabaseTransparentDataEncryption -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
+  
 4. Monitor the DB
   - activate Azrue SQL DB Monitoring
   - Advanced Data Security
