@@ -9,7 +9,7 @@
 - Azure SQL DB elastic pools
 - Use ARM Template for automated deployment
 Next to creating a single SQL DB we could also create a managed instance and an instance pools
-
+If of interest we could show how to set up a DB with SQL Server Management Studio.
 
 ## Create an Azure SQL DB ##
 
@@ -37,6 +37,8 @@ optional:
 
 ## Add Data to SQL DB ##
 
+Add Azure Data Studio training and/or SSMS queriing
+
 Use the Azure Cloud Shell
 1. Get to know the Database
 
@@ -60,17 +62,22 @@ Use the Azure Cloud Shell
 
 We are going to have to use either the Azure portal or PowerShell for parts of securing the Azure SQL DB, due to the Azure Data Explorers Endpoints
 
-1. Configure retention policies
+1. SQL Database backup/Configure retention policies
 
   ```Get-AzSqlDatabase -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL DB Server] | Get-AzSqlDatabaseLongTermRetentionPolicy```
   ```Get-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees```
-  ```Set-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -WeeklyRetention P8W -MonthlyRetentionP5M -YearlyRetention P5Y -WeekOfYear 1```
+  ```Set-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -WeeklyRetention P8W -MonthlyRetention P5M -YearlyRetention P5Y -WeekOfYear 1```
   
 2. Restore a Database (only in theory)
 
-  ```Restore-AzSqlDatabase```  or  ```az sql db restore```
+  ```Restore-AzSqlDatabase -PointInTime [DateTime] -ResourceId [String] -ServerName [String] -TargetDatabaseName [String]```  or  ```az sql db restore```
+  ```Get-AzSqlDeletedDatabaseBackup -DeletionDate [DateTime] -ResourceGroupName [String] -ServerName [String] -DatabaseName [String]```
+    
+  
+1. High-availability
+  - Zone-redundancy configuration - change tier, Accelerated Database Recovery
 
-1. Restrict Network access
+1. Restrict Network access with firewall-rules
   - Easy way: Portal
 2. Restrict Database access
 3. Encrypt Data
