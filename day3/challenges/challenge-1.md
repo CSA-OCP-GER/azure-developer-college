@@ -55,24 +55,30 @@ Create a Cosmos DB:
 ## Create a Partition Key ##
 
 Why do we need partitioning?
-    - Azure Cosmos containers have a minimum throughput of 400 request units per second (RU/s). When throughput is provisioned   on a database, minimum RUs per container is 100 request units per second (RU/s). Requests to the same partition key        can't  exceed the throughput that's allocated to a partition. If requests exceed the allocated throughput, requests are    rate-limited. So, it's important to pick a partition key that doesn't result in "hot spots" within your application.
-
+```
+    - Azure Cosmos containers have a minimum throughput of 400 request units per second (RU/s). When throughput is provisioned    on a database, minimum RUs per container is 100 request units per second (RU/s). Requests to the same partition key         can't  exceed the throughput that's allocated to a partition. If requests exceed the allocated throughput, requests are     rate-limited. So, it's important to pick a partition key that doesn't result in "hot spots" within your application.
+```
 How to choose a partiton key?
-    - Choose a partition key that has a wide range of values and access patterns that are evenly spread across logical           partitions. 
-    - Choose a partition key that spreads the workload evenly across all partitions and evenly over time. 
+```
+    - Choose a partition key that has a **wide range of values and access patterns that are evenly spread** across logical            partitions. 
+    - Choose a partition key that **spreads the workload evenly across all partitions and evenly** over time. 
     - Candidates for partition keys might include properties that appear frequently as a filter in your queries. Queries can     be efficiently routed by including the partition key in the filter predicate.
     - Create unique Partition Key
     - You can form a partition key by concatenating multiple property values into a single artificial partitionKey property.     These keys are referred to as synthetic keys. 
+```
     - For example, consider the following example document:
+    
     ```
-        - {
+        {
         "deviceId": "abc-123",
         "date": 2018
         }
+
     ```
     - For the previous document, one option is to set /deviceId or /date as the partition key. Use this option, if you want to   partition your container based on either device ID or date. Another option is to concatenate these two values into a       synthetic partitionKey property that's used as the partition key.
+
     ```
-        - {
+        {
         "deviceId": "abc-123",
         "date": 2018,
         "partitionKey": "abc-123-2018"
