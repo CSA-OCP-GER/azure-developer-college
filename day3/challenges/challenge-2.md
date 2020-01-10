@@ -31,9 +31,8 @@ You can either use the portal or the Azure Cloud Shell
 
 Use the Azure Cloud Shell
 1. Get to know the Database
-
-  ```az sql db list --resource-group [Name of your RG] | jq '[.[]|{name: .name}]'```
-  ```az sql db show --resource-group [Name of your RG] --name [Name of your SQL DB] | jq '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
+   ```az sql db list --resource-group [Name of your RG] | jq '[.[]|{name: .name}]'```
+   ```az sql db show --resource-group [Name of your RG] --name [Name of your SQL DB] | jq '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
 2. Connect to the DB
   ```az sql db show-connection-string --resource-group [Name of your RG] --client sqlcmd --name [Name of your SQL DB]```
   ```sqlcmd -S tcp ...```
