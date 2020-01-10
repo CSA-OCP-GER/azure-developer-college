@@ -1,0 +1,243 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkSecurityGroups_nsg_prod_adds": {
+            "defaultValue": "nsg-adds",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_prod_cmdb": {
+            "defaultValue": "nsg-cmdb",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_prod_cmapp": {
+            "defaultValue": "nsg-cmapp",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_prod_cmweb": {
+            "defaultValue": "nsg-cmweb",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_prod_cmaapp": {
+            "defaultValue": "nsg-cmaapp",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_prod_cmaweb": {
+            "defaultValue": "nsg-cmaweb",
+            "type": "String"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('networkSecurityGroups_nsg_prod_adds')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('networkSecurityGroups_nsg_prod_cmaapp')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('networkSecurityGroups_nsg_prod_cmapp')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('networkSecurityGroups_nsg_prod_cmaweb')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('networkSecurityGroups_nsg_prod_cmdb')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('networkSecurityGroups_nsg_prod_cmweb')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "Allow_from_internet_tcp80",
+                        "properties": {
+                            "description": "Allow connections from the internet to TCP/80",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "10.1.2.0/24",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [
+                            ],
+                            "destinationPortRanges": [
+                            ],
+                            "sourceAddressPrefixes": [
+                            ],
+                            "destinationAddressPrefixes": [
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Allow_RDP_from_VNet",
+                        "properties": {
+                            "description": "Allow RDP connections from internal network",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "10.1.2.0/24",
+                            "access": "Allow",
+                            "priority": 1010,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [
+                            ],
+                            "destinationPortRanges": [
+                            ],
+                            "sourceAddressPrefixes": [
+                            ],
+                            "destinationAddressPrefixes": [
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Override_65000",
+                        "properties": {
+                            "description": "Override any to any in Vnet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Deny",
+                            "priority": 4096,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [
+                            ],
+                            "destinationPortRanges": [
+                            ],
+                            "sourceAddressPrefixes": [
+                            ],
+                            "destinationAddressPrefixes": [
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2019-08-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_prod_cmweb'), '/Allow_from_internet_tcp80')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_prod_cmweb'))]"
+            ],
+            "properties": {
+                "description": "Allow connections from the internet to TCP/80",
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "80",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "10.1.2.0/24",
+                "access": "Allow",
+                "priority": 1000,
+                "direction": "Inbound",
+                "sourcePortRanges": [
+                ],
+                "destinationPortRanges": [
+                ],
+                "sourceAddressPrefixes": [
+                ],
+                "destinationAddressPrefixes": [
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2019-08-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_prod_cmweb'), '/Allow_RDP_from_VNet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_prod_cmweb'))]"
+            ],
+            "properties": {
+                "description": "Allow RDP connections from internal network",
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "3389",
+                "sourceAddressPrefix": "VirtualNetwork",
+                "destinationAddressPrefix": "10.1.2.0/24",
+                "access": "Allow",
+                "priority": 1010,
+                "direction": "Inbound",
+                "sourcePortRanges": [
+                ],
+                "destinationPortRanges": [
+                ],
+                "sourceAddressPrefixes": [
+                ],
+                "destinationAddressPrefixes": [
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2019-08-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_prod_cmweb'), '/Override_65000')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_prod_cmweb'))]"
+            ],
+            "properties": {
+                "description": "Override any to any in Vnet",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "VirtualNetwork",
+                "access": "Deny",
+                "priority": 4096,
+                "direction": "Inbound",
+                "sourcePortRanges": [
+                ],
+                "destinationPortRanges": [
+                ],
+                "sourceAddressPrefixes": [
+                ],
+                "destinationAddressPrefixes": [
+                ]
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
