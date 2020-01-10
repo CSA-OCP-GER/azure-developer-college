@@ -65,7 +65,7 @@ We are going to have to use either the Azure portal or PowerShell for parts of s
   ```Get-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees```
   ```Set-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -WeeklyRetention P8W -MonthlyRetention P5M -YearlyRetention P5Y -WeekOfYear 1```
   
-2. Restore a Database (only in theory)
+2. Restore a Database
 
   ```Restore-AzSqlDatabase -PointInTime [DateTime] -ResourceId [String] -ServerName [String] -TargetDatabaseName [String]```  or  ```az sql db restore```
   ```Get-AzSqlDeletedDatabaseBackup -DeletionDate [DateTime] -ResourceGroupName [String] -ServerName [String] -DatabaseName [String]```
