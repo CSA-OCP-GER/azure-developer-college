@@ -11,8 +11,8 @@
 
 Create a Cosmos DB:
 
-
-```- Create a resource group
+```
+- Create a resource group
   - westeurope
 - Add Cosmos DB
 - Create an unique Account Name
@@ -28,8 +28,8 @@ Create a Cosmos DB:
 
 - Select Data Explorer from the left navigation on your Azure Cosmos DB account page, and then select New Container.
 - In the Add container pane, enter the settings for the new container.
-
-``` - Database ID: name
+```
+  - Database ID: name
   - Throughput: 400
   - Container ID: Items
   - Partition key
@@ -38,7 +38,8 @@ Create a Cosmos DB:
 - In Data Explorer, expand the (name) database, and expand the Items container. Next, select Items, and then select New Item.
 - Add the following structure to the document on the right side of the Documents pane:
 
-``` {
+```
+    {
     "id": "1",
     "category": "personal",
     "name": "groceries",
@@ -57,14 +58,14 @@ Create a Cosmos DB:
 ## Create a Partition Key ##
 
 Why do we need partitioning?
-
-```    Azure Cosmos containers have a minimum throughput of 400 request units per second (RU/s). When throughput is provisioned        on a database, minimum RUs per container is 100 request units per second (RU/s). Requests to the same partition key             can't exceed the throughput that's allocated to a partition. If requests exceed the allocated throughput, requests are          rate-limited. So, it's important to pick a partition key that doesn't result in "hot spots" within your application.
+```
+    - Azure Cosmos containers have a minimum throughput of 400 request units per second (RU/s). When throughput is provisioned    on a database, minimum RUs per container is 100 request units per second (RU/s). Requests to the same partition key         can't  exceed the throughput that's allocated to a partition. If requests exceed the allocated throughput, requests are     rate-limited. So, it's important to pick a partition key that doesn't result in "hot spots" within your application.
 ```
 How to choose a partiton key?
 
 Choose a partition key:
-
-``` - that has a wide range of values and access patterns that are evenly spread across logical partitions. 
+```
+    - that has a wide range of values and access patterns that are evenly spread across logical partitions. 
     - that spreads the workload evenly across all partitions and evenly over time. 
     - that might include properties that appear frequently as a filter in your queries. 
       Queries can be efficiently routed by including the partition key in the filter predicate.
@@ -74,8 +75,9 @@ Choose a partition key:
 You can form a partition key by concatenating multiple property values into a single artificial partitionKey property.     These keys are referred to as synthetic keys. 
 
     - For example, consider the following example document:
- 
-   ```  {
+
+    ```
+        {
         "deviceId": "abc-123",
         "date": 2018
         }
@@ -83,7 +85,8 @@ You can form a partition key by concatenating multiple property values into a si
     ```
     - For the previous document, one option is to set /deviceId or /date as the partition key. Use this option, if you want to   partition your container based on either device ID or date. Another option is to concatenate these two values into a       synthetic partitionKey property that's used as the partition key.
 
-    ```   {
+    ```
+        {
         "deviceId": "abc-123",
         "date": 2018,
         "partitionKey": "abc-123-2018"
@@ -104,8 +107,8 @@ You can form a partition key by concatenating multiple property values into a si
     - Copy the script [ARM Template Cosmos DB](/cosmos.json)
     - Select Try it to open Azure Cloud Shell.
     - Right-click in the Azure Cloud Shell window, and then select Paste.
-
-    ```     read -p 'Enter the Resource Group name: ' resourceGroupName
+```
+            read -p 'Enter the Resource Group name: ' resourceGroupName
             read -p 'Enter the location (i.e. westeurope): ' location
             read -p 'Enter the account name: ' accountName
             read -p 'Enter the primary region (i.e. westus2): ' primaryRegion
@@ -136,38 +139,38 @@ You can form a partition key by concatenating multiple property values into a si
 ## Integrate Cosmos DB into Node.JS App ##
 
 - Open a command prompt, create a new folder named git-samples, then close the command prompt.
-
-``` md "C:\git-samples"
+```
+    md "C:\git-samples"
 
 ```
 - Open a git terminal window, such as git bash, and use the cd command to change to the new folder to install the sample app.
-
-``` cd "C:\git-samples"
+```
+    cd "C:\git-samples"
 ```
 - Run the following command to clone the sample repository. This command creates a copy of the sample app on your computer.
-
-``` git clone https://github.com/Azure-Samples/azure-cosmos-db-sql-api-nodejs-getting-started.git
+```
+    git clone https://github.com/Azure-Samples/azure-cosmos-db-sql-api-nodejs-getting-started.git
 ```
 - The CosmosClient object is initialized.
-
-``` const client = new CosmosClient({ endpoint, key });
+```
+    const client = new CosmosClient({ endpoint, key });
 ```
 - Create a new Azure Cosmos database.
-
-``` const { database } = await client.databases.createIfNotExists({ id: databaseId });
+```
+    const { database } = await client.databases.createIfNotExists({ id: databaseId });
 ```
 - A new container (collection) is created within the database.
-
-``` const { container } = await client.database(databaseId).containers.createIfNotExists({ id: containerId });
+```
+    const { container } = await client.database(databaseId).containers.createIfNotExists({ id: containerId });
 ```
 - An item (document) is created
-
-``` const { item } = await client.database(databaseId).container(containerId).items.create(itemBody);
+```
+    const { item } = await client.database(databaseId).container(containerId).items.create(itemBody);
 ```
 
 - A SQL query over JSON is performed on the family database. The query returns all the children of the "Anderson" family.
-
-``` const querySpec = {
+```
+    const querySpec = {
   	query: 'SELECT VALUE r.children FROM root r WHERE r.lastName = @lastName',
   	parameters: [
   	  {
@@ -198,12 +201,13 @@ You can form a partition key by concatenating multiple property values into a si
 
 - Copy your URI value from the portal (using the copy button) and make it the value of the endpoint key in config.js.
 
-``` config.endpoint = "https://FILLME.documents.azure.com"
 ```
-
+  config.endpoint = "https://FILLME.documents.azure.com"
+```
 - Then copy your PRIMARY KEY value from the portal and make it the value of the config.key in config.js. You've now updated      your app with all the info it needs to communicate with Azure Cosmos DB.
 
-```    config.key = "FILLME"
+```
+    config.key = "FILLME"
 ```
 
 ## Create Azure Cosmos DB Database and Container
