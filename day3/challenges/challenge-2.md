@@ -100,7 +100,9 @@ We are going to have to use either the Azure portal or PowerShell for parts of s
 
 ## Use ARM Template for automated deployment ##
 
-- TODO: Alex Doku
+https://github.com/Azure/azure-quickstart-templates/tree/master/201-sql-database-transparent-encryption-create
+
+https://docs.microsoft.com/de-de/azure/sql-database/sql-database-resource-manager-samples?tabs=single-database
 
 
 ## Clean up ##
