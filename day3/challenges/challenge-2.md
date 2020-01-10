@@ -92,6 +92,7 @@ AD authentication:
   - Mask data
   
   ```Set-AzSqlDatabaseTransparentDataEncryption -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
+  ```Get-AzSqlDatabaseTransparentDataEncryptionActivity -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
   
 4. Monitor the DB
   - activate Azrue SQL DB Monitoring
