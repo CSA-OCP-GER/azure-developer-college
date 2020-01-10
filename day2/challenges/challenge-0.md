@@ -80,6 +80,61 @@ $ vue --version
 3.8.4
 ```
 
+## Azure CLI ##
+
+We will also be using the Azure command line interface to create and interact with reosurces running in Azure. To install it, go to <https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest> and choose your platform.
+
+When finished, login to your Azure account from the command line:
+
+```shell
+$ az login
+You have logged in. Now let us find all the subscriptions to which you have access...
+```
+
+A browser window ill open, login to Azure and go back to the command prompt. Your active subscription will be shown as JSON, e.g.:
+
+```json
+{
+  "cloudName": "AzureCloud",
+  "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "isDefault": false,
+  "name": "Your Subscription Name",
+  "state": "Enabled",
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "user": {
+    "name": "xxx@example.com",
+    "type": "user"
+  }
+}
+```
+
+If you have multiple subscriptions, make sure your are working with the correct one! 
+
+```shell
+$ az account show
+{
+  "cloudName": "AzureCloud",
+  "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "isDefault": false,
+  "name": "Your Subscription Name",
+  "state": "Enabled",
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "user": {
+    "name": "xxx@example.com",
+    "type": "user"
+  }
+}
+```
+
+If that is not the correct one, follow the steps below:
+
+```shell
+$ az account list -o table
+[the list of available subscriptions is printed]
+
+$ az account set -s <SUBSCRIPTIONID_YOU_WANT_TO_USE>
+```
+
 ## Visual Studio Code ##
 
 To work with all the smaples provided in this workshop, you will need an IDE. To target a wide range of developers/architects, we will be using Visual Stduio Code as it runs cross-platform. 
