@@ -1,4 +1,4 @@
-# Challenge 0: Create a virtual IPv4 network for your first VM.
+# Challenge 0: Networking: Create a Virtual Network (IPv4) for your first VM.
 
 [back](../../readme.md)
 

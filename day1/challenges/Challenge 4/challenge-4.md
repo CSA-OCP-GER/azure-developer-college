@@ -1,8 +1,7 @@
-# Challenge 4: 
+# Challenge 4: VM - Managed Disks: Attach a Data Disk to a VM - Extend and Retype it.
 [back](../../readme.md)  
 
 ## Here is what you will learn ##
 
-- How to backup an azure vm using the azure backup service.
-- Create a backup vault
-- Recover a file
+- Add data disk -> partition -> format it -> resize -> retype disk 
+   -> perftest a disk -> iometer/ diskspd -> stripe disk

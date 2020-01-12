@@ -7,7 +7,7 @@
             "type": "String"
         },
         "vmName": {
-            "defaultValue": "vmadds01",
+            "defaultValue": "vmweb01",
             "type": "string"
         },
         "adminUser": {
@@ -43,12 +43,12 @@
     },
     "variables": {
         "virtualNetworks_azurevnet_name": "azurevnet",
-        "DCSubnet": "snet-adds",
+        "VMSubnet": "snet-testing",
         "storageAccountName": "[toLower(concat(parameters('vmName'),substring(uniqueString(resourceGroup().id),0,4)))]",
         "vmNicName": "[concat(parameters('vmName'),'-nic1')]",
         "nsgName": "[concat(parameters('vmName'),'-nsg')]",
         "PIPName": "[concat(parameters('vmName'),'-pip')]",
-        "availabilitySetName": "vmadds-avset"
+        "availabilitySetName": "vmweb-avset"
     },
     "resources": [
         {
@@ -274,13 +274,12 @@
                     {
                         "name": "ipconfig1",
                         "properties": {
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "10.1.253.4",
+                            "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses/', variables('PIPName'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_azurevnet_name'), variables('DCSubnet'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_azurevnet_name'), variables('VMSubnet'))]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -342,19 +341,7 @@
                         "managedDisk": {
                             "storageAccountType": "[parameters('DiskSku')]"
                         }
-                    },
-                    "dataDisks": [
-                        {
-                            "diskSizeGB": 16,
-                            "lun": 0,
-                            "createOption": "Empty",
-                            "caching": "None",
-                            "name": "[concat(parameters('vmName'), '-datadisk1')]",
-                            "managedDisk": {
-                                "storageAccountType": "[parameters('DiskSku')]"
-                            }
-                        }
-                    ]
+                    }
                 },
                 "networkProfile": {
                     "networkInterfaces": [

@@ -1,4 +1,4 @@
-# Challenge 1: Configure PowerShell for Azure Administration & Create a VM Using PowerShell.
+# Challenge 1: PowerShell: Configure PowerShell for Azure Administration & Create a VM Using PowerShell.
 
 [back](../../readme.md)
 

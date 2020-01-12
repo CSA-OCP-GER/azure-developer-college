@@ -1,4 +1,4 @@
-# Challenge 3: Backup Your VM Using Azure Backup 
+# Challenge 3: VM - Azure Backup: Save your VM state
 [back](../../readme.md)  
 
 ## Here is what you will learn ##
@@ -10,7 +10,7 @@
 
 ## Create a Backup Vault ##
 ```
-[Azure Portal] -> Resource Groups -> 'rg-contosomortgage-loan' -> 'vmadds01'
+[Azure Portal] -> Resource Groups -> 'rg-contosomortgage-www' -> 'vmadds01'
   -> Operations -> Backup
 
 Recovery Services vault -> 'Create new' -> 'vault...'
