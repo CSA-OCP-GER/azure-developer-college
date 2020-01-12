@@ -10,7 +10,7 @@
 
 ## Create a Backup Vault ##
 ```
-[Azure Portal] -> Resource Groups -> 'rg-contosomortgage-www' -> 'vmadds01'
+[Azure Portal] -> Resource Groups -> 'rg-contosomortgage-www' -> 'vmweb01'
   -> Operations -> Backup
 
 Recovery Services vault -> 'Create new' -> 'vault...'
@@ -56,3 +56,6 @@ The backup is _'mounted'_ as drive to your local machine via the internet.
 Azure Portal -> Virtual Machines -> vmadds01 -> Operations -> Backup -> File Recovery  
   
 ![File Restore](enableBackupFileRestore.PNG)
+
+
+[back](../../readme.md)
