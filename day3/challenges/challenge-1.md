@@ -15,11 +15,11 @@
 Create a Cosmos DB:
 
 ```
-- Create a resource group
+- Create a resource group - "cosmosappdevcollege"
   - westeurope
 - Add Cosmos DB
 - Create an unique Account Name
-- Select API (Core SQL/MongoDB API/ Cassandra/Azure Table/Gremlin(graph))
+- Select API - Core SQL (Apache Spark: None)
 - Location: westeurope
 - Geo-Redundancy: Disable
 - Multi-region Writes: Enable
@@ -35,9 +35,9 @@ Create a Cosmos DB:
   - Database ID: name
   - Throughput: 400
   - Container ID: Items
-  - Partition key
+  - Partition key: id
 ```
-- Hit "Create"
+- Hit "Ok"
 - In Data Explorer, expand the (name) database, and expand the Items container. Next, select Items, and then select New Item.
 - Add the following structure to the document on the right side of the Documents pane:
 
@@ -47,7 +47,10 @@ Create a Cosmos DB:
     "category": "personal",
     "name": "groceries",
     "description": "Pick up apples and strawberries.",
-    "isComplete": false
+    "isComplete": false,
+    "todoId": "abc-123",
+    "date": 2020
+
     }
 ```
 - Hit "Save"
@@ -56,7 +59,7 @@ Create a Cosmos DB:
 
 - At the top of the Documents tab in Data Explorer, review the default query SELECT * FROM c. This query retrieves and displays all documents in the collection in ID order.
 
-- To change the query, select Edit Filter, replace the default query with ORDER BY c._ts DESC, and then select Apply Filter.
+- To change the query, select Edit Filter, replace the default query with, and then select Apply Filter.
 
 ## Create a Partition Key ##
 
@@ -85,8 +88,8 @@ You can form a partition key by concatenating multiple property values into a si
 
     ```
         {
-        "deviceId": "abc-123",
-        "date": 2018
+        "todoId": "abc-123",
+        "date": 2020
         }
 
     ```
@@ -94,9 +97,9 @@ You can form a partition key by concatenating multiple property values into a si
 
     ```
         {
-        "deviceId": "abc-123",
-        "date": 2018,
-        "partitionKey": "abc-123-2018"
+        "todoId": "abc-123",
+        "date": 2020
+        "partitionKey": "abc-123-2020"
         }
     ```
 
@@ -111,38 +114,29 @@ You can form a partition key by concatenating multiple property values into a si
   either via PowerShell or Azure CLI.
 
 - To use Azure CLI to deploy the Azure Resource Manager template:
-    - Copy the script [ARM Template Cosmos DB](/cosmos.json)
+    
+    - Copy the commands below
     - Select Try it to open Azure Cloud Shell.
     - Right-click in the Azure Cloud Shell window, and then select Paste.
 ```
-            read -p 'Enter the Resource Group name: ' resourceGroupName
-            read -p 'Enter the location (i.e. westeurope): ' location
-            read -p 'Enter the account name: ' accountName
-            read -p 'Enter the primary region (i.e. westus2): ' primaryRegion
-            read -p 'Enter the secondary region (i.e. easteurope): ' secondaryRegion
-            read -p 'Enter the database name: ' databaseName
-            read -p 'Enter the shared database throughput: sharedThroughput
-            read -p 'Enter the first shared container name: ' sharedContainer1Name
-            read -p 'Enter the second shared container name: ' sharedContainer2Name
-            read -p 'Enter the dedicated container name: ' dedicatedContainer1Name
-            read -p 'Enter the dedicated container throughput: dedicatedThroughput
+        az group create --name <InsertRGName> --location westeurope
+        az group deployment create --resource-group <InsertRGName> \
+        --template-uri https://raw.githubusercontent.com/azure/azure-quickstart-templates/master/101-cosmosdb-sql/azuredeploy.json \
+        --parameters accountName=<InsertAC-Name> \
+        primaryRegion=westeurope \
+        secondaryRegion=northeurope \
+        databaseName=<InsertName> \
+        sharedThroughput=400 \
+        sharedContainer1Name=FirstToDo \
+        sharedContainer2Name=SecondToDo \
+        dedicatedContainer1Name=FirstToDo1 \
+        dedicatedThroughput=400
 
-            az group create --name $resourceGroupName --location $location
-            az group deployment create --resource-group $resourceGroupName \
-            --template-uri https://raw.githubusercontent.com/azure/azure-quickstart-templates/master/101-cosmosdb-sql/azuredeploy.json \
-            --parameters accountName=$accountName \
-            primaryRegion=$primaryRegion \
-            secondaryRegion=$secondaryRegion \
-            databaseName=$databaseName \
-            sharedThroughput=$sharedThroughput \
-            sharedContainer1Name=$sharedContainer1Name \
-            sharedContainer2Name=$sharedContainer2Name \
-            dedicatedContainer1Name=$dedicatedContainer1Name \
-            dedicatedThroughput=$dedicatedThroughput
-
-            az cosmosdb show --resource-group $resourceGroupName --name accountName --output tsv
+        az cosmosdb show --resource-group <InsertRGName>  --name <InsertACName> --output tsv
 
 ```
+- Look at a Sample Azure Resource Management Script [ARM Template Cosmos DB](/cosmos.json)
+
 ## Integrate Cosmos DB into Node.JS App ##
 
 - Open a command prompt, create a new folder named git-samples, then close the command prompt.
@@ -158,50 +152,60 @@ You can form a partition key by concatenating multiple property values into a si
 ```
     git clone https://github.com/Azure-Samples/azure-cosmos-db-sql-api-nodejs-getting-started.git
 ```
-- The CosmosClient object is initialized.
+- change into the directory
 ```
-    const client = new CosmosClient({ endpoint, key });
+    cd .\azure-cosmos-db-sql-api-nodejs-getting-started\
 ```
-- Create a new Azure Cosmos database.
+- open Visual Studio Code
 ```
-    const { database } = await client.databases.createIfNotExists({ id: databaseId });
+    code .
 ```
-- A new container (collection) is created within the database.
-```
-    const { container } = await client.database(databaseId).containers.createIfNotExists({ id: containerId });
-```
-- An item (document) is created
-```
-    const { item } = await client.database(databaseId).container(containerId).items.create(itemBody);
-```
+- Go to Visual Studio Code and open the file app.js
+- In app.js: 
+    - The CosmosClient object is initialized.
+    ```
+        const client = new CosmosClient({ endpoint, key });
+    ```
+    - A new Azure Cosmos database is created.
+    ```
+        const { database } = await client.databases.createIfNotExists({ id: databaseId });
+    ```
+    - A new container (collection) is created within the database.
+    ```
+        const { container } = await client.database(databaseId).containers.createIfNotExists({ id: containerId });
+    ```
+    - An item (document) is created
+    ```
+        const { item } = await client.database(databaseId).container(containerId).items.create(itemBody);
+    ```
 
-- A SQL query over JSON is performed on the family database. The query returns all the children of the "Anderson" family.
-```
-    const querySpec = {
-  	query: 'SELECT VALUE r.children FROM root r WHERE r.lastName = @lastName',
-  	parameters: [
-  	  {
-  		name: '@lastName',
-  		value: 'Andersen'
-  	  }
-  	]
-    }
-    const { resources: results } = await client
-  	.database(databaseId)
-  	.container(containerId)
-  	.items.query(querySpec)
-  	.fetchAll()
-    for (var queryResult of results) {
-  	let resultString = JSON.stringify(queryResult)
-  	console.log(`\tQuery returned ${resultString}\n`)
-    }
-```
+    - A SQL query over JSON is performed on the family database. The query returns all the children of the "Anderson" family.
+    ```
+        const querySpec = {
+        query: 'SELECT VALUE r.children FROM root r WHERE r.lastName = @lastName',
+        parameters: [
+        {
+            name: '@lastName',
+            value: 'Andersen'
+        }
+        ]
+        }
+        const { resources: results } = await client
+        .database(databaseId)
+        .container(containerId)
+        .items.query(querySpec)
+        .fetchAll()
+        for (var queryResult of results) {
+        let resultString = JSON.stringify(queryResult)
+        console.log(`\tQuery returned ${resultString}\n`)
+        }
+    ```
 
 ## Update your connection string ##
 
 - Update your connection string
 
-- In the Azure portal, in your Azure Cosmos account, in the left navigation click Keys, and then click Read-write Keys. 
+- In the Azure portal, in your Azure Cosmos account **YourAccountName**, in the left navigation click Keys, and then click Read-write Keys. 
   You'll use the copy buttons on the right side of the screen to copy the URI and Primary Key into the config.js file in the next step.
 
 - Open the config.js file.
@@ -217,12 +221,14 @@ You can form a partition key by concatenating multiple property values into a si
     config.key = "FILLME"
 ```
 
+- Optionally you can ran npm install and npm start to run the app
+
 ## Create Azure Cosmos DB Database and Container
 
 *You will now create a database and container within your Azure Cosmos DB account.*
 
 1. On the left side of the portal, click the **Resource groups** link.
-2. In the **Resource groups** blade, locate and select the **yourResourceGroup** *Resource Group*.
+2. In the **Resource groups** blade, locate and select the **yourResourceGroup** (which you just created).
 3. In the **yourResourceGroup** blade, select the **Azure Cosmos DB** account you recently created.
 4. In the **Azure Cosmos DB** blade, locate and click the **Overview** link on the left side of the blade. At the top click the **Add Container** button.
 
@@ -256,12 +262,11 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 
 3. Click **Add** to add a new resource
 
-4. Search for **Data Factory** and select it. Create a new **Data Factory**. You should name this data factory **importnutritiondata** with a unique number appended and select the relevant Azure subscription. You should ensure your existing **yourResourceGroup** resource group is selected as well as a Version **V2**. Select **westeurope** as the region. Do not select **Enable GIT** (this may be checked by default). Click **create**.
+4. Search for **Data Factory** and select it. Create a new **Data Factory**. You should name this data factory **ImportNutritionDataAppdevColleg(yourname)** with a unique number appended and select the relevant Azure subscription. You should ensure your existing **yourResourceGroup** resource group is selected as well as a Version **V2**. Select **westeurope** as the region. Do **not** select **Enable GIT** (this may be checked by default). Click **create**.
 
 5. After creation, open your newly created Data Factory. Select **Author & Monitor** and you will launch ADF. You should see a screen similar to the screenshot below. Select **Copy Data**. We will be using ADF for a one-time copy of data from a source JSON file on Azure Blob Storage to a database in Cosmos DB’s SQL API. ADF can also be used for more frequent data transfers from Cosmos DB to other data stores.
 
-6. Edit basic properties for this data copy. You should name the task **ImportNutrition** and select to **Run once now**. Do not select **enable git**.
-
+6. Edit basic properties for this data copy. You should name the task **ImportNutrition** and select to **Run once now**.
 
 7. **Create a new connection** and select **Azure Blob Storage**. We will import data from a json file on Azure Blob Storage. In addition to Blob Storage, you can use ADF to migrate from a wide variety of sources. We will not cover migration from these sources in this tutorial.
 
@@ -329,8 +334,6 @@ Querying JSON with SQL allows Azure Cosmos DB to combine the advantages of a leg
 Azure Cosmos DB supports strict JSON items only. The type system and expressions are restricted to deal only with JSON types. For more information, see the [JSON specification](https://www.json.org/).
 
 ## Running your first query
-
-In this lab section, you will query your **FoodCollection**. If you prefer, you can also complete all lab steps using the [Azure Cosmos DB Query Playground](https://www.documentdb.com/sql/demo).
 
 You will begin by running basic queries with `SELECT`, `WHERE`, and `FROM` clauses.
 
@@ -612,11 +615,6 @@ FROM c
 JOIN n IN c.nutrients
 WHERE n.units= "mg" AND n.nutritionValue > 0
 ```
-
-> If this is your final lab, follow the steps in [Removing Lab Assets](11-cleaning_up.md) to remove all lab resources. 
-
-
-
 
 # Indexing in Azure Cosmos DB
 
