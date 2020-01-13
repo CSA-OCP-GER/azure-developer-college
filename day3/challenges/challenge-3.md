@@ -47,7 +47,7 @@ Azure Search now indexed all our PDFs via the `pdf-blob-indexer` into the `pdf-i
 
 [Querying data](https://docs.microsoft.com/en-us/azure/search/search-query-overview) in Azure Search can get quite sophisticated, but for our example here, we can just put in a simple query:
 
-![alt text](day3/azure_search_explorer_example.png "Azure Search Query Example")
+![alt text](../day3/azure_search_explorer_example.png "Azure Search Query Example")
 
 Using double-quotes `"..."` will search for the whole string, rather than each substring. If we want to make a search term mandatory, we need to prefix a `+`. There is a billion more things we can do, but for now, we'll see that we get one document back, as one only one PDF contained the term `Content Moderator`:
 
@@ -84,7 +84,7 @@ Once we're done, we'll repeat the steps from before, `Import Dataset`, walk thro
 
 Next, we need to define the skillset. In our case, we'll enable all features:
 
-![alt text](day3/cognitive_search_skillset.png "Defining the skillset")
+![alt text](../day3/cognitive_search_skillset.png "Defining the skillset")
 
 We might not want to make our `content` field retrievable, as it does not necessarily provide a lot of value - however, we want to keep it `searchable`, so that Azure Search can do its job. Since we have the original files in Blob and the location stored in `metadata_storage_path`, we can always just retrieve the original file.
 
