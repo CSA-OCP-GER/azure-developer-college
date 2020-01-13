@@ -40,7 +40,7 @@ Now it's time to start working on UserStory "S2". Go to Azure Boards and move th
 
 ### Setup master branch's policies to require a PullRequest and WorkItems
 
-To protect your branch you need to configure branch policies. [Here] you can find a description how to setup policies for your master branch to require a *PullRequest* and a link to a *Work Item*.
+To protect your branch you need to configure branch policies. [Here](https://docs.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops) you can find a description how to setup policies for your master branch to require a *PullRequest* and a link to a *Work Item*.
 
 ### Create a feature branch to complete UserStory S2
 
@@ -48,7 +48,7 @@ There are several ways to create a feature branch. You can either use the comman
 
 #### Command line
 
-Open a shell an navigate to root directory of your ADC's repository and use the command as follow to create a feature branch:
+Open a shell and navigate to root directory of your ADC's repository and use the command as follow to create a feature branch:
 
 ```Shell
 git branch features/changetitle
@@ -72,13 +72,14 @@ Here VS Codes provides you the information on which branch you are working on.
 Open the file day4/apps/frontend/scmfe/src/components/home/Home.vue, change the title and save the file. 
 
 #### Commit the changes to your local branch.
-Now you can commit the changes you made to your local branch. Yo can either commit the changes by using the command line or VS Code.
+Now you can commit the changes you made to your local branch. You can either commit the changes by using the command line or VS Code.
 In VS Code click the Source Control icon (there is already a blue bubble displaying that informs you that you have made changes to the repository). Enter a comment and commit your changes.
 If you want to use the command line do the following:
 ```Shell
 git add .
 git commit -m "Comment"
 ```
+You can use The ["Azure Repos"](https://marketplace.visualstudio.com/items?itemName=ms-vsts.team) extension for VS Code to manage your Azure Repos from VS Code. After you have installed the extension you first have to signin to your Azure DevOps Project. Go to View->Command Palette and then type "Team" and you will get a dropdown with all available commands for Azure DevOps. Select *"Team:Signin"* and use the device login to signin to your Azure DevOps Project. Alternative you can create a *"Personal access token"* and use it for authentication. Have a look [here](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page) and read the instructions how to setup a *"Personal Access Token"*.
 
 #### Push your local branch to the remote repository
 At this  moment your changes are only available in your local branch. To make the changes available for all your team members you have to push your changes to the remote repository. You can use either VS Code or the command line to push your changes.
@@ -95,6 +96,10 @@ Now navigate to your Azure Repo and have a look at the branches. Your branch is 
 
 To create a *PullRequest* follow the instructions [here](https://docs.microsoft.com/en-us/azure/devops/repos/git/pullrequest?view=azure-devops#create-a-pull-request-1). Select the branch "features/changetitle" to be merged into the master and link the UseStory *S2* to the PullRequest. 
 
+After you have completed the *PullRequest* you have completed the UserStory "S2". Go to Azure Boards and set the story to state *completed*. Maybe it is already set to completed depending on the choice you made during the completion of the PullRequest. Have a look at the story. You will see that the UserStory was linked to the code changes and to the PullRequest:
+![UserStory Links](./images/userstory-code-links.png) 
+
+__Congratulations__ you have completed UserStory S2!
 
 
 
