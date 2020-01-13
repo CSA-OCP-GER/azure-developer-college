@@ -509,3 +509,6 @@ Query the container's prediction endpoint
 
 Stop the container
 - To shut down the container, in the command-line environment where the container is running, select Ctrl+C
+
+
+## Optional: Intelligent Kiosk ##

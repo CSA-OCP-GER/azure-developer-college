@@ -993,3 +993,7 @@ You should now be able to run the query. After completing the lab, you can [lear
 1. Close the **Cloud Shell** prompt at the bottom of the portal.
 
 1. Close your browser application.
+
+## Optional: Cosmos DB Change Feed ##
+
+![Azure Cosmos DB Change Feed](https://github.com/CosmosDB/labs/blob/master/dotnet/labs/08-change_feed_with_azure_functions.md)
