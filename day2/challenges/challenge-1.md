@@ -193,22 +193,104 @@ $ az webapp create -g myFirstWebApps-rg -p myFirstWebAppsPlan -n myFirstWebAppDe
 }
 ```
 
+The last step we need to be have the same environment like when we created everything via the portal, is to add Application Insights.
+
+The Azure CLI Application Insights component is still in preview. To access it, you first need to run:
+
+```shell
+$ az extension add -n application-insights
+
+The installed extension 'application-insights' is in preview.
+```
+
+Now, let's create the AppInsights component for our application.
+
+```shell
+$ az monitor app-insights component create --app myFirstWebAppsAppIn --location westeurope --kind web -g myFirstWebApps-rg  --application-type web
+
+{
+  "appId": "14f1a266-629c-44aa-ad0f-9e09bed00f71",
+  "applicationId": "myFirstWebAppsAppIn",
+  "applicationType": "web",
+  "creationDate": "2020-01-13T06:23:58.761173+00:00",
+  "etag": "\"0500a71d-0000-0200-0000-5e1c0cfe0000\"",
+  "flowType": "Bluefield",
+  "hockeyAppId": null,
+  "hockeyAppToken": null,
+  "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myFirstWebApps-rg/providers/microsoft.insights/components/myFirstWebAppsAppIn",
+  "instrumentationKey": "8bfd7511-d6ad-4ea8-9a10-d0db786ec415",
+  "kind": "web",
+  "location": "westeurope",
+  "name": "myFirstWebAppsAppIn",
+  "provisioningState": "Succeeded",
+  "requestSource": "rest",
+  "resourceGroup": "myFirstWebApps-rg",
+  "samplingPercentage": null,
+  "tags": {},
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "type": "microsoft.insights/components"
+}
+```
+
+Add the Application Insights instrumentation key to your WebApp. Therefore, use the instrumentation key from the above output in the next command.
+
+```shell
+$ az webapp config appsettings set --settings APPINSIGHTS_INSTRUMENTATIONKEY=<YOUR_INSTRUMENTATION_KEY> -n myFirstWebAppDevCollege -g myFirstWebApps-rg
+```
+
+Now, we are all set to add a sample application.
+
 ## Create a sample application ##
+
+We will use a .NET Core MVC application to demonstrate the deployment process to an Azure Web App. So first, let's create a demo application.
+
+Create a local folder called *devcollege* and open it in the comannd line. CD into that folder and execute:
 
 ```shell
 $ dotnet new mvc -o myFirstCoreApp
+
+The template "ASP.NET Core Web App (Model-View-Controller)" was created successfully.
+This template contains technologies from parties other than Microsoft, see https://aka.ms/aspnetcore/3.0-third-party-notices for details.
+
+Processing post-creation actions...
+Running 'dotnet restore' on myFirstCoreApp/myFirstCoreApp.csproj...
+  Restore completed in 60.34 ms for /Users/christiandennig/dev/myFirstCoreApp/myFirstCoreApp.csproj.
+
+Restore succeeded.
 ```
 
-Open VS Code: code .
-Get familiar with the environment
-Have a look at the controller HomeController
-Set a breakpoint (F9) on method public IActionResult Index() in Controllers/HomeController.cs
+### Visual Studio Code ###
 
-Press F5 - if VS Code asks you about the environment, choose .NET Core
+After the wizard has finished, cd into the new folder *myFirstCoreApp* and open it in VS Code:
 
-Open th Debug Tools
+```shell
+$ code .
+```
+
+![vscode](./img/vscode_start.png "vscode")
+
+Get familiar with the environment and have a look at the controller HomeController.
+
+Set a breakpoint (F9) on method **public IActionResult Index()** in Controllers/HomeController.cs
+
+Press F5 - if VS Code asks you about the environment, choose *.NET Core*
+
+The project will now be built and after that, your browser will point to *https:/localhost:5001*.
+
+#### Optional / Workaround ####
+
+> Here is a workaround, if port *5001* is blocked on your machine.
+
+Open file *launch.json* in the folder *.vscode* and add the env variable **ASPNETCORE_URLS** with a value that works for you.
+
+Example:
+
+![vscode-launch](./img/vscode_launch.png "vscode-launch")
+
+### Debug Tools ###
 
 When the breakpoint gets hit, get familiar with the tools of the debugger.
+
 Open Views/Home/Index.cshtml and change the welcome text to "Welcome to your first WebApp".
 Run it again locally and check, if the changes appear.
 
@@ -242,4 +324,8 @@ Now check, that the production slot serves the new version of the website.
 
 ## House Keeping ##
 
-xxx
+Remove the sample resource group.
+
+```shell
+$ az group delete -n myFirstWebApps-rg
+```
