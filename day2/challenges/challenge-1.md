@@ -291,33 +291,58 @@ Example:
 
 When the breakpoint gets hit, get familiar with the tools of the debugger.
 
-Open Views/Home/Index.cshtml and change the welcome text to "Welcome to your first WebApp".
+![vscode-debug](./img/vscode_debug.png "vscode-debug")
+
+Open *Views/Home/Index.cshtml* and change the welcome text to "Welcome to the Azure Developer College".
+
 Run it again locally and check, if the changes appear.
 
+![browser-welcome](./img/browser_welcome.png "browser-welcome")
+
+## Deploy the sample app to Azure ##
+
 Now let's deploy the webapp to Azure.
-Add Azure App Service Extension: https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice
-Find your webapp in the extension and right-click --> Deploy to Web App…
-After a few seconds the browser will show you your first web app running in Azure
 
+If you haven't done so far, add the Azure App Service Extension (see: [Challenge 0 - Setup your system](./challenge-0.md))
 
-PORTAL
+Find your webapp in the extension and right-click --> Deploy to Web App...
+
+![vscode-deploy](./img/vscode_deploy.png "vscode-deploy")
+
+![vscode-deploying](./img/vscode_deploying.png "vscode-deploying")
+
+After a few seconds the browser will show you your first web app running in Azure.
+
+## Working with Deployment Slots ##
 
 Open your web app in the portal
 Got to "Deployment Slots" and create a new slot called "Staging" (Clone settings from your production slot)
 When finished, go back to VS Code
 
-LOCAL/VS CODE
+## Deploy sample application to Staging slot ##
 
-Open Views/Home/Index.cshtml again and change the welcome text to "Welcome to your first WebApp - this time with slots!".
-Find your webapp in the Azure AppService extension, drill down to slots and right-click --> Deploy to Slot…
+Open *Views/Home/Index.cshtml* again and change the welcome text to "Welcome to the Azure Developer College - this time with slots!".
 
-PORTAL
+Check that your local development environment works as expected.
 
-Click on the newly created slot "Staging" and copy the URL in the overview blade.
+To deploy the application to the **Staging** slot, find your webapp in the Azure AppService extension, drill down to *slots* and right-click --> Deploy to Slot...
+
+### Show Staging application ###
+
+Click on the newly created slot "Staging" in the portal and copy the URL in the overview blade.
+
+IMG of slot
+
 Open your browser, point it to the URL and check, if the headline contains the new text.
+
+IMG of staging browser
+
 Also check the production slot (URL without "-staging")
 
-Now if everything works as expected, go back to "Deployment Slots" and click on "Swap" (selecting the staging slot as source). 
+IMG of production browser
+
+Now if everything works as expected, go back to "Deployment Slots" and click on "Swap" (selecting the staging slot as source).
+
 Click "Swap" at the bottom of the screen.
 
 Now check, that the production slot serves the new version of the website.
