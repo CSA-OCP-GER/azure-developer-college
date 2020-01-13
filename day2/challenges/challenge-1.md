@@ -48,7 +48,7 @@ Open the web app in your browser.
 
 ### Option 2: Azure CLI ###
 
-If you have created the web application already with option 1, got to the portal and delete the resource group - including all the newly created resources. We will be creating the exact same resources now with the Azure CLI.
+If you have created the web application already with option 1, go to the portal and delete the resource group - including all the newly created resources. We will be creating the exact same resources now with the Azure CLI.
 
 First, let's create the resource group.
 
@@ -116,6 +116,7 @@ When the App Service Plan has been created, we can now add the Web App.
 
 ```shell
 $ az webapp create -g myFirstWebApps-rg -p myFirstWebAppsPlan -n myFirstWebAppDevCollege
+
 {
   "availabilityState": "Normal",
   "clientAffinityEnabled": true,
@@ -130,7 +131,7 @@ $ az webapp create -g myFirstWebApps-rg -p myFirstWebAppsPlan -n myFirstWebAppDe
     "myfirstwebappdevcollege.azurewebsites.net",
     "myfirstwebappdevcollege.scm.azurewebsites.net"
   ],
-  "ftpPublishingUrl": "ftp://waws-prod-am2-291.ftp.azurewebsites.windows.net/site/wwwroot",
+  "ftpPublishingUrl": "ftp://waws-prod-am2-217.ftp.azurewebsites.windows.net/site/wwwroot",
   "geoDistributions": null,
   "hostNameSslStates": [
     {
@@ -169,12 +170,12 @@ $ az webapp create -g myFirstWebApps-rg -p myFirstWebAppsPlan -n myFirstWebAppDe
   "isDefaultContainer": null,
   "isXenon": false,
   "kind": "app",
-  "lastModifiedTimeUtc": "2020-01-10T13:43:01.480000",
+  "lastModifiedTimeUtc": "2020-01-13T13:17:15.623333",
   "location": "West Europe",
   "maxNumberOfWorkers": null,
   "name": "myFirstWebAppDevCollege",
-  "outboundIpAddresses": "13.69.68.20,168.63.5.211,40.118.61.62,23.97.145.200,40.114.195.244",
-  "possibleOutboundIpAddresses": "13.69.68.20,168.63.5.211,40.118.61.62,23.97.145.200,40.114.195.244,40.113.154.23,40.115.42.0,13.94.147.210,168.63.14.190,40.113.142.137",
+  "outboundIpAddresses": "137.117.218.101,137.117.210.101,137.117.214.210,137.117.214.88,137.117.212.13",
+  "possibleOutboundIpAddresses": "137.117.218.101,137.117.210.101,137.117.214.210,137.117.214.88,137.117.212.13,137.117.208.108,137.117.208.41,137.117.211.152",
   "redundancyMode": "None",
   "repositorySiteName": "myFirstWebAppDevCollege",
   "reserved": false,
@@ -313,11 +314,17 @@ Find your webapp in the extension and right-click --> Deploy to Web App...
 
 After a few seconds the browser will show you your first web app running in Azure.
 
+![browser-webapp](./img/browser_webappdevcollege.png "browser-webapp")
+
 ## Working with Deployment Slots ##
 
-Open your web app in the portal
-Got to "Deployment Slots" and create a new slot called "Staging" (Clone settings from your production slot)
-When finished, go back to VS Code
+Open your web app in the portal and go to "Deployment Slots".
+
+Create a new slot called "Staging" (choose clone settings from your production slot).
+
+![portal-staging](./img/portal_staging.png "portal-staging")
+
+When finished, go back to VS Code.
 
 ## Deploy sample application to Staging slot ##
 
@@ -325,25 +332,31 @@ Open *Views/Home/Index.cshtml* again and change the welcome text to "Welcome to 
 
 Check that your local development environment works as expected.
 
-To deploy the application to the **Staging** slot, find your webapp in the Azure AppService extension, drill down to *slots* and right-click --> Deploy to Slot...
+![browser-staging](./img/browser_staging.png "browser-staging")
+
+To deploy the application to the **Staging** slot, find your webapp in the **Azure AppService extension**, drill down to **slots** and right-click --> Deploy to Slot...
+
+Your current application will now be deployed to your "Staging" slot.
 
 ### Show Staging application ###
 
-Click on the newly created slot "Staging" in the portal and copy the URL in the overview blade.
+To see your staging slot in action, go to the slot in the portal and copy the URL in the overview blade.
 
-IMG of slot
+![portal-slot-overview](./img/portal_slotoverview.png "portal-slot-overview")
 
-Open your browser, point it to the URL and check, if the headline contains the new text.
+Open your browser, navigate to the URL and check, if the headline contains the new text.
 
-IMG of staging browser
+![browser-slot-website](./img/browser_slotwebsite.png "browser-slot-website")
 
-Also check the production slot (URL without "-staging")
+> Also check the production slot (URL without "-staging").
 
-IMG of production browser
+### Swapping Slots ###
 
-Now if everything works as expected, go back to "Deployment Slots" and click on "Swap" (selecting the staging slot as source).
+Now that everything works as expected, go back to "Deployment Slots" and click on "Swap" (selecting the staging slot as source).
 
-Click "Swap" at the bottom of the screen.
+With this command, we are swapping the current "poduction" slot with our "Staging" slot...which basically means that the Load Balancer in front of our Web App points to "Staging" and promotes it as the new "production" slot.
+
+![portal-swap](./img/portal_swap.png "portal-swap")
 
 Now check, that the production slot serves the new version of the website.
 
