@@ -18,7 +18,7 @@ ARM _'powered'_ deployments are:
 0. _optional_ **Cleanup** all resources that have been created in this workshop e.g. by deleting the resource groups.  
 
 1. Login to your azure subscription **and search the marketplace for 'Template Deployment'**    
-![Azure Template Deployment](TemplateDeployment.png)
+![Azure Template Deployment](TemplateDeployment.PNG)
   
 2. Create -> select '**Build your own template in the editor**'
 3. Copy the RAW view of [this ARM template](ARMOne.json) and paste it into the editor **clear first** window.  
