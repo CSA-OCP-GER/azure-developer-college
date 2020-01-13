@@ -1,5 +1,7 @@
 # Plan your first Project Iteration
 
+![Azure Boards](./images/boards.svg)
+
 ## Here is what you will learn
 - Configure Iterations for your team
 - Plan your work with Azure Boards
@@ -34,10 +36,11 @@ If you need help, take alook at the [documentation](https://docs.microsoft.com/e
 ### Break the Feature down to UserStories
 Create the following UserStories as child items of the Feature, select a person who is responsible for a story and assign all stories to Iteration 1. If you need help, take a look at the [documentation](https://docs.microsoft.com/en-gb/azure/devops/boards/backlogs/define-features-epics?view=azure-devops#add-child-items)
 
-1. Create a UserStory with the title *"As a developer I want to copy the ADC's repository to my Azure DevOps Repo"*
-2. Create a UserStory with the title *"As a DevOps Engineer I want to deploy the common infratructure in Azure"*
-3. Create a UserStory with the title: *As a DevOps Engineer I want to build the SCM Contacts API*
-4. Create a UserStory with the title: *As a DevOps Engineer I want to deploy the SCM Contacts API to Azure*
+1. Create a UserStory with the title *"S1: As a developer I want to import the ADC's repository to my Azure DevOps Repo and clone the imported repository to my local machine"*
+2. Create a UserStory with the title *"S2: As a developer I want to change the title of the ADC's sample application."*
+3. Create a UserStory with the title *"S3: As a DevOps Engineer I want to deploy the common infratructure in Azure"*
+4. Create a UserStory with the title: *S4: As a DevOps Engineer I want to build the SCM Contacts API*
+5. Create a UserStory with the title: *S5: As a DevOps Engineer I want to deploy the SCM Contacts API to Azure*
 
 ### Break the UserStories down to Tasks
 If you want you can plan your work in more details by breaking down the UserStories to Tasks and assign the Tasks to different membrs of your Team. To do that switch over to the "Sprint" View of Azure Boards and bring up the Taskboard.
