@@ -44,9 +44,9 @@ Now it's time to run the contacts API on your local machine. Therefore, a debug 
 
 ![vscode_debug_contacts](./img/vscode_debug_contacts.png "vscode_debug_contacts")
 
-If you correctly set up your machine, after a few seconds a browser window will open and show you the Swagger UI for the *contacts* API.
+If you correctly set up your machine, after a few seconds a browser window will open and show the Swagger UI for the *contacts* API.
 
-Get familiar with all the available operation and also test a few of them via the UI.
+Get familiar with all the available operations and also test a few of them via the UI.
 
 ![browser_swagger_contacts](./img/browser_swagger_contacts.png "browser_swagger_contacts")
 
