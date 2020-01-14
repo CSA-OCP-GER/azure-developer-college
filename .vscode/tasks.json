@@ -84,7 +84,7 @@
             ]
         },
         {
-            "label": "day2publishScm",
+            "label": "day2publishScmContacts",
             "command": "dotnet",
             "type": "process",
             "args": [
