@@ -14,7 +14,7 @@
             "postDebugTask": "day2serveScmFrontendTerminate"
         },
         {
-            "name": "Day2 - Launch SCM API",
+            "name": "Day2 - Launch SCM Contacts API",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "day2buildScm",
