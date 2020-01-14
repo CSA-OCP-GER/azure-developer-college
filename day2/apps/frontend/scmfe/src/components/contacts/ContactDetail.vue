@@ -164,9 +164,14 @@
                 :lastname="contactFields.lastname"
               ></avatar>
             </v-card-text>
-            <v-divider />
+            <v-divider v-if="$uisettings.resourcesEndpoint && $uisettings.resourcesEndpoint != ''" />
             <v-card-actions class="justify-center">
-              <v-btn color="primary" text @click="changeImage()">Change Avatar</v-btn>
+              <v-btn
+                v-if="$uisettings.resourcesEndpoint && $uisettings.resourcesEndpoint != ''"
+                color="primary"
+                text
+                @click="changeImage()"
+              >Change Avatar</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
