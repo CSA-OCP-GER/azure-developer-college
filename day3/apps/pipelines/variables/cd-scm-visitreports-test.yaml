@@ -12,7 +12,7 @@ variables:
   - name: appServicePlanSKU
     value: Standard
   - name: appServicePlanSKUCode
-    value: S1
+    value: B1
   - name: applicationInsightsName
     value: appinsightsscmd3-test
   - name: cosmosDbAccount
