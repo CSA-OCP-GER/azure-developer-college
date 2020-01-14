@@ -85,11 +85,11 @@ So, everything is in place now...let's start the application. Go back to the *De
 
 **IMPORTANT**: Make sure the contacts API still runs!
 
-When you run the config, the local build will be kicked-off and after finishing, the Chrome Debugger will be launched.
+When you run the config, a local build will be kicked-off and after finishing, the Chrome Debugger will be launched.
 
 Again, get familiar with the application, open the contacts list, create a few contacts, edit a contact and delete one.
 
-If you want to, you can also test the mobile experience of the app by opening the Chrome Developer Tool and switching to a  
+If you want to, you can also test the mobile experience of the app by opening the Chrome Developer Tool and switching to a mobile user-agent. 
 
 ![browser_bo1](./img/browser_bo1.png "browser_bo1")
 
