@@ -22,15 +22,27 @@ You can solve these tasks in a programming language of your choice (some even in
 In the language of your choice (Python solution is provided), write a small scripts that
 [Text Analytics Service with Other Programming Languages](https://docs.microsoft.com/en-us/azure/cognitive-services/Text-Analytics/quickstarts/nodejs)
 
+0. Go to the Azure Portal, create in **yourresourcegroup** a Text Analytics Service (in the `West Europe` region):
+
+![Create Text Analytics Service](./img/CreateTa.png)
+
+![Details of Creating the Text Analytics Service](./img/detailscreateta.png)
+
 1. Extracts sentiment, key phrases and entities from unstructured text using the [Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)
 
 :question: **Questions:** 
 
 1. What happens if we do not pass in the `language` parameter while getting the sentiment? 
 
+Create a new Project in [Azure Notebooks](https://notebooks.azure.com/).
+
+![Create a Cognitive Services Project](./img/CreateProjectTextAnalytics.png)
+
 Create a new `Python 3.6 Notebook` in [Azure Notebooks](https://notebooks.azure.com/).
 
-Then create a `Text Analytics` API Key in the Azure Portal (in the `West Europe` region):
+![Create Notebook Cognitive Services Challenge](./img/CreateNotebookTextAnalytics)
+
+![Use the following Details](./img/CreateNotebookTextAnalyticsDetails)
 
 Let's start with :
 
@@ -42,13 +54,14 @@ subscription_key = "xxx" # Paste your API key here
 text_analytics_base_url = "https://westeurope.api.cognitive.microsoft.com/text/analytics/v2.1/"
 headers = {"Ocp-Apim-Subscription-Key": subscription_key}
 ```
+![Azure Portal: Key and URL](./img/keyendpointta.png)
 
 ## Detect Language
 
 Firstly, we can extract the language from text:
 
 ```python
-language_api_url = text_analytics_base_url + "languages"
+language_api_url = text_analytics_base_url + "/text/analytics/v2.1/languages"
 
 documents = { "documents": [
     { "id": "1", "text": "This is a document written in English." },
@@ -60,13 +73,14 @@ response  = requests.post(language_api_url, headers=headers, json=documents)
 languages = response.json()
 pprint(languages)
 ```
+![Detect Language](./img/TAlanguages.png)
 
 ## Detect Sentiment
 
 Secondly, we can detect the sentiment of a given phrase:
 
 ```python
-sentiment_url = text_analytics_base_url + "sentiment"
+sentiment_url = text_analytics_base_url + "/text/analytics/v2.1/sentiment"
 
 documents = {"documents" : [
   {"id": "1", "language": "en", "text": "I had a wonderful experience! The rooms were wonderful and the staff was helpful."},
@@ -79,13 +93,14 @@ response  = requests.post(sentiment_url, headers=headers, json=documents)
 sentiments = response.json()
 pprint(sentiments)
 ```
+![Detect Sentiment](./img/TAsentiment.png)
 
 ## Detect Key Phrases
 
 Thirdly, we can easily detect key phrases from text:
 
 ```python
-keyphrase_url = text_analytics_base_url + "keyPhrases"
+keyphrase_url = text_analytics_base_url + "/text/analytics/v2.1/keyphrases"
 
 documents = {"documents" : [
   {"id": "1", "language": "en", "text": "I had a wonderful experience! The rooms were wonderful and the staff was helpful."},
@@ -98,13 +113,14 @@ response  = requests.post(keyphrase_url, headers=headers, json=documents)
 key_phrases = response.json()
 pprint(key_phrases)
 ```
+![Detect Key Phrases](./img/TAkeyphrase.png)
 
 ## Detect Entities
 
 And last but not least, we can detect the entities in text:
 
 ```python
-entities_url = text_analytics_base_url + "entities"
+entities_url = text_analytics_base_url + "/text/analytics/v2.1/entities"
 
 documents = {"documents" : [
   {"id": "1", "text": "Microsoft was founded by Bill Gates and Paul Allen on April 4, 1975, to develop and sell BASIC interpreters for the Altair 8800."}
@@ -117,12 +133,7 @@ pprint(entities)
 
 If you want to directly create a dashboard within Power BI from the derived results, have a look at [this tutorial](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/tutorials/tutorial-power-bi-key-phrases).
 
-:question: **Questions:** 
-
-1. Why do we need to fill the `None` intent with examples?
-1. What is the `Review endpoint utterances` feature in LUIS?
-
-Create a new `Python 3.6 Notebook` in [Azure Notebooks](https://notebooks.azure.com/).
+![Detect Entities](./img/TAentities.png)
 
 ## Translate Text
 
