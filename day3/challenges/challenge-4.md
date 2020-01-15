@@ -130,10 +130,9 @@ response  = requests.post(entities_url, headers=headers, json=documents)
 entities = response.json()
 pprint(entities)
 ```
+![Detect Entities](./img/TAentities.png)
 
 If you want to directly create a dashboard within Power BI from the derived results, have a look at [this tutorial](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/tutorials/tutorial-power-bi-key-phrases).
-
-![Detect Entities](./img/TAentities.png)
 
 ## Translate Text
 
