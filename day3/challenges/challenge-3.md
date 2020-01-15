@@ -47,7 +47,7 @@ Azure Search now indexed all our PDFs via the `pdf-blob-indexer` into the `pdf-i
 
 [Querying data](https://docs.microsoft.com/en-us/azure/search/search-query-overview) in Azure Search can get quite sophisticated, but for our example here, we can just put in a simple query:
 
-![alt text](azure_search_explorer_example.png "Azure Search Query Example")
+![alt text](/img/azure_search_explorer_example.png "Azure Search Query Example")
 
 Using double-quotes `"..."` will search for the whole string, rather than each substring. If we want to make a search term mandatory, we need to prefix a `+`. There is a billion more things we can do, but for now, we'll see that we get one document back, as one only one PDF contained the term `Content Moderator`:
 
