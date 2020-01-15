@@ -670,6 +670,8 @@ static async request(url, method, apiKey, bodyJson = null) {
 }
 ```
 
+![AzureSearchClient](./img/projectstructure.png)
+
 For demo purposes, just throw an exception if the HTTP request is not a success. In a real application, you would probably do some logging and diagnosis of the HTTP status code in the `response` from the search service request. 
     
 ```javascript
@@ -1018,7 +1020,9 @@ async queryAsync(searchTerm) {
 
 Search is done with the "GET" verb and no body, since the search term is part of the URL. Notice that `queryAsync(searchTerm)` uses `this.queryKey`, unlike the other functions that used the admin key. Query keys, as the name implies, can only be used for querying the index and can't be used to modify the index in any way. Query keys are therefore safer to distribute to client applications.
 
-Run the program with `node index.js`. Now, in addition to the previous steps, the queries will be sent and the results written to the console.
+Run the program with `node index.js`. Now, in addition to the previous steps, the queries will be sent and the results written to the console. Make sure to change the directory (cd) into the right folder where the index.js file is located. Below you can see a (part of the) screenshot of the possible result:
+
+![Run the node.js App with Azure Search](./img/resultappnodejsazuresearch.png)
 
 ### About the sample
 
