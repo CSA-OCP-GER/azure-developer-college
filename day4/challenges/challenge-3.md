@@ -15,6 +15,7 @@ Azure Pipelines is a cloud service that you can use to automatically build and t
 Azure Pipelines combines continuous integration (CI) and continuous delivery (CD) to constantly and consistently test and build your code and ship it to any target.
 
 Here is an overview what we want to achieve in this challenge:
+
 ![CI-CD-Flow](./images/ci-cd-build-flow.png)
 
 ## Create your first CI Build
@@ -62,7 +63,7 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
 
 6. Commit your changes and push the branch to your remote repository.
 7. Navigate to your Azure DevOps project
-8. In your project navigate to the Pipelines page. Then choose the action to create  new Pipeline
+8. In your project navigate to the Pipelines page. Then choose the action to create a new Pipeline
 9. Walk through the steps of the wizard by first selecting Azure Repos Git as the location of your source code
 10. Select your college repository
 11. Select *"Existing Azure Pipelines YAML file"*
@@ -74,28 +75,68 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
 
 ## Create your first CD Build
 
-Now that we have created the build artifact, we can create a Release build to deploy the common component's Azure infrastructure for the sample application.
+Now that we have created the build artifact, we can create a Release build to deploy the common component's Azure infrastructure for the sample application to a Development and Testing stage.
+
+![SC-Common-Pipeline](./images/scm-common-pipeline.png)
 
 1. Navigate to your Azure DevOps project and open the Releases page.
 2. Choose the action item to create a new Pipeline and start with an *"Empty job"*.
 3. Rename *"Stage1"* to *"Development"*
-4. Rename the Release pipeline to *"SCm-Common-CD"*
+4. Rename the Release pipeline to *"SCM-Common-CD"*
 5. Under Articfacts *"Add an artifact"* and select your *"SCM-Common-CI"* and use always the latest build.
 6. Click the *"flash"* icon under artifacts and set the trigger to *"Continuous deployment trigger"*. This will trigger the Release pipeline whenever a new deployment artrifact of the build *"SCM-Common-CI"* is created.
 7. Go to the variable section and add the following variables:
-   - ResourceGroupName - SCM-DEV-RG
+   - ResourceGroupName - ADC-DAY4-SCM-DEV
    - ApplicationInsightsName - appinsights-scm-dev
    - ServiceBusnamespaceName - |your prefix|-scm-dev (the namespace name must be globally unique)
    - ServiceBusSKU - Standard
    - CosmosDbAccountName - |your prefix|-scm-dev (the account name must be globally unique)
-8. Go to the Tasks section of the *"Development"* stage and add the task *"Azure resource group deployment
-"*
-    - Select the Azure subscription 
-    - Use the variable for the ResourceGroup: $(ResourceGroup)
-    - Select a location where you want to deploy the Azure resources
-    - Under *Template* select the *"scm-common.json"* ARM template by clicking *"..."*
-    - Override parameters: Copy the following line, make sure that you copy the whole line:
+8. Go to the Tasks section of the *"Development"* stage and add the task *"Azure resource group deployment"*
+   - Select the Azure subscription 
+   - Use the variable for the ResourceGroup: $(ResourceGroup)
+   - Select a location where you want to deploy the Azure resources
+   - Under *Template* select the *"scm-common.json"* ARM template by clicking *"..."*
+   - Override parameters: Copy the following line, make sure that you copy the whole line:
       ```
       -applicationInsightsName $(ApplicationInsightsName) -serviceBusNamespaceName $(ServiceBusNamespaceName) -serviceBusSKU $(ServiceBusSku) -cosmosDbAccountName $(CosmosDbAccountName)
       ```
 9. Save the definition and run the pipeline by clicking *"Create release"*.
+
+### Add a Testing stage to your CD Build
+
+Now we have successfully deployed the common components to the Development environment. Next we create another stage that is deployed when the deployment to the Development stage was successful.
+In addition we add a *"Pre-deployment conditions"* step to control the deployment to the Testing stage manually. 
+
+1. Start editing the CD Build *SCM-Common-CD* and go to the Pipeline view
+2. Clone the *Development* stage and rename the cloned stage to *"Testing"*
+3. Open the *Variables* view
+4. When you open the scope dropdown of a variable you notice that there are three scopes available:
+   - Release: The variable is used for all stages of the pipeline
+   - Development: The variable is only applied to the stage *Development*
+   - Testing: The variable is only applied to the stage *Testing*
+   - ![Variable Scopes](./imgaes/../images/variable-scopes.png) 
+
+5. Move all existing variables to the scope of the *Development* stage
+6. Add all variables again with the same name but change all values to contain the word *test* as suffix or praefix and apply them to the scope *Testing*
+7. Switch back to the pipeline view of your release definition and set the *Pre-deployment condition* as follow
+   ![Pre-deployment conditions](./images/pre-deployment-conditions.png)
+
+8. Save your release definition
+
+### Approve the deployment to the Testing environment
+
+Now create a new realease and wait until the *Development* stage is deployed. 
+You will se that the pipeline is stopped and that the deployment to the *Testing* stage must first be approved by a predefined approver.
+
+
+## Merge your changes to the master branch
+
+Now you can create a *PullRequest* and merge your changes to the master branch.
+
+## Wrap up
+
+__Congratulations__ you have completed the UseStory S3!
+We have created a CI/CD Pipeline that is triggered whenever changes are made to the sample application's common infrastructure.  
+Take a look at the Azure portal and see which Azure resources are created. 
+
+![WrapUp](./images/challenge-3-wrapup.png)
