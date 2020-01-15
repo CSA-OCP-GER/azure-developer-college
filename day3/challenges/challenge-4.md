@@ -6,7 +6,7 @@
 - Install and run Sentiment Analysis Service as Container
 - Create and use a Computer Vision Services
 - Create and use a Custom Vision Services
-- Install and run Computer Vision Service as Container
+- Find Intent using LUIS
 
 ## Create and use a Text Analysis Service ##
 
