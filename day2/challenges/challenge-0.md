@@ -150,16 +150,14 @@ After the setup is complete. Open Visual Studio an open the "Extensions" sidebar
 Search and install the following extensions:
 
 - Azure Tools <https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack>
-- Azure Functions <https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions>
-- Azure Resource Manager (ARM) Tools <https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools>
 - C# <https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp>
 - Debugger for Chrome <https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome>
 
 ## Azure Storage Explorer ##
 
-In order to work with Azure Storage Accounts, we can use the Azure Storage Explorer.
+In order to work with Azure Storage Accounts, we will use the Azure Storage Explorer.
 
-Go to <https://azure.microsoft.com/en-us/features/storage-explorer/>, download and install the tool on your machine. 
+Go to <https://azure.microsoft.com/en-us/features/storage-explorer/>, download and install the tool. 
 
 ![Azure Storage Explorer](./img/storage_explorer.png "Azure Storage Explorer")
 
