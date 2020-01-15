@@ -1,4 +1,4 @@
-# Work with Azure Pipelines
+# Challenge-3: Work with Azure Pipelines
 
 ![Azure Pipelines](./images/pipelines.svg)
 
@@ -35,7 +35,6 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
      paths:
        include:
          - day4/apps/infrastructure/templates/scm-common.json
-         - day4/apps/pipelines/cd-scm-common.yaml
 
    ```
    Here we specified when the build must be triggered. The build is triggered only if changes were made to the master branch and when the changes were made to either *day4/apps/infrastructure/templates/scm-common.json* or *day4/apps/pipelines/cd-scm-common.yaml*
@@ -49,17 +48,17 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
        steps:
          - task: CopyFiles@2
            inputs:
-           sourceFolder: day4/apps/infrastructure/templates
-           contents: |
-            scm-common.json
-           targetFolder: $(Build.ArtifactStagingDirectory)
-        - task: PublishPipelineArtifact@1
-          inputs:
-            targetPath: $(Build.ArtifactStagingDirectory)
-            artifactName: drop
+             sourceFolder: day4/apps/infrastructure/templates
+             contents: |
+              scm-common.json
+             targetFolder: $(Build.ArtifactStagingDirectory)
+         - task: PublishPipelineArtifact@1
+           inputs:
+             targetPath: $(Build.ArtifactStagingDirectory)
+             artifactName: drop
    ```
    Here we specified to copy the needed ARM Template to our artifact drop location named *"drop"*.
-   First we use a copy task to copy the ARM template to the build agent's *"ArtifactStagingDirectory"*. This directory is a temp directory on the build agent. After that we publish the build agents artifacts directory to link the created artifacts to the build.
+   First we use a copy task to copy the ARM template to the build agent's *"ArtifactStagingDirectory"*. This directory is a temp directory on the build agent. After that we publish the build agent's artifact directory to link the created artifacts to the build.
 
 6. Commit your changes and push the branch to your remote repository.
 7. Navigate to your Azure DevOps project
@@ -76,10 +75,11 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
 ## Create your first CD Build
 
 Now that we have created the build artifact, we can create a Release build to deploy the common component's Azure infrastructure for the sample application to a Development and Testing stage.
+[Here](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/?view=azure-devops) you find a detailed documentation about Release pipelines.
 
 ![SC-Common-Pipeline](./images/scm-common-pipeline.png)
 
-1. Navigate to your Azure DevOps project and open the Releases page.
+1. Navigate to your Azure DevOps project and open the Releases page under Pipelines.
 2. Choose the action item to create a new Pipeline and start with an *"Empty job"*.
 3. Rename *"Stage1"* to *"Development"*
 4. Rename the Release pipeline to *"SCM-Common-CD"*
@@ -126,7 +126,11 @@ In addition we add a *"Pre-deployment conditions"* step to control the deploymen
 ### Approve the deployment to the Testing environment
 
 Now create a new realease and wait until the *Development* stage is deployed. 
-You will se that the pipeline is stopped and that the deployment to the *Testing* stage must first be approved by a predefined approver.
+You will see that the pipeline is stopped and that the deployment to the *Testing* stage must first be approved by a predefined approver.
+
+![Approval](./images/pipeline-approval.png)
+
+Approve the the deployment to the *Testing* environment.
 
 
 ## Merge your changes to the master branch
@@ -137,6 +141,6 @@ Now you can create a *PullRequest* and merge your changes to the master branch.
 
 __Congratulations__ you have completed the UseStory S3!
 We have created a CI/CD Pipeline that is triggered whenever changes are made to the sample application's common infrastructure.  
-Take a look at the Azure portal and see which Azure resources are created. 
+Take a look at the Azure portal and see which Azure resources were created. And don't forget to go to the Azure Boards and complete the UserStory S3. 
 
 ![WrapUp](./images/challenge-3-wrapup.png)

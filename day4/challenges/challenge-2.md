@@ -1,4 +1,4 @@
-# Work with Azure Repos
+# Challenge-2: Work with Azure Repos
 
 ![Azure Repos](./images/repos.svg)
 
