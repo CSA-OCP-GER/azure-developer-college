@@ -395,7 +395,7 @@ If you are using a free service, remember that you are limited to three indexes,
 
 ## Integrate Azure Search in an Node JS Application ##
 
-Create a Node.js application that that creates, loads, and queries an Azure Cognitive Search index. This article demonstrates how to create the application step-by-step. Alternately, you can [download the source code and data](https://github.com/Azure-Samples/azure-search-javascript-samples/tree/master/quickstart/) and run the application from the command line.
+Create a Node.js application that that creates, loads, and queries an Azure Cognitive Search index. This article demonstrates how to create the application step-by-step. Alternately, you can [download the source code and data](https://github.com/Azure-Samples/azure-search-javascript-samples.git) and run the application from the command line.
 
 
 ## Set up your environment
@@ -404,10 +404,14 @@ Begin by opening a Powershell console or other environment in which you've insta
 
 1. Create a development directory, giving it the name `devcollege` :
 
-    ```powershell
-    mkdir devcollege
+    ```bash
+    md devcollege
     cd devcollege
+    git clone https://github.com/Azure-Samples/azure-search-javascript-samples.git
+    cd azure-search-javascript-samples
+    code .
     ```
+    Open Terminal in VS Code and run npm init
 
 2. Initialize an empty project with NPM by running `npm init`. Accept the default values, except for the License, which you should set to "MIT". 
 
@@ -448,24 +452,26 @@ Begin by opening a Powershell console or other environment in which you've insta
       }
     }
     ```
-Create a file **azure_search_config.json** to hold your search service data:
+Insert your search service data in the file **azure_search_config.json** :
 
 ```json
 {
     "serviceName" : "[SERVICE_NAME]",
-    "adminKey" : "[ADMIN_KEY]",
+    "adminKey" : "[SEARCH_SERVICE_ADMIN_KEY]",
     "queryKey" : "[QUERY_KEY]",
     "indexName" : "hotels-quickstart"
 }
 ```
 
-Replace the `[SERVICE_NAME]` value with the name of your search service. Replace `[ADMIN_KEY]` and `[QUERY_KEY]` with the key values you recorded earlier. 
+Replace the `[SERVICE_NAME]` value with the name of your search service. Replace `[ADMIN_KEY]` and `[QUERY_KEY]` with the key values you recorded earlier.  If your endpoint URL were https://mydemo.search.windows.net, your service name would be mydemo.
+In Settings > Keys, get an admin key for full rights on the service. There are two interchangeable admin keys, provided for business continuity in case you need to roll one over. You can use either the primary or secondary key on requests for adding, modifying, and deleting objects.
+Get the query key as well. It's a best practice to issue query requests with read-only access.
 
 ## 1 - Create index 
 
-Create a file **hotels_quickstart_index.json**.  This file defines how Azure Cognitive Search works with the documents you'll be loading in the next step. Each field will be identified by a `name` and have a specified `type`. Each field also has a series of index attributes that specify whether Azure Cognitive Search can search, filter, sort, and facet upon the field. Most of the fields are simple data types, but some, like `AddressType` are complex types that allow you to create rich data structures in your index.  You can read more about [supported data types](https://docs.microsoft.com/rest/api/searchservice/supported-data-types) and [index attributes](https://docs.microsoft.com/azure/search/search-what-is-an-index#index-attributes). 
+Find the file **hotels_quickstart_index.json**.  This file defines how Azure Cognitive Search works with the documents you'll be loading in the next step. Each field will be identified by a `name` and have a specified `type`. Each field also has a series of index attributes that specify whether Azure Cognitive Search can search, filter, sort, and facet upon the field. Most of the fields are simple data types, but some, like `AddressType` are complex types that allow you to create rich data structures in your index.  You can read more about [supported data types](https://docs.microsoft.com/rest/api/searchservice/supported-data-types) and [index attributes](https://docs.microsoft.com/azure/search/search-what-is-an-index#index-attributes). 
 
-Add the following to **hotels_quickstart_index.json** or [download the file](https://github.com/Azure-Samples/azure-search-javascript-samples/blob/master/quickstart/hotels_quickstart_index.json). 
+Replace the following to **hotels_quickstart_index.json** or [download the file](https://github.com/Azure-Samples/azure-search-javascript-samples/blob/master/quickstart/hotels_quickstart_index.json). 
 
 ```json
 {
@@ -804,9 +810,7 @@ Use a terminal window for the following commands.
 
 You should see a series of messages describing the actions being taken by the program. If you want to see more detail of the requests, you can uncomment the [lines at the beginning of the `AzureSearchClient.request()` method]https://github.com/Azure-Samples/azure-search-javascript-samples/blob/master/quickstart/AzureSearchClient.js#L21-L27) in **AzureSearchClient.js**. 
 
-Open the **Overview** of your search service in the Azure portal. Select the **Indexes** tab. You should see something like the following:
-
-![Screenshot of Azure portal, search service Overview, Indexes tab](media/search-get-started-nodejs/create-index-no-data.png)
+Open the **Overview** of your search service in the Azure portal. Select the **Indexes** tab. 
 
 In the next step, you'll add data to index. 
 
