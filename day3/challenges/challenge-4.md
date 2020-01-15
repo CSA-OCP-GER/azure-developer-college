@@ -24,7 +24,7 @@ In the language of your choice (Python solution is provided), write a small scri
 
 0. Go to the Azure Portal, create in **yourresourcegroup** a Text Analytics Service (in the `West Europe` region):
 
-![Create Text Analytics Service](./img/CreateTa.png)
+![Create Text Analytics Service](./img/CreateTA.png)
 
 ![Details of Creating the Text Analytics Service](./img/detailscreateta.png)
 
@@ -40,9 +40,9 @@ Create a new Project in [Azure Notebooks](https://notebooks.azure.com/).
 
 Create a new `Python 3.6 Notebook` in [Azure Notebooks](https://notebooks.azure.com/).
 
-![Create Notebook Cognitive Services Challenge](./img/CreateNotebookTextAnalytics)
+![Create Notebook Cognitive Services Challenge](./img/CreateNotebookTextAnalytics.png)
 
-![Use the following Details](./img/CreateNotebookTextAnalyticsDetails)
+![Use the following Details](./img/CreateNotebookTextAnalyticsDetails.png)
 
 Let's start with :
 
