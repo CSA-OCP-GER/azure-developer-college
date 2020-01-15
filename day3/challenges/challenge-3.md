@@ -47,7 +47,7 @@ Azure Search now indexed all our PDFs via the `pdf-blob-indexer` into the `pdf-i
 
 [Querying data](https://docs.microsoft.com/en-us/azure/search/search-query-overview) in Azure Search can get quite sophisticated, but for our example here, we can just put in a simple query:
 
-![alt text](/img/azure_search_explorer_example.png "Azure Search Query Example")
+![Azure Search Query Example](./img/azure_search_explorer_example.png)
 
 Using double-quotes `"..."` will search for the whole string, rather than each substring. If we want to make a search term mandatory, we need to prefix a `+`. There is a billion more things we can do, but for now, we'll see that we get one document back, as one only one PDF contained the term `Content Moderator`:
 
@@ -84,7 +84,7 @@ Once we're done, we'll repeat the steps from before, `Import Dataset`, walk thro
 
 Next, we need to define the skillset. In our case, we'll enable all features:
 
-![alt text](../day3/cognitive_search_skillset.png "Defining the skillset")
+![Defining the skillset](./img/cognitive_search_skillset.png)
 
 We might not want to make our `content` field retrievable, as it does not necessarily provide a lot of value - however, we want to keep it `searchable`, so that Azure Search can do its job. Since we have the original files in Blob and the location stored in `metadata_storage_path`, we can always just retrieve the original file.
 
@@ -127,17 +127,25 @@ REST calls require the service URL and an access key on every request. A search 
 
 1. In **Settings** > **Keys**, get an admin key for full rights on the service. There are two interchangeable admin keys, provided for business continuity in case you need to roll one over. You can use either the primary or secondary key on requests for adding, modifying, and deleting objects.
 
-![Get an HTTP endpoint and access key](media/search-get-started-postman/get-url-key.png "Get an HTTP endpoint and access key")
-
 All requests require an api-key on every request sent to your service. Having a valid key establishes trust, on a per request basis, between the application sending the request and the service that handles it.
 
 ## Connect to Azure Cognitive Search
 
 In this task, start a Jupyter notebook and verify that you can connect to Azure Cognitive Search. You'll do this by requesting a list of indexes from your service. On Windows with Anaconda3, you can use Anaconda Navigator to launch a notebook.
 
-1. Create a new Python3 notebook.
+0. Register here [Azure Notebooks](https://notebooks.azure.com)
+1. Create a project 
+    [NewProject](./img/NewProject.png)
 
-1. In the first cell, load the libraries used for working with JSON and formulating HTTP requests.
+    [CreateNewProject](./img/CreateNewProject.png)
+
+2. Create a notebook
+   [Notebooks](./img/Notebooks.png)
+
+3. Create a new Python3.6 notebook.
+   [CreateNewNotebook](./img/CreateNewNotebook.png)
+
+4. In the first cell, load the libraries used for working with JSON and formulating HTTP requests.
 
    ```python
    import json
@@ -145,7 +153,7 @@ In this task, start a Jupyter notebook and verify that you can connect to Azure 
    from pprint import pprint
    ```
 
-1. In the second cell, input the request elements that will be constants on every request. Replace the search service name (YOUR-SEARCH-SERVICE-NAME) and admin API key (YOUR-ADMIN-API-KEY) with valid values. 
+5. In the second cell, input the request elements that will be constants on every request. Replace the search service name (YOUR-SEARCH-SERVICE-NAME) and admin API key (YOUR-ADMIN-API-KEY) with valid values. 
 
    ```python
    endpoint = 'https://<YOUR-SEARCH-SERVICE-NAME>.search.windows.net/'
@@ -156,7 +164,7 @@ In this task, start a Jupyter notebook and verify that you can connect to Azure 
 
    If you get ConnectionError `"Failed to establish a new connection"`, verify that the api-key is a primary or secondary admin key, and that all leading and trailing characters (`?` and `/`) are in place.
 
-1. In the third cell, formulate the request. This GET request targets the indexes collection of your search service and selects the name property of existing indexes.
+6. In the third cell, formulate the request. This GET request targets the indexes collection of your search service and selects the name property of existing indexes.
 
    ```python
    url = endpoint + "indexes" + api_version + "&$select=name"
@@ -165,9 +173,7 @@ In this task, start a Jupyter notebook and verify that you can connect to Azure 
    pprint(index_list)
    ```
 
-1. Run each step. If indexes exist, the response contains a list of index names. In the screenshot below, the service already has an azureblob-index and a realestate-us-sample index.
-
-   ![Python script in Jupyter notebook with HTTP requests to Azure Cognitive Search](media/search-get-started-python/connect-azure-search.png "Python script in Jupyter notebook with HTTP requests to Azure Cognitive Search")
+7. Run each step. If indexes exist, the response contains a list of index names. In the screenshot below, the service already has an azureblob-index and a realestate-us-sample index.
 
    In contrast, an empty index collection returns this response: `{'@odata.context': 'https://mydemo.search.windows.net/$metadata#indexes(name)', 'value': []}`
 
@@ -207,7 +213,7 @@ This index is named "hotels-quickstart" and has the field definitions you see be
     }
     ```
 
-2. In another cell, formulate the request. This PUT request targets the indexes collection of your search service and creates an index based on the index schema you provided in the previous cell.
+2. In another cell, formulate the request. This PUT request targets the indexes collection of your search service and creates an index based on the index schema you provided in the previous cell. Check that the indentation is correct as shown below.
 
    ```python
    url = endpoint + "indexes" + api_version
@@ -218,9 +224,7 @@ This index is named "hotels-quickstart" and has the field definitions you see be
 
 3. Run each step.
 
-   The response includes the JSON representation of the schema. The following screenshot is showing just a portion of the response.
-
-    ![Request to create an index](media/search-get-started-python/create-index.png "Request to create an index")
+   The response includes the JSON representation of the schema. 
 
 > [!Tip]
 > Another way to verify index creation is to check the Indexes list in the portal.
@@ -327,7 +331,7 @@ To push documents, use an HTTP POST request to your index's URL endpoint. The RE
 
 3. Run each step to push the documents to an index in your search service. Results should look similar to the following example. 
 
-    ![Send documents to an index](media/search-get-started-python/load-index.png "Send documents to an index")
+    ![Send documents to an index](./img/indexcontent.png)
 
 ## 3 - Search an index
 
@@ -356,7 +360,7 @@ This step shows you how to query an index using the [Search Documents REST API](
 
 1. Run each step. Results should look similar to the following output. 
 
-    ![Search an index](media/search-get-started-python/search-index.png "Search an index")
+    ![Search an Index](./img/SearchString.png)
 
 1. Try a few other query examples to get a feel for the syntax. You can replace the `searchstring` with the following examples and then rerun the search request. 
 
