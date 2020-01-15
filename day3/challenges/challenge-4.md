@@ -10,7 +10,7 @@
 
 ## Create and use a Text Analysis Service ##
 
-You can solve these tasks in a programming language of your choice. For sake of convenience,we are providing hints in `Python`, which you can easily (and for free) run in [Azure Notebooks](https://notebooks.azure.com). SDK Support for `C#` or `.NET Core` is available for most challenges. Especially Azure Search features an easy-to-use `.NET SDK`. You can find code examples in the Azure documentation for the associated services.
+You can solve these tasks in a programming language of your choice. For sake of convenience, we are providing hints in `Python`, which you can easily (and for free) run in [Azure Notebooks](https://notebooks.azure.com). SDK Support for `C#` or `.NET Core` is available for most challenges. Especially Azure Search features an easy-to-use `.NET SDK`. You can find code examples in the Azure documentation for the associated services.
 
 |Azure Cognitive Services|Information|
 |---|---|
