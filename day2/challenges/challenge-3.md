@@ -3,10 +3,8 @@
 ## Here is what you will learn ##
 
 - Familiarize with the various messaging solutions in Azure
-- Use Azure Storage Queues for message queuing
-- Use Azure Service Bus for guaranteed ordering of messages and pub/sub scenarios
-- 
-
+- Use Azure Service Bus for pub/sub scenarios (Consumer/Producer pattern)
+- Use Azure Logic Apps to subscribe to topics and process them
 
 ## Azure Service Bus Publish / Subscriber Pattern ##
 
@@ -119,3 +117,13 @@ Now got back to the *sbtester* app and run it again. A few seconds later, after 
 Also check the Storage Explorer and have a look at the files that have been written.
 
 ![storage_explorer_la](./img/storage_explorer_la.png "storage_explorer_la")
+
+## Optional ##
+
+You have seen how many connectors Azure Logic Apps has "under the hood". Take the same scenario and adjust the messages to your needs (e.g. JSON) and connect to another service, maybe one outside of Azure? (Gmail, Outlook, O365, SAP, Twitter?!)
+
+**Happy Hacking!** :)
+
+## House Keeping ##
+
+Remove the sample resource group.
