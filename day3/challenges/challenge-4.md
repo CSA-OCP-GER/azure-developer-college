@@ -30,10 +30,6 @@ In the language of your choice (Python solution is provided), write a small scri
 
 1. Extracts sentiment, key phrases and entities from unstructured text using the [Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)
 
-:question: **Questions:** 
-
-1. What happens if we do not pass in the `language` parameter while getting the sentiment? 
-
 Create a new Project in [Azure Notebooks](https://notebooks.azure.com/).
 
 ![Create a Cognitive Services Project](./img/CreateProjectTextAnalytics.png)
@@ -73,6 +69,8 @@ response  = requests.post(language_api_url, headers=headers, json=documents)
 languages = response.json()
 pprint(languages)
 ```
+Example Result: 
+
 ![Detect Language](./img/TAlanguages.png)
 
 ## Detect Sentiment
@@ -93,6 +91,8 @@ response  = requests.post(sentiment_url, headers=headers, json=documents)
 sentiments = response.json()
 pprint(sentiments)
 ```
+Example Result: 
+
 ![Detect Sentiment](./img/TAsentiment.png)
 
 ## Detect Key Phrases
@@ -113,6 +113,8 @@ response  = requests.post(keyphrase_url, headers=headers, json=documents)
 key_phrases = response.json()
 pprint(key_phrases)
 ```
+Example Result: 
+
 ![Detect Key Phrases](./img/TAkeyphrase.png)
 
 ## Detect Entities
@@ -130,6 +132,8 @@ response  = requests.post(entities_url, headers=headers, json=documents)
 entities = response.json()
 pprint(entities)
 ```
+Example Result: 
+
 ![Detect Entities](./img/TAentities.png)
 
 If you want to directly create a dashboard within Power BI from the derived results, have a look at [this tutorial](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/tutorials/tutorial-power-bi-key-phrases).
@@ -164,6 +168,8 @@ body = [{'text' : 'I want to order 4 pizza Magarita and 8 beer!'},
 response = requests.post(url, headers=headers, params=params, json=body)
 print(json.dumps(response.json(), indent=2))
 ```
+Example Result: 
+
 ![Translator Text API Result](./img/TTResult.png)
 
 As we can see, we can translate multiple sentences within one API call. The service also automatically detects the input language. If desired, we can even directly translate the input to several output languages concurrently.
@@ -288,6 +294,8 @@ while (poll):
 
 print(json.dumps(recogntion, indent=2))
 ```
+Example Notebook and Result: 
+
 ![Python Code in Azure Notebook](./img/CVCode1.png)
 
 ![Result](./img/CVPartResult.png)
@@ -315,6 +323,8 @@ for polygon in polygons:
     plt.text(vertices[0][0], vertices[0][1], text, fontsize=20, va="top")
 _ = plt.axis("off")
 ```
+
+Example Result: 
 
 ![Result](./img/CVPartResult2.png)
 
@@ -350,9 +360,13 @@ for line in line_infos:
         for word_info in word_metadata["words"]:
             word_infos.append(word_info)
 word_infos
+```
+
+Example Notebook:
 
 ![Azure Notebook](./img/OcrCode.png)
 
+```python
 # Display the image and overlay it with the extracted text
 plt.figure(figsize=(15, 15))
 image = Image.open(BytesIO(requests.get(image_url).content))
@@ -366,6 +380,8 @@ for word in word_infos:
     plt.text(origin[0], origin[1], text, fontsize=12, weight="bold", va="top")
 plt.axis("off")
 ```
+
+Example Result:
 
 ![Result](./img/OCRResult.png)
 
