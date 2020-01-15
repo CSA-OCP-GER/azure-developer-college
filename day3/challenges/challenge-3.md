@@ -135,15 +135,15 @@ In this task, start a Jupyter notebook and verify that you can connect to Azure 
 
 0. Register here [Azure Notebooks](https://notebooks.azure.com)
 1. Create a project 
-    [NewProject](./img/NewProject.png)
+    ![NewProject](./img/NewProject.png)
 
-    [CreateNewProject](./img/CreateNewProject.png)
+    ![CreateNewProject](./img/CreateNewProject.png)
 
 2. Create a notebook
-   [Notebooks](./img/Notebooks.png)
+   ![Notebooks](./img/Notebooks.png)
 
 3. Create a new Python3.6 notebook.
-   [CreateNewNotebook](./img/CreateNewNotebook.png)
+   ![CreateNewNotebook](./img/CreateNewNotebook.png)
 
 4. In the first cell, load the libraries used for working with JSON and formulating HTTP requests.
 
