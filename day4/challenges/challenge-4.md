@@ -122,6 +122,7 @@ Now we have created the deployment artifacts with the build *SCM-Contacts-CI*. I
 2. Add the SCM-Contacts-CI build's artifacts
 3. Create a *Development* stage
 4. Add the the following variables and replace __'praefix'__ with your own value:
+   
    | Variable | Value | Scope |
    |----------|-------|-------|
    |ResourceGroupName | ADC-DAY4-SCM-DEV | Development |
@@ -140,7 +141,7 @@ Now we have created the deployment artifacts with the build *SCM-Contacts-CI*. I
 6. Select your Azure Subscription
 7. Set the name of the ResourceGroup, use the variable $(ResourceGroupName)
 8. Set the Location, use the variable $(Location)
-9. Select the template from your drop location
+9.  Select the template from your drop location
 10. Override the template parameters as follow:
     ```shell
     -sku $(AppServicePlanSKU) -webAppName $(ApiAppName) -use32bitworker $(Use32BitWorker) -alwaysOn $(AlwaysOn) -applicationInsightsName $(ApplicationInsightsName) -sqlServerName $(SqlServerName) -sqlUserName $(SqlAdminUserName) -sqlPassword $(SqlAdminPassword) -sqlDatabaseName $(SqlDatabaseName) -serviceBusNamespaceName $(ServiceBusNamespaceName)
@@ -157,6 +158,7 @@ Now we have created the deployment artifacts with the build *SCM-Contacts-CI*. I
 1. Edit the Release definition and go to the task view
 2. Clone the *Development* stage and rename the cloned stage to *Testing*
 3. Open the Release definition's variable view and add new variables as follow:
+   
    | Variable | Value | Scope |
    |----------|-------|-------|
    |ResourceGroupName | ADC-DAY4-SCM-TEST | Testing |
