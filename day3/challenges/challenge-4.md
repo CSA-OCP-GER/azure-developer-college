@@ -54,7 +54,7 @@ headers = {"Ocp-Apim-Subscription-Key": subscription_key}
 
 ## Detect Language
 
-Firstly, we can extract the language from text:
+Firstly, we can extract the language from text. Run this in your Azure Notebook:
 
 ```python
 language_api_url = text_analytics_base_url + "/text/analytics/v2.1/languages"
@@ -69,7 +69,7 @@ response  = requests.post(language_api_url, headers=headers, json=documents)
 languages = response.json()
 pprint(languages)
 ```
-Example Result: 
+Your result should look like this: 
 
 ![Detect Language](./img/TAlanguages.png)
 
