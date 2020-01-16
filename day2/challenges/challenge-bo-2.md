@@ -163,4 +163,5 @@ Now open the URL for the frontend (you can find it after saving the settings of 
 # Wrap-Up #
 
 ***Congratulations***! You have just created your first modern, multi-service Azure-backed application. You made use of Azure AppServices, Storage Accounts, Messaging (Azure Storage Queues), seerverless Azure Function Apps and static website hosting. All in combination with a modern VueJS frontend that is also working on mobile devices!
-![](https://giphy.com/gifs/strangerthings-netflix-stranger-things-9V8RorZtNTN8jf27k0/fullscreen)
+
+![](https://media.giphy.com/media/9V8RorZtNTN8jf27k0/giphy.mp4)
