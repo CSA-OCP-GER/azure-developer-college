@@ -28,7 +28,7 @@ In the language of your choice (Python solution is provided), write a small scri
 
 ![Details of Creating the Text Analytics Service](./img/detailscreateta.png)
 
-1. Extracts sentiment, key phrases and entities from unstructured text using the [Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)
+1. Extract sentiment, key phrases and entities from unstructured text using the [Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)
 
 Create a new Project in [Azure Notebooks](https://notebooks.azure.com/).
 
