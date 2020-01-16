@@ -30,7 +30,7 @@ In the language of your choice (Python solution is provided), write a small scri
 
 1. Extract sentiment, key phrases and entities from unstructured text using the [Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)
 
-Create a new Project in [Azure Notebooks](https://notebooks.azure.com/).
+Sign into [Azure Notebooks](https://notebooks.azure.com/) and create a new Project in .
 
 ![Create a Cognitive Services Project](./img/CreateProjectTextAnalytics.png)
 
