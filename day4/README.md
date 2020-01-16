@@ -29,7 +29,7 @@ We use Azure Repo to work with a Git repository. During the day you will work wi
 
 ## Azure Pipelines
 
-![Azure Pipelines](./challenges/images/pipelines.png)
+![Azure Pipelines](./challenges/images/pipelines.svg)
 
 We use Azure Pipelines to build and deploy the sample application to a Development and Testing stage on your Azure subscription.
 At the end of the day you will know how to create a CI/CD Pipeline for all Microservices of the sample application and how you continously and consistently deploy services to Azure during your application lifcycle process.
