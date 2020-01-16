@@ -36,7 +36,7 @@ __Note:__ If you want to integrate Azure DevOps into your organization's Azure A
 4. Create an organization. Instructions can be found [here](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?toc=%2Fazure%2Fdevops%2Fget-started%2Ftoc.json&bc=%2Fazure%2Fdevops%2Fget-started%2Fbreadcrumb%2Ftoc.json&view=azure-devops)
 
 ## Create a new project
-Create a new project, name it "AzureDeveloperCollege" and use the "Agile" process template
+Create a new project, name it "AzureDeveloperCollege" and use the "Agile" process template.
 Instructions can be found [here](https://docs.microsoft.com/en-us/azure/devops/organizations/projects/create-project?view=azure-devops).
 
 ## Create a new Team within the new project

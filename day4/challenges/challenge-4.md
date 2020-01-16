@@ -121,18 +121,18 @@ Now we have created the deployment artifacts with the build *SCM-Contacts-CI*. I
 1. Create a new release build and name it *SCM-Contacts-CD*
 2. Add the SCM-Contacts-CI build's artifacts
 3. Create a *Development* stage
-4. Add the the following variables and replace __'praefix'__ with your own value:
+4. Add the the following variables and replace __'prefix'__ with your own value:
    
    | Variable | Value | Scope |
    |----------|-------|-------|
    |ResourceGroupName | ADC-DAY4-SCM-DEV | Development |
    |Location| westeurope|Development|
-   |ApiAppName|__'praefix'__-day4scmapi-dev|Development|
+   |ApiAppName|__'prefix'__-day4scmapi-dev|Development|
    |AppServicePlanSKU|B1|Development|
    |Use32BitWorker|false|Development|
    |AlwaysOn|true|Development|
    |ApplicationInsightsName|your ApplicationInsights instance name of stage Development|Development|
-   |SqlServerName|__'praefix'__-day4sqlsrv-dev|Development|
+   |SqlServerName|__'prefix'__-day4sqlsrv-dev|Development|
    |SqlDatabaseName|scmcontactsdb|Development|
    |SqlAdminUserName|*your Sql Admin's username*|Development|
    |SqlAdminPassword|*your password*|Development|
@@ -163,12 +163,12 @@ Now we have created the deployment artifacts with the build *SCM-Contacts-CI*. I
    |----------|-------|-------|
    |ResourceGroupName | ADC-DAY4-SCM-TEST | Testing |
    |Location| westeurope|Testing|
-   |ApiAppName|__'praefix'__-day4scmapi-test|Testing|
+   |ApiAppName|__'prefix'__-day4scmapi-test|Testing|
    |AppServicePlanSKU|B1|Testing|
    |Use32BitWorker|false|Testing|
    |AlwaysOn|true|Testing|
    |ApplicationInsightsName|your ApplicationInsights instance name of stage Testing|Testing|
-   |SqlServerName|__'praefix'__-day4sqlsrv-test|Testing|
+   |SqlServerName|__'prefix'__-day4sqlsrv-test|Testing|
    |SqlDatabaseName|scmcontactsdb|Testing|
    |SqlAdminUserName|*your Sql Admin's username*|Testing|
    |SqlAdminPassword|*your password*|Testing|
