@@ -1,8 +1,9 @@
 # Messaging #
 
+In this chapter, you will get to know Azure messaging offerings to loosely connect services with each other. You will use *Azure Service Bus Topics* as an example. *Azure Storage Queues* will be used in the next Break Out session, our SCM Contacts application.
+
 ## Here is what you will learn ##
 
-- Familiarize with the various messaging solutions in Azure
 - Use Azure Service Bus for pub/sub scenarios (Consumer/Producer pattern)
 - Use Azure Logic Apps to subscribe to topics and process them
 
