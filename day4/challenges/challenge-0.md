@@ -27,7 +27,7 @@ Before we can create an Azure DevOps account we need to understand which Identit
 Azure AD, MSA (Microsoft account) and a GitHub account is supported if you want to use cloud authentication. It is recommended to use Azure AD when a large group of users must be managed or if you want to integrate Azure DevOps to your organisation's Azure AD, otherwise use your Microsoft account or a GitHub account.
 For on-premises deployments Active Directory is recommended.
 
-__Note:__ If you want to integrate Azure DevOps into your organization's Azure AD make sure that you have the needed permissions to create a ServicePrincipal in your Azure AD. We will create a ServicePrincipal in further challenges to authorize Azure DevOps to access your Azure Subscription in order to deploy Azure resources.
+__Note:__ If you want to integrate Azure DevOps into your organization's Azure AD make sure that you have the needed permission to create a ServicePrincipal in your Azure AD. We will create a ServicePrincipal in further challenges to authorize Azure DevOps to access your Azure Subscription in order to deploy Azure resources.
 
 ## Create an Azure DevOps organisation
 1. Navigate to [Azure DevOps](https://azure.microsoft.com/services/devops/)

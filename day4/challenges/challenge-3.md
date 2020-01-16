@@ -14,16 +14,16 @@ Azure Pipelines is a cloud service that you can use to automatically build and t
 
 Azure Pipelines combines continuous integration (CI) and continuous delivery (CD) to constantly and consistently test and build your code and ship it to any target.
 
-Here is an overview what we want to achieve in this challenge:
+Here is an overview of what we want to achieve in this challenge:
 
 ![CI-CD-Flow](./images/ci-cd-build-flow.png)
 
 ## Create your first CI Build
 
-Go to Azure Boards and set the UserStory S3 to active. We create a new build definition that copies the needed ARM template to an artifact location that is managed by Azure DevOps. An artifact location is a storage location where Azure Pipelines copies all files that are needed for a successfull deployment of an application. The artifact location is linked to your build. Every build gets its own unique build number and therefore your artifact is versioned, too.
+Go to Azure Boards and set the UserStory S3 to active. We create a new build definition that copies the needed ARM Template to an artifact location that is managed by Azure DevOps. An artifact location is a storage location where Azure Pipelines copies all files that are needed for a successfull deployment of an application. The artifact location is linked to your build. Every build gets its own unique build number and therefore your artifact is versioned, too.
 
 1. Create a feature branch *"features/scmcommcicd"* and check it out
-2. Create a folder "pipelines" under day4/apps
+2. Create a folder named "pipelines" under day4/apps
 3. Add a file named scm-common-ci.yaml
 4. Add the following yaml snippet that defines the build Trigger:
    ```yaml
@@ -57,8 +57,8 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
              targetPath: $(Build.ArtifactStagingDirectory)
              artifactName: drop
    ```
-   Here we specified to copy the needed ARM Template to our artifact drop location named *"drop"*.
-   First we use a copy task to copy the ARM template to the build agent's *"ArtifactStagingDirectory"*. This directory is a temp directory on the build agent. After that we publish the build agent's artifact directory to link the created artifacts to the build.
+   Here we specified to copy the needed ARM Template to our artifact's drop location named *"drop"*.
+   First we use a copy task to copy the ARM Template to the build agent's *"ArtifactStagingDirectory"*. This directory is a temp directory on the build agent. After that we can publish the build agent's artifact directory to link the created artifacts to the build.
 
 6. Commit your changes and push the branch to your remote repository.
 7. Navigate to your Azure DevOps project
@@ -80,11 +80,11 @@ Now that we have created the build artifact, we can create a Release build to de
 ![SC-Common-Pipeline](./images/scm-common-pipeline.png)
 
 1. Navigate to your Azure DevOps project and open the Releases page under Pipelines.
-2. Choose the action item to create a new Pipeline and start with an *"Empty job"*.
+2. Choose the action item to create a new Pipeline and start with an *"Empty Job"*.
 3. Rename *"Stage1"* to *"Development"*
 4. Rename the Release pipeline to *"SCM-Common-CD"*
-5. Under Articfacts *"Add an artifact"* and select your *"SCM-Common-CI"* and use always the latest build.
-6. Click the *"flash"* icon under artifacts and set the trigger to *"Continuous deployment trigger"*. This will trigger the Release pipeline whenever a new deployment artrifact of the build *"SCM-Common-CI"* is created.
+5. Under Articfacts *"Add an artifact"* and select your *"SCM-Common-CI"* and always use the latest build.
+6. Click the *"Flash"* icon under artifacts and set the trigger to *"Continuous deployment trigger"*. This will trigger the Release pipeline whenever a new deployment artrifact of the build *"SCM-Common-CI"* is created.
 7. Go to the variable section and add the following variables:
    - ResourceGroupName - ADC-DAY4-SCM-DEV
    - ApplicationInsightsName - appinsights-scm-dev
@@ -117,8 +117,8 @@ In addition we add a *"Pre-deployment conditions"* step to control the deploymen
    - ![Variable Scopes](./imgaes/../images/variable-scopes.png) 
 
 5. Move all existing variables to the scope of the *Development* stage
-6. Add all variables again with the same name but change all values to contain the word *test* as suffix or praefix and apply them to the scope *Testing*
-7. Switch back to the pipeline view of your release definition and set the *Pre-deployment condition* as follow
+6. Add all variables again with the same name but change all values to contain the word *test* as suffix or prefix and apply them to the scope *Testing*
+7. Switch back to the pipeline view of your release definition and set the *Pre-deployment conditions* as follows
    ![Pre-deployment conditions](./images/pre-deployment-conditions.png)
 
 8. Save your release definition

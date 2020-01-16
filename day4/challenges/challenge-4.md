@@ -10,14 +10,14 @@
 
 
 ## Create the CI Build
-Go to Azure Boards and set the UserStory S4 and S5 to active. We create a new build definition with the steps as follow:
+Go to Azure Boards and set the UserStory S4 and S5 to active. We create a new build definition with the steps as follows:
 - Build the SCM Contacts API
 - Copy the ARM Template to the artifact location
 - Publish the artifacts
 
 
 1. Create a feature branch *"features/scmcontactscicd"* and check it out
-2. Add a file named scm-contacts-ci.yaml under day4/apps/pipelines
+2. Add a file named *scm-contacts-ci.yaml* under *day4/apps/pipelines*
 3. Add the following yaml snippet that defines the build Trigger:
    ```yaml
    pr: none
@@ -217,5 +217,10 @@ Now it's time to see the whole build flow in action.
 
 ## Wrap up
 
-__Congratulation__ you have completed the UserStories S4 and S4. Go to Azure Boards and set the stories to completed.
-Now you have seen how you can create a PullRequest validation build that protects your master branch from build breaks. After changes are merged into the master branch, the CI build is triggered and creates the deployment artifacts. The deployment artifacts are then deployed to your stages.
+__Congratulation__ you have completed the UserStories S4 and S5. Go to Azure Boards and set the stories to completed.
+Now you have seen how you can create a PullRequest validation build that protects your master branch from build breaks. After changes are merged into the master branch, the CI build is triggered and it creates the deployment artifacts. The deployment artifacts are then deployed to your stages. After this challenge we have the following architecture deployed to Azure:
+
+![SCM Contacts API](./images/scm-contacts-api-arch.png)
+
+Now navigate to the Azure portal, open the SCM Contacts API's API App in the ResourceGroup ADC-DAY4-SCM-TEST and browse to the Swagger UI.
+If you want you can test the API.
