@@ -40,7 +40,7 @@ Create a new `Python 3.6 Notebook` in [Azure Notebooks](https://notebooks.azure.
 
 ![Use the following Details](./img/CreateNotebookTextAnalyticsDetails.png)
 
-Let's start with :
+Let's start with connecting to your Text Analytics Service. Get the Key and the URL from the Azure portal :
 
 ```python
 import requests
