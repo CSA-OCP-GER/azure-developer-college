@@ -10,6 +10,7 @@ In this Break Out Session we want you to deploy the remaining Microservices to y
 - SCM Resource API
 - SCM Search API
 - SCM Visitreports API
+- SCM Textanalytics
 - SCM Frontend
 
 As in [challenge-4](./challenge-4.md) we will always perform the following steps for each service:
@@ -36,6 +37,10 @@ Project runtime: __dotnetcore__, __ASP.NET Core__ and __AzureFunctions__
 
 ARM Templates: __apps/infrastructure/templates/scm-resources-api-dotnetcore.json__
 
+Build trigger path filters: 
+- day4/apps/infrastructure/templates/scm-resources-api-dotnetcore.json
+- day4/apps/dotnetcore/Scm.Resources/*
+
 CI Build name: __SCM-Resources-CI__
 
 PR Build name: __SCM-Resource-PR__
@@ -52,8 +57,8 @@ CD Build variables stage *Development*:
    |AppServicePlanSKU|B1|Development| sku |
    |Use32BitWorker|false|Development| use32bitworker |
    |AlwaysOn|true|Development| alwaysOn|
-   |StorageAccountName|__'prefix'__-day4scmres-dev|Development| storageAccountName |
-   |ResizerFunctionName|__'prefix'__-day4resizer-dev|Development| functionAppName |
+   |StorageAccountName|__'prefix'__day4resdev|Development| storageAccountName |
+   |ResizerFunctionName|__'prefix'__day4resizer-dev|Development| functionAppName |
    |ApplicationInsightsName|your ApplicationInsights instance name of stage Development|Development| applicationInsightsName |
    |ServiceBusNamespaceName|your ServiceBus namespace name of stage Development|Development| serviceBusNamespaceName |
 
@@ -68,8 +73,8 @@ CD Build variables stage *Testing*:
    |AppServicePlanSKU|B1|Testing| sku |
    |Use32BitWorker|false|Testing| use32bitworker |
    |AlwaysOn|true|Testing| alwaysOn |
-   |StorageAccountName|__'prefix'__-day4scmres-test|Testing| storageAccountName |
-   |ResizerFunctionName|__'prefix'__-day4resizer-test|Testing| functionAppName |
+   |StorageAccountName|__'prefix'__day4restest|Testing| storageAccountName |
+   |ResizerFunctionName|__'prefix'__day4resizer-test|Testing| functionAppName |
    |ApplicationInsightsName|your ApplicationInsights instance name of stage Testing|Testing| applicationInsightsName |
    |ServiceBusNamespaceName|your ServiceBus namespace name of stage Testing|Testing| serviceBusNamespaceName|
 
@@ -85,6 +90,10 @@ Projects to build: __apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api__ and __Adc.S
 Project runtime: __dotnetcore__, __ASP.NET Core__, __AzureFunctions__
 
 ARM Templates: __apps/infrastructure/templates/scm-search-api-dotnetcore.json__
+
+Build trigger path filters: 
+- day4/apps/infrastructure/templates/scm-search-api-dotnetcore.json
+- day4/apps/dotnetcore/Scm.Search/*
 
 CI Build name: __SCM-Search-CI__
 
@@ -102,12 +111,12 @@ CD Build variables stage *Development*:
    |AppServicePlanSKU|B1|Development| appPlanSKU |
    |Use32BitWorker|false|Development| use32bitworker |
    |AlwaysOn|true|Development| alwaysOn|
-   |StorageAccountName|__'prefix'__-day4scmsearch-dev|Development| storageAccountName |
+   |StorageAccountName|__'prefix'__ day4srdev|Development| storageAccountName |
    |IndexerFunctionName|__'prefix'__-day4indexer-dev|Development| functionAppName |
    |ApplicationInsightsName|your ApplicationInsights instance name of stage Development|Development| applicationInsightsName |
    |ServiceBusNamespaceName|your ServiceBus namespace name of stage Development|Development| serviceBusNamespaceName |
    |AzureSearchServiceName|__'prefix'__-day4search-dev|Development|azureSearchServiceName|
-   |AzureSearchSKU|Basic|Development|azureSearchSKU|
+   |AzureSearchSKU|basic|Development|azureSearchSKU|
    |AzureSearchReplicaCount|1|Development|azureSearchReplicaCount|
    |AzureSearchPartitionCount|1|Development|azureSearchPartitionCount|
 
@@ -122,11 +131,363 @@ CD Build variables stage *Testing*:
    |AppServicePlanSKU|B1|Testing| appPlanSKU |
    |Use32BitWorker|false|Testing| use32bitworker |
    |AlwaysOn|true|Testing| alwaysOn|
-   |StorageAccountName|__'prefix'__-day4scmsearch-dev|Testing| storageAccountName |
+   |StorageAccountName|__'prefix'__-day4srdev|Testing| storageAccountName |
    |IndexerFunctionName|__'prefix'__-day4indexer-dev|Testing| functionAppName |
    |ApplicationInsightsName|your ApplicationInsights instance name of stage Testing|Testing| applicationInsightsName |
    |ServiceBusNamespaceName|your ServiceBus namespace name of stage Testing|Testing| serviceBusNamespaceName |
    |AzureSearchServiceName|__'prefix'__-day4search-dev|Testing|azureSearchServiceName|
-   |AzureSearchSKU|Basic|Testing|azureSearchSKU|
+   |AzureSearchSKU|basic|Testing|azureSearchSKU|
    |AzureSearchReplicaCount|1|Testing|azureSearchReplicaCount|
    |AzureSearchPartitionCount|1|Testing|azureSearchPartitionCount|
+
+
+## SCM Visitreports API
+
+Corresponding UserStories: __S10__ and __S11__
+
+Feature branch: __features/scmvisitreportscicd__
+
+Projects to build: __apps/nodejs/visitreport__
+
+Project runtime: __NodeJs__
+
+ARM Templates: __apps/infrastructure/templates/scm-visitreport-nodejs-db.json__ and __apps/infrastructure/templates/scm-visitreport-nodejs-infra.json__.
+- first deploy __scm-visitreport-nodejs-db.json__
+- then deploy __scm-visitreport-nodejs-infra.json__
+
+Build trigger path filters: 
+- day4/apps/nodejs/visitreport/*
+- day4/apps/infrastructure/templates/scm-visitreport-nodejs-db.json
+- day4/apps/infrastructure/templates/scm-visitreport-nodejs-infra.json
+
+CI Build name: __SCM-Visitreports-CI__
+
+PR Build name: __SCM-Visitreports-PR__
+
+CD Build name: __SCM-Visitreports-CD__
+
+CD Build variables stage *Development*:
+
+   | Variable | Value | Scope |
+   |----------|-------|-------|
+   |ResourceGroupName | ADC-DAY4-SCM-DEV | Development |
+   |ResourceGroupNameTux|ADC-DAY4-SCM-TUX-DEV|Development|
+   |Location| westeurope|Development|
+   |ApiAppName|__'prefix'__-day4vsapi-dev|Development|
+   |AppServicePlanSKU|Standard|Development|
+   |AppServicePlanSKUCode|S1|Development|
+   |ApplicationInsightsName|your ApplicationInsights instance name of stage Development|Development|
+   |CosmosDbAccount|your Cosmos Account Name of stage Development|Development|
+   |CosmosDatabaseName|scmvisitreports|Development|
+   |CosmosDatabaseContainerName|visitreports|Development|
+   |ServiceBusNamespaceName|your ServiceBus namespace name of stage Development|Development|
+
+CD Build variables stage *Testing*:
+
+   | Variable | Value | Scope |
+   |----------|-------|-------|
+   |ResourceGroupName | ADC-DAY4-SCM-TEST | Testing |
+   |ResourceGroupNameTux|ADC-DAY4-SCM-TUX-TEST|Testing|
+   |Location| westeurope|Testing|
+   |ApiAppName|__'prefix'__-day4vsapi-test|Testing|
+   |AppServicePlanSKU|Standard|Testing|
+   |AppServicePlanSKUCode|S1|Testing|
+   |ApplicationInsightsName|your ApplicationInsights instance name of stage Testing|Testing|
+   |CosmosDbAccount|your Cosmos Account Name of stage Testing|Testing|
+   |CosmosDatabaseName|scmvisitreports|Testing|
+   |CosmosDatabaseContainerName|visitreports|Testing|±±±
+   |ServiceBusNamespaceName|your ServiceBus namespace name of stage Testing|Testing|
+
+Variable to ARM Template Parameters:
+
+**Note:** Make sure that you apply the ARM Template  __scm-visitreport-nodejs-db.json__ to ResourceGroup __ResourceGroupName__ and
+that you apply the ARM Template __scm-visitreport-nodejs-infra.json__ to ResourceGroup __ResourceGroupNameTux__ !!!
+
+   |ARM Template|ARM Template Parameter|Variable to use| Deploy to ResourceGroup|
+   |------------|----------------------|---------------|------------------------|
+   |scm-visitreport-nodejs-db.json|cosmosDbAccount|CosmosDbAccount| ResourceGroupName |
+   |scm-visitreport-nodejs-db.json|cosmosDatabaseName|CosmosDatabaseName| ResourceGroupName |
+   |scm-visitreport-nodejs-db.json|cosmosDatabaseContainerName|CosmosDatabaseContainerName| ResourceGroupName|
+   |scm-visitreport-nodejs-infra.json|sku|AppServicePlanSKU|ResourceGroupNameTux|
+   |scm-visitreport-nodejs-infra.json|skuCode|AppServicePlanSKUCode|ResourceGroupNameTux|
+   |scm-visitreport-nodejs-infra.json|webAppName|ApiAppName|ResourceGroupNameTux|
+   |scm-visitreport-nodejs-infra.json|applicationInsightsName|ApplicationInsightsName|ResourceGroupNameTux|
+   |scm-visitreport-nodejs-infra.json|cosmosDbAccount|CosmosDbAccount|ResourceGroupNameTux|
+   |scm-visitreport-nodejs-infra.json|serviceBusNamespaceName|ServiceBusNamespaceName|ResourceGroupNameTux|
+   |scm-visitreport-nodejs-infra.json|commonResGroup|ResourceGroupName|ResourceGroupNameTux|
+
+
+**Hint:** to build a NodeJs application you have to install NodeJs on your build agent first. After the installation you can run a bash script that executes *npm install* in your project folder. Next, you can create a zip file and copy it to the artifacts staging directory to publish it in the next step.
+
+```yaml
+pr: none
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - day4/apps/nodejs/visitreport/*
+      - day4/apps/infrastructure/templates/scm-visitreport-nodejs-db.json
+      - day4/apps/infrastructure/templates/scm-visitreport-nodejs-infra.json
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "12.x"
+    displayName: "Install Node.js"
+  - task: Bash@3
+    inputs:
+      workingDirectory: "$(Build.SourcesDirectory)/day4/apps/nodejs/visitreport"
+      targetType: "inline"
+      displayName: "npm install"
+      script: npm install
+  - task: ArchiveFiles@2
+    displayName: "Archive build files"
+    inputs:
+      rootFolderOrFile: "$(Build.SourcesDirectory)/day4/apps/nodejs/visitreport"
+      includeRootFolder: false
+      archiveType: zip
+      archiveFile: $(Build.ArtifactStagingDirectory)/Adc.Scm.VisitReports.zip
+      replaceExistingArchive: true
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: day4/apps/infrastructure/templates
+      contents: |
+        scm-visitreport-nodejs-db.json
+        scm-visitreport-nodejs-infra.json
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)
+      artifactName: drop
+
+```
+
+Make sure that your AppService deployment task is configured as follows:
+
+![AppService Deployment Task](./images/visitreports-deployment-task.png)
+
+## SCM Textanalytics
+
+Corresponding UserStories: __S12__ and __S13__
+
+Feature branch: __features/scmtextanalyticscicd__
+
+Projects to build: __apps/nodejs/textanalytics__
+
+Project runtime: __NodeJs__
+
+ARM Templates: __apps/infrastructure/templates/scm-textanalytics-nodejs-common.json__ and __apps/infrastructure/templates/scm-textanalytics-nodejs-infra.json__.
+- first deploy __scm-textanalytics-nodejs-common.json__
+- then deploy __scm-textanalytics-nodejs-infra.json__
+
+Build trigger path filters: 
+- day4/apps/nodejs/textanalytics/*
+- day4/apps/infrastructure/templates/scm-textanalytics-nodejs-common.json
+- day4/apps/infrastructure/templates/scm-textanalytics-nodejs-infra.json
+
+CI Build name: __SCM-Textanalytics-CI__
+
+PR Build name: __SCM-Textanalytics-PR__
+
+CD Build name: __SCM-Textanalytics-CD__
+
+CD Build variables stage *Development*:
+
+   | Variable | Value | Scope |
+   |----------|-------|-------|
+   |ResourceGroupName | ADC-DAY4-SCM-DEV | Development |
+   |ResourceGroupNameFunc|ADC-DAY4-SCM-FUNC-DEV|Development|
+   |Location| westeurope|Development|
+   |TextAnalyticsName|__'prefix'__-day4cognitive-dev|Development|
+   |TextAnalyticsTier|S0|Development|
+   |StorageAccountName|__'prefix'__ day4tadev|Development|
+   |FunctionAppName|__'prefix'__-day4tafunc-dev|Development|
+   |ApplicationInsightsName|your ApplicationInsights instance name of stage Development|Development|
+   |CosmosDbAccount|your Cosmos Account Name of stage Development|Development|
+   |ServiceBusNamespaceName|your ServiceBus namespace name of stage Development|Development|
+
+CD Build variables stage *Testing*:
+
+   | Variable | Value | Scope |
+   |----------|-------|-------|
+   |ResourceGroupName | ADC-DAY4-SCM-TEST | Testing |
+   |ResourceGroupNameFunc|ADC-DAY4-SCM-FUNC-TEST|Testing|
+   |Location| westeurope|Testing|
+   |TextAnalyticsName|__'prefix'__-day4cognitive-test|Testing|
+   |TextAnalyticsTier|S0|Testing|
+   |StorageAccountName|__'prefix'__ day4tatest|Testing|
+   |FunctionAppName|__'prefix'__-day4tafunc-test|Testing|
+   |ApplicationInsightsName|your ApplicationInsights instance name of stage Testing|Testing|
+   |CosmosDbAccount|your Cosmos Account Name of stage Testing|Testing|
+   |ServiceBusNamespaceName|your ServiceBus namespace name of stage Testing|Testing|
+
+Variable to ARM Template Parameters:
+
+**Note:** Make sure that you apply the ARM Template  __scm-textanalytics-nodejs-common.json__ to ResourceGroup __ResourceGroupName__ and
+that you apply the ARM Template __scm-textanalytics-nodejs-infra.json__ to ResourceGroup __ResourceGroupNameFunc__ !!!
+
+   |ARM Template|ARM Template Parameter|Variable to use| Deploy to ResourceGroup|
+   |------------|----------------------|---------------|------------------------|
+   |scm-textanalytics-nodejs-common.json|taname|TextAnalyticsName| ResourceGroupName |
+   |scm-textanalytics-nodejs-common.json|tatier|TextAnalyticsTier| ResourceGroupName |
+   |scm-textanalytics-nodejs-common.json|storageAccountName|StorageAccountName| ResourceGroupName|
+   |scm-textanalytics-nodejs-infra.json|functionAppName|FunctionAppName|ResourceGroupNameFunc|
+   |scm-textanalytics-nodejs-infra.json|storageAccountName|StorageAccountName|ResourceGroupNameFunc|
+   |scm-textanalytics-nodejs-infra.json|taname|TextAnalyticsName|ResourceGroupNameFunc|
+   |scm-textanalytics-nodejs-infra.json|applicationInsightsName|ApplicationInsightsName|ResourceGroupNameFunc|
+   |scm-textanalytics-nodejs-infra.json|cosmosDbAccount|CosmosDbAccount|ResourceGroupNameFunc|
+   |scm-textanalytics-nodejs-infra.json|serviceBusNamespaceName|ServiceBusNamespaceName|ResourceGroupNameFunc|
+   |scm-textanalytics-nodejs-infra.json|commonResGroup|ResourceGroupName|ResourceGroupNameFunc|
+
+**Hints:** To build SCm textanalytics we need to use NodeJs version 10.x.
+
+```yaml
+pr: none
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - day4/apps/nodejs/visitreport/*
+      - day4/apps/infrastructure/templates/scm-visitreport-nodejs-db.json
+      - day4/apps/infrastructure/templates/scm-visitreport-nodejs-infra.json
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "12.x"
+    displayName: "Install Node.js"
+  - task: Bash@3
+    inputs:
+      workingDirectory: "$(Build.SourcesDirectory)/day4/apps/nodejs/visitreport"
+      targetType: "inline"
+      displayName: "npm install"
+      script: npm install
+  - task: ArchiveFiles@2
+    displayName: "Archive build files"
+    inputs:
+      rootFolderOrFile: "$(Build.SourcesDirectory)/day4/apps/nodejs/visitreport"
+      includeRootFolder: false
+      archiveType: zip
+      archiveFile: $(Build.ArtifactStagingDirectory)/Adc.Scm.VisitReports.zip
+      replaceExistingArchive: true
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: day4/apps/infrastructure/templates
+      contents: |
+        scm-visitreport-nodejs-db.json
+        scm-visitreport-nodejs-infra.json
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)
+      artifactName: drop
+```
+
+Make sure that your AppService deployment task is configured as follows:
+
+![App Service Deployment Task](./images/textanalytics-deployment-task.png)
+
+## SCM Frontend
+
+Corresponding UserStories: __S14__ and __S15__
+
+Feature branch: __features/scmfrontendcicd__
+
+Projects to build: __apps/frontend/scmfe__
+
+Project runtime: __NodeJs__
+
+ARM Templates: __apps/infrastructure/templates/scm-fe.json__
+
+Build trigger path filters: 
+- day4/apps/frontend/*
+- day4/apps/infrastructure/templates/scm-fe.json
+  
+CI Build name: __SCM-Frontend-CI__
+
+PR Build name: __SCM-Frontend-PR__
+
+CD Build name: __SCM-Frontend-CD__
+
+CD Build variables stage *Development*:
+
+   | Variable | Value | Scope | ARM Template Parameter |
+   |----------|-------|-------|------------------------|
+   |ResourceGroupName | ADC-DAY4-SCM-DEV | Development | |
+   |Location| westeurope|Development| |
+   |StorageAccountName|__'prefix'__ day4scmfedev|Development| storageAccountName |
+   |ApplicationInsightsName|your ApplicationInsights instance name of stage Development|Development||
+   |ContactsEndpoint|the https endpoint of the SCM Contacts API in your Development stage|Development||
+   |ResourcesEndpoint|the https endpoint of the SCM Resources API in your Development stage|Development||
+   |SearchEndpoint|the https endpoint of the SCM Search API in your Development stage|Development||
+   |ReportsEndpoint|the https endpoint of the SCM Visitreports API in your Development stage|Development||
+
+CD Build variables stage *testing*:
+
+   | Variable | Value | Scope | ARM Template Parameter |
+   |----------|-------|-------|------------------------|
+   |ResourceGroupName | ADC-DAY4-SCM-TEST | Testing | |
+   |Location| westeurope|Testing| |
+   |StorageAccountName|__'prefix'__ day4scmfetest|Testing| storageAccountName |
+   |ApplicationInsightsName|your ApplicationInsights instance name of stage Testing|Testing||
+   |ContactsEndpoint|the https endpoint of the SCM Contacts API in your Testing stage|Testing||
+   |ResourcesEndpoint|the https endpoint of the SCM Resources API in your Testing stage|Testing||
+   |SearchEndpoint|the https endpoint of the SCM Search API in your Testing stage|Testing||
+   |ReportsEndpoint|the https endpoint of the SCM Visitreports API in your Testing stage|Testing||
+
+
+**Hints:** To build the SCM Frontend VueJs Single Page Application use the build steps as follows:
+
+```yaml
+pr: none
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - day4/apps/frontend/*
+      - day4/apps/infrastructure/templates/scm-fe.json
+steps:
+  - task: Npm@1
+    inputs:
+      command: "install"
+      workingDir: "day4/apps/frontend/scmfe"
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "day4/apps/frontend/scmfe"
+      customCommand: "run build"
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: "day4/apps/frontend/scmfe/dist"
+      Contents: "**"
+      TargetFolder: "$(Build.ArtifactStagingDirectory)/dist"
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: day4/apps/infrastructure/templates
+      contents: |
+        scm-fe.json
+      targetFolder: $(Build.ArtifactStagingDirectory)/templates
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)
+      artifactName: drop
+```
+
+**Hints:** To deploy the SCM Frontend Single Page Application to a staging environment we need to set the endpoints of the APIs and the InstrumentationKey of ApplicationInsights. As we deploy the Single Application to a StorageAccount we need to enable the static website hosting for the StorageAccount. Use the following Azure CLI tasks before the application is deployed to the StorageAccount and after the ResourceGroup deployment task:
+
+1. Azure CLI task "Enable static website hosting" inline script:
+   ```shell
+   az storage blob service-properties update --account-name $(StorageAccountName) --static-website  --index-document index.html --404-document index.html
+   ```
+2. Azure CLI task "Configure SPA settings" inline script:
+   ```shell
+   echo "var uisettings = { \"enableStats\": true, \"endpoint\": \"$(ContactsEndpoint)\", \"resourcesEndpoint\": \"$(ResourcesEndpoint)\", \"searchEndpoint\": \"$(SearchEndpoint)\", \"reportsEndpoint\": \"$(ReportsEndpoint)\", \"aiKey\": \"`az resource show -g $(ResourceGroupName) -n $(ApplicationInsightsName) --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`\" };" > $(System.ArtifactsDirectory)/_SCM-Frontend-CI/drop/dist/settings/settings.js
+   ```
+3. Azure CLI task "Copy SPA to StorageAccount" inline script:
+   ```shell
+   az storage blob upload-batch -d '$web' --account-name $(StorageAccountName) -s $(System.ArtifactsDirectory)/_SCM-Frontend-CI/drop/dist
+   ```

@@ -84,6 +84,7 @@ With Azure Pipelines you can define a build that is executed whenever a PullRequ
 1. Add a file named scm-contacts-pr.yaml under *day4/apps/pipelines*
 2. Add the following yaml snippet:
    ```yaml
+    trigger: none
     steps:
       - task: DotNetCoreCLI@2
         displayName: Restore
