@@ -1,4 +1,4 @@
-# Break Out #1: Create CI/CD pipelines to deploy the Azure Dev College sample application to Azure
+# Break Out: Create CI/CD pipelines to deploy the Azure Dev College sample application to Azure
 
 ## Here is what you will learn
 Deploy the sample application to Azure.
@@ -491,3 +491,37 @@ steps:
    ```shell
    az storage blob upload-batch -d '$web' --account-name $(StorageAccountName) -s $(System.ArtifactsDirectory)/_SCM-Frontend-CI/drop/dist
    ```
+
+## Test the application
+
+Now that you have deployed all services to Azure it's time to test it!
+Go to the Azure Portal and navigate to the ResourceGroup ADC-DAY4-SCM-DEV. Open the StorageAccount *__'prefix'__ day4scmfedev* and go to *Static website*.
+Copy the url of the __Primary endpoint__, open a new browser window and paste the url. If everything is configured correctly, the Azure Developer College's Sample Application should work. Try to add some Contacts, add Avatars and create VisitReports. 
+If you want you can check the Testing stage, too.
+
+## ApplicationInsights
+
+Now that we have created some test data, go to the ApplicationInsights instance of your Development stage and open the ApplicationMap.
+If nothing is displayed, wait some minutes, it takes ts time until all data is pushed to ApplicationInsights. 
+
+With ApplicationInsights, Azure Monitor offers a distributed tracing solution that makes a developer’s live easier. ApplicationInsights offers an application map view which aggregates many transactions to show a topological view of how the systems interact, and what the average performance and error rates are.
+
+Take some time and look at the map to see what information an Operator can get from it.
+
+![ApplicationMap](./images/applicationinsights-appmap.png)
+
+Now Navigate to the *Performance* view. Here you find all details about operations and dependencies of your services.
+In the upper panel you can apply filters to investigate your telemetry:
+
+![Performance Filter](./images/aiperf-filter.png)
+
+Check out some details about the SCM API operations:
+
+![Operations](./images/ai-operation-details.png)
+
+Drill into a sample and see the "End to end transaction":
+
+![Sample](./images/operation-drill.png)
+
+## Congratulation !!
+You've done it!
