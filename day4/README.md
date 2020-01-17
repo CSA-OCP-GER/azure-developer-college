@@ -42,6 +42,7 @@ To give you a short overview of all Microservices that are part of the sample ap
 |SCM Resource API|ASP.NET Core|
 |SCM Search|ASP.NET Core|
 |SCM Visitreports API|NodeJs|
+|SCm Textanalytics|NodeJs|
 |SCM Frontend|NodeJs|
 
 
