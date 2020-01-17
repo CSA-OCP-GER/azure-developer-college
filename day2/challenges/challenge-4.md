@@ -236,5 +236,158 @@ az group deployment create -g basicarm-rg -n firsttemplate --template-file=./azu
 
 Some prefer the *parameters file*-approach, because you can set up parameter files for different environments, e.g. azuredeploy.params.**DEV**.json, azuredeploy.params.**TEST**.json, azuredeploy.params.**PROD**.json.
 
-## Deploying a Complex Infrastructure ##
+Warning: There exist two modes, how you can deploy an ARM template:
 
+- Complete – resources that are not present in the template, but do exist in the resource group, are deleted.
+- Incremental – resources that are not present in the template, but exist in the resource group, remain unchanged.
+
+## Automatically set configuration properties in Web / Function Apps ##
+
+Now that we can automatically deploy resources to Azure, we need to know how to, e.g., configure application settings of an Azure Web App during deployment. It's pretty easy, we now have all the tools to do so.
+
+Let's add a Web App (plus AppService Plan) to our deployment to demonstrate it.
+
+Here's the template:
+
+```json
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the storage account to be created."
+            }
+        },
+        "storageAccountType": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_ZRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Storage Account type"
+            }
+        },
+        "hostingPlanName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the AppService Plan."
+            }
+        },
+        "webAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the WebApp to be created."
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "name": "[parameters('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "[parameters('storageAccountName')]"
+            },
+            "properties": {
+                "accountType": "[parameters('storageAccountType')]"
+            }
+        },
+        {
+            "apiVersion": "2015-08-01",
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "HostingPlan"
+            },
+            "sku": {
+                "name": "B1",
+                "capacity": 1
+            },
+            "properties": {
+                "name": "[parameters('hostingPlanName')]"
+            }
+        },
+        {
+            "name": "[parameters('webAppName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2015-08-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "[parameters('webAppName')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('webAppName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "type": "config",
+                    "name": "appsettings",
+                    "properties": {
+                        "STORAGE_ACCOUNT": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]",
+                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                    ]
+                }
+            ]
+        }
+    ],
+    "outputs": {
+        "storageAccountConnectionString": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+        }
+    }
+}
+```
+
+I'd like to point you attention to a few new things here. First and foremost, we defined **dependencies** in the template. Have a look at the *WebApp* resource.
+
+```json
+"dependsOn": [
+    "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+    "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+]
+```
+
+We tell the Azure Resource Manager, that the **Azure Web App depends on other resources**. This has the effect, that the creation of the Web App will be posponed until the Storage Account and the AppService Plan have been created. This sure makes sense, because we want to read the Storage Account Key and put it into the Web App configuration settings:
+
+```json
+{
+    "apiVersion": "2015-08-01",
+    "type": "config",
+    "name": "appsettings",
+    "properties": {
+        "STORAGE_ACCOUNT": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+    }
+}
+```
+
+The template would fail, if we wouldn't add the the dependency, because the Azure Resource Manager will delegate the **provisioning of resources to the resource providers in parallel** (which is one of the advantages over Powershell or Azure CLI for resource creation - it will be done in parallel. With PS or Azure CLI would be executed sequentially)! So, it would not wait until the Storage Account is present...the template would therfore throw an error as soon as the Storage Account Key would be read (from a resource that might not exist).
+
+Deploy the ARM template via Azure CLI to a new resource group and check afterwards, if the Storage Account key is present in the Web App Configuration settings.
+
+![arm](./img/arm_deploy_basicplus.png "arm")
+
+## Deploying a complex Infrastructure ##
+
+Now that we have seen the basic structure of an ARM template and how we can deploy it, let's approch to a more complex sample. Here's an overview of what the template contains:
+
+![arm](./img/arm_infra_large.png "arm")
