@@ -176,35 +176,233 @@ As we can see, we can translate multiple sentences within one API call. The serv
 
 ## Install and run Sentiment Analysis as Container ##
 
-Docker pull for the Sentiment Analysis container
+## Create and run the sample
 
-Use the docker pull command to download a container image from Microsoft Container Registry.
-For a full description of available tags for the Text Analytics containers, see the Sentiment Analysis container on the Docker Hub.
+0. Deploy a Face Api Service in the Portal
 
+![Deploy Face API](./img/deployface.png)
+
+![Details of Deploy Face API](./img/deployfacedetails.png)
+
+1. Copy the following code into Visual Studio Code.
+2. Make the following changes in code where needed:
+    1. Replace the value of `subscription_key` with your subscription key.
+    2. Edit the value of `face_api_url` to include the endpoint URL for your Face API resource.
+    3. Optionally, replace the value of `image_url` with the URL of a different image that you want to analyze.
+3. Save the code as a file with an `.py` extension. For example, `detect-face.py`.
+4. Open a command Terminal window (at the top of Visual Studio Code).
+5. In the Terminal, change into the correct directory, use the `python` command to run the sample. For example, `python detect-face.py`.
+
+![Keys and Url of Face API](./img/KeyUrlFace.png)
+
+```python
+import requests
+import json
+
+# set to your own subscription key value
+subscription_key = None
+assert subscription_key
+
+# replace <My Endpoint String> with the string from your endpoint URL
+face_api_url = 'https://<My Endpoint String>.com/face/v1.0/detect'
+
+image_url = 'https://upload.wikimedia.org/wikipedia/commons/3/37/Dagestani_man_and_woman.jpg'
+
+headers = {'Ocp-Apim-Subscription-Key': subscription_key}
+
+params = {
+    'returnFaceId': 'true',
+    'returnFaceLandmarks': 'false',
+    'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
+}
+
+response = requests.post(face_api_url, params=params,
+                         headers=headers, json={"url": image_url})
+print(json.dumps(response.json()))
 ```
-docker pull mcr.microsoft.com/azure-cognitive-services/sentiment:latest
-```
-To run the Sentiment Analysis container, execute the following docker run command.
-```
-docker run --rm -it -p 5000:5000 --memory 4g --cpus 1 \
-mcr.microsoft.com/azure-cognitive-services/sentiment \
-Eula=accept \
-Billing={ENDPOINT_URI_TEXT_ANALYTICS_SERVICE} \
-ApiKey={API_KEY_TEXT_ANALYTICS_SERVICE}
-```
-This command:
-- Runs a Sentiment Analysis container from the container image
-- Allocates one CPU core and 4 gigabytes (GB) of memory
-- Exposes TCP port 5000 and allocates a pseudo-TTY for the container
-- Automatically removes the container after it exits. The container image is still available on the host computer.
 
+## Examine the response
 
-Query the container's prediction endpoint
-- The container provides REST-based query prediction endpoint APIs.
-- Use the host, http://localhost:5000, for container APIs.
+A successful response is returned in JSON.
 
-Stop the container
-- To shut down the container, in the command-line environment where the container is running, select Ctrl+C
+```json
+[
+  {
+    "faceId": "e93e0db1-036e-4819-b5b6-4f39e0f73509",
+    "faceRectangle": {
+      "top": 621,
+      "left": 616,
+      "width": 195,
+      "height": 195
+    },
+    "faceAttributes": {
+      "smile": 0,
+      "headPose": {
+        "pitch": 0,
+        "roll": 6.8,
+        "yaw": 3.7
+      },
+      "gender": "male",
+      "age": 37,
+      "facialHair": {
+        "moustache": 0.4,
+        "beard": 0.4,
+        "sideburns": 0.1
+      },
+      "glasses": "NoGlasses",
+      "emotion": {
+        "anger": 0,
+        "contempt": 0,
+        "disgust": 0,
+        "fear": 0,
+        "happiness": 0,
+        "neutral": 0.999,
+        "sadness": 0.001,
+        "surprise": 0
+      },
+      "blur": {
+        "blurLevel": "high",
+        "value": 0.89
+      },
+      "exposure": {
+        "exposureLevel": "goodExposure",
+        "value": 0.51
+      },
+      "noise": {
+        "noiseLevel": "medium",
+        "value": 0.59
+      },
+      "makeup": {
+        "eyeMakeup": true,
+        "lipMakeup": false
+      },
+      "accessories": [],
+      "occlusion": {
+        "foreheadOccluded": false,
+        "eyeOccluded": false,
+        "mouthOccluded": false
+      },
+      "hair": {
+        "bald": 0.04,
+        "invisible": false,
+        "hairColor": [
+          {
+            "color": "black",
+            "confidence": 0.98
+          },
+          {
+            "color": "brown",
+            "confidence": 0.87
+          },
+          {
+            "color": "gray",
+            "confidence": 0.85
+          },
+          {
+            "color": "other",
+            "confidence": 0.25
+          },
+          {
+            "color": "blond",
+            "confidence": 0.07
+          },
+          {
+            "color": "red",
+            "confidence": 0.02
+          }
+        ]
+      }
+    }
+  },
+  {
+    "faceId": "37c7c4bc-fda3-4d8d-94e8-b85b8deaf878",
+    "faceRectangle": {
+      "top": 693,
+      "left": 1503,
+      "width": 180,
+      "height": 180
+    },
+    "faceAttributes": {
+      "smile": 0.003,
+      "headPose": {
+        "pitch": 0,
+        "roll": 2,
+        "yaw": -2.2
+      },
+      "gender": "female",
+      "age": 56,
+      "facialHair": {
+        "moustache": 0,
+        "beard": 0,
+        "sideburns": 0
+      },
+      "glasses": "NoGlasses",
+      "emotion": {
+        "anger": 0,
+        "contempt": 0.001,
+        "disgust": 0,
+        "fear": 0,
+        "happiness": 0.003,
+        "neutral": 0.984,
+        "sadness": 0.011,
+        "surprise": 0
+      },
+      "blur": {
+        "blurLevel": "high",
+        "value": 0.83
+      },
+      "exposure": {
+        "exposureLevel": "goodExposure",
+        "value": 0.41
+      },
+      "noise": {
+        "noiseLevel": "high",
+        "value": 0.76
+      },
+      "makeup": {
+        "eyeMakeup": false,
+        "lipMakeup": false
+      },
+      "accessories": [],
+      "occlusion": {
+        "foreheadOccluded": false,
+        "eyeOccluded": false,
+        "mouthOccluded": false
+      },
+      "hair": {
+        "bald": 0.06,
+        "invisible": false,
+        "hairColor": [
+          {
+            "color": "black",
+            "confidence": 0.99
+          },
+          {
+            "color": "gray",
+            "confidence": 0.89
+          },
+          {
+            "color": "other",
+            "confidence": 0.64
+          },
+          {
+            "color": "brown",
+            "confidence": 0.34
+          },
+          {
+            "color": "blond",
+            "confidence": 0.07
+          },
+          {
+            "color": "red",
+            "confidence": 0.03
+          }
+        ]
+      }
+    }
+  }
+]
+```
 
 ## Create and use Computer Vision Service and Custom Vision ##
 
