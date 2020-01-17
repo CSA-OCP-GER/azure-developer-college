@@ -162,3 +162,11 @@ Go to <https://azure.microsoft.com/en-us/features/storage-explorer/>, download a
 ![Azure Storage Explorer](./img/storage_explorer.png "Azure Storage Explorer")
 
 ![Azure Storage Explorer](./img/storage_explorer_view.png "Azure Storage Explorer")
+
+## Azure Data Studio ##
+
+We will also work with Azure SQL Databases. You can, of course, use SQL Server Management Studio if you are on a Windows machine. If you want to work "cross-platform", use Azure Data Studio.
+
+Go to <https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio>, download and install the tool. 
+
+![Azure Data Studio](./img/azure_data_studio.png "Azure Data Studio")

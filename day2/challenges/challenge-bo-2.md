@@ -16,7 +16,7 @@ We will start implementing our target architecture by adding a Storage Account t
 
 ### Storage Account (Container/Queue) ###
 
-Therefore, create a Storage Account in the resource group you took for the first breakout session (should be *scm-day2-rg*). Create the account having these paramters:
+Therefore, create a Storage Account in the resource group you took for the first breakout session (should be *scm-breakout-rg*). Create the account having these paramters:
 
 - name the storage account *<YOUR_PREFIX>scmresources*
 - Location: *West Europe*
@@ -40,7 +40,7 @@ The infrastructure for handling images regarding storage and messaging is now se
 
 In the *Serveless* challenge, we created the Azure Function via the Visual Studio Code wizard. Now, let's see how the the Portal experience is like.
 
-Go to your resource group (*scm-day2-rg*) and add an Azure Function (in the wizard, search for "Function App").
+Go to your resource group (*scm-breakout-rg*) and add an Azure Function (in the wizard, search for "Function App").
 
 Follow the wizard and when asked, enter the following information (only important information will be mentioned):
 
@@ -87,7 +87,7 @@ Deployment of you function starts and after a few seconds, it is running in Azur
 
 We need to add another Azure Web App to host the "Resources API" of our SCM Contacts application.
 
-1. got to your resource group *scm-day2-rg*
+1. got to your resource group *scm-breakout-rg*
 1. create an Azure Web App (you can choose to use the Portal or the Azure CLI). You can choose the same settings as for the Contacts API.
 
 When the deployment has finished, we also need to add a few settings. Open the Web App in the Portal and go to the "Configuration" view (under **Settings**).
