@@ -236,10 +236,10 @@ az group deployment create -g basicarm-rg -n firsttemplate --template-file=./azu
 
 Some prefer the *parameters file*-approach, because you can set up parameter files for different environments, e.g. azuredeploy.params.**DEV**.json, azuredeploy.params.**TEST**.json, azuredeploy.params.**PROD**.json.
 
-Warning: There exist two modes, how you can deploy an ARM template:
+**Warning**: There exist two modes, how you can deploy an ARM template:
 
-- Complete – resources that are not present in the template, but do exist in the resource group, are deleted.
-- Incremental – resources that are not present in the template, but exist in the resource group, remain unchanged.
+- **Complete** – resources that are not present in the template, but do exist in the resource group, are deleted.
+- **Incremental** – resources that are not present in the template, but exist in the resource group, remain unchanged.
 
 ## Automatically set configuration properties in Web / Function Apps ##
 
@@ -391,3 +391,24 @@ Deploy the ARM template via Azure CLI to a new resource group and check afterwar
 Now that we have seen the basic structure of an ARM template and how we can deploy it, let's approch to a more complex sample. Here's an overview of what the template contains:
 
 ![arm](./img/arm_infra_large.png "arm")
+
+You can find the ARM template and the correspondig parameters file in folder *day2/challenges/armtemplates/largeinfra*. Make yourself familiar with the template. 
+
+
+While you are deploying the template (create a new resource group and apply the template), here are a few parts, you should hav a look at in the meantime:
+
+- look at the template functions for concatenation, string manipulations like "replace"
+- adding connection strings to Web Apps (which is different from App Settings)
+- automatic Web App Slot creation
+- Autoscale settings of Web Apps
+
+When the deployment has finished, check your resource group and open the "Deployments" overview.
+
+> If you wonder why this takes longer as expected: the Redis Cache is responsbile for the delay. But you usually deploy such a service once when setting up you infrastructure, so that should not be much of a problem. 
+
+![arm](./img/arm_deploy_infra_large.png "arm")
+
+
+## House Keeping ##
+
+Remove the sample resource groups for the basic/basic+ and large infra services.
