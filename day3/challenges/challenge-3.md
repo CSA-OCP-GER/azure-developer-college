@@ -101,6 +101,8 @@ Click **Submit** to create and simultaneously run the indexer.
 
 ## Querying Content
 
+Open the Search Explorer in the Azure Portal, copy the queries (see below) and get familiar with the results of the queries:
+
 ### Simple query with top N results
 
 #### String Query: `search=spa`
@@ -168,7 +170,7 @@ For more information about query scenarios enabled by the full query parser, see
 [Full List of Example Queries](https://docs.microsoft.com/en-us/azure/search/search-get-started-portal#example-queries)
 [Lucene Syntax](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples)
 
-## Indexing unstructured content (e.g. images, audio, etc.)
+## Adding Cognitive Skills - to index unstructured content (e.g. images, audio, etc.)
 
 [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) allows us to also index unstructured data. More precisely, it add capabilities for data extraction, natural language processing (NLP), and image processing to Azure Search indexing pipeline (for more see [here](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro#key-features-and-concepts)). In Azure Cognitive Search, a skillset responsible for the pipeline of the data and consists of multiple skills. Some skills have been pre-included, but it is also possible for us to write our own skills.
 
