@@ -25,9 +25,7 @@ On the other side of your service, your application code issues query requests a
 |Free-form text search | [**Full-text search**](search-lucene-query-architecture.md) is a primary use case for most search-based apps. Queries can be formulated using a supported syntax. <br/><br/>[**Simple query syntax**](https://docs.microsoft.com/en-us/rest/api/searchservice/simple-query-syntax-in-azure-search) provides logical operators, phrase search operators, suffix operators, precedence operators.<br/><br/>[**Lucene query syntax**](https://docs.microsoft.com/en-us/rest/api/searchservice/lucene-query-syntax-in-azure-search) includes all operations in simple syntax, with extensions for fuzzy search, proximity search, term boosting, and regular expressions.|
 | Filters and facets | [**Faceted navigation**](search-faceted-navigation.md) is enabled through a single query parameter. Azure Cognitive Search returns a faceted navigation structure you can use as the code behind a categories list, for self-directed filtering (for example, to filter catalog items by price-range or brand). <br/><br/> [**Filters**](query-odata-filter-orderby-syntax.md) can be used to incorporate faceted navigation into your application's UI, enhance query formulation, and filter based on user- or developer-specified criteria. Create filters using the OData syntax. 
 
-In the SCM Application we are using the Lucene query syntax.
-
-[Lucene Query Syntax Examples](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples)
+In the SCM Application we are using the Lucene query syntax ([Lucene Query Syntax Examples](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples)).
 
 View the full Azure Cognitive Search Feature list here:
 [Azure Cognitive Search Feature list](https://docs.microsoft.com/en-us/azure/search/search-what-is-azure-search#feature-descriptions)
@@ -36,20 +34,185 @@ View the full Azure Cognitive Search Feature list here:
 
 0. Create a Resoure Group and add a Resource called **Azure Cognitive Search**
 
+1. First, create a `Azure Search` instance in the Azure Portal
+
+2. For our purposes, the `Free Tier` is sufficient
+
+However, the `Free Tier` does not support additional replicas, scaling and is only able to index documents with up to 32000 characters/document. If we want to index longer documents, we need to go to a bigger tier (64000 for `Basic`, 4m for `Standard` and above - as of November 2018).
+
 ![Create Azure Search](./img/AzureSearchCreate.png)
 
 View the Details of Creating an Azure Search Service in the Portal:
 
 ![Create Azure Search Details](./img/AzureSearchCreateDetails.png)
 
+Once provisioned, our service will be reachable via `https://xxxxxxx.search.windows.net`
+
+Azure Search [can index](https://docs.microsoft.com/en-us/azure/search/search-indexer-overview) data from a variety of sources:
+
+* Azure SQL Database or SQL Server on an Azure virtual machine
+* Azure Cosmos DB
+* Azure Blob Storage
+* Azure Table Storage
+* Indexing CSV blobs using the Azure Search Blob indexer
+* Indexing JSON blobs with Azure Search Blob indexer
+
+In general you can upload your data to one of the sources and let Azure Search index it from there. You can do this completely through the Azure Portal, use [Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) or use the API/CLI.
+
+In our case, we'll choose a Sample Dataset hotel-sample
+
+1. Now we can go into our Azure Search instance and go to `Import Data`
+
+2. Next, we need to define the `Data Source` and choose Samples and select `hotels-sample` dataset
+
+ ![Choose hotels sample](./img/hotels_sample_dataset.png)
+
+3. We'll skip `Cognitive Search` for this example. Azure Search automatically looks at the Blob container and will now extract the content and the metadata from all the PDFs. Let's give our Index a better name
+
+4. Now let's create an index. Minimally, an index requires a name and a fields collection; one of the fields should be marked as the document key to uniquely identify each document. Additionally, you can specify language analyzers or suggesters if you want autocomplete or suggested queries.
+
+Fields have data types and attributes. The check boxes across the top are *index attributes* controlling how the field is used.
+
+* **Retrievable** means that it shows up in search results list. You can mark individual fields as off limits for search results by clearing this checkbox, for example for fields used only in filter expressions.
+* **Key** is the unique document identifier. It's always a string, and it is required.
+* **Filterable**, **Sortable**, and **Facetable** determine whether fields are used in a filter, sort, or faceted navigation structure.
+* **Searchable** means that a field is included in full text search. Strings are searchable. Numeric fields and Boolean fields are often marked as not searchable.
+
+Storage requirements do not vary as a result of your selection. For example, if you set the **Retrievable** attribute on multiple fields, storage requirements do not go up.
+
+By default, the wizard scans the data source for unique identifiers as the basis for the key field. *Strings* are attributed as **Retrievable** and **Searchable**. *Integers* are attributed as **Retrievable**, **Filterable**, **Sortable**, and **Facetable**.
+
+1. Accept the defaults. 
+
+   If you rerun the wizard a second time using an existing hotels data source, the index won't be configured with default attributes. You'll have to manually select attributes on future imports. 
+
+   ![Generated hotels index](./img/hotels_index.png)
+
+2. Continue to the next page.
+
+Still in the **Import data** wizard, click **Indexer** > **Name**, and type a name for the indexer.
+
+This object defines an executable process. You could put it on recurring schedule, but for now use the default option to run the indexer once, immediately.
+
+Click **Submit** to create and simultaneously run the indexer.
+
+  ![hotels indexer](./img/CreateIndexer.png)
+
+5. After a minute or two, our Indexer will have indexed the hotel dataset and we should be able to query them.
+
+## Querying Content
+
+### Simple query with top N results
+
+#### String Query: `search=spa`
+
+* The **search** parameter is used to input a keyword search for full text search, in this case, returning hotel data for those containing *spa* in any searchable field in the document.
+
+* **Search explorer** returns results in JSON. For a better user experience, you will need to write code that [handles search results](https://docs.microsoft.com/en-us/azure/search/search-pagination-page-layout) to bring out important elements.
+
+* Documents are composed of all fields marked as "retrievable" in the index. To view index attributes in the portal, click *hotels-sample* in the **Indexes** list.
+
+![String Query](./img/SimpleQuery.png)
+
+#### Parameterized Query: `search=spa&$count=true&$top=10`
+
+* The **&** symbol is used to append search parameters, which can be specified in any order.
+
+* The **$count=true** parameter returns the total count of all documents returned. This value appears near the top of the search results. You can verify filter queries by monitoring changes reported by **$count=true**. Smaller counts indicate your filter is working.
+
+* The **$top=10** returns the highest ranked 10 documents out of the total. By default, Azure Cognitive Search returns the first 50 best matches. You can increase or decrease the amount via **$top**.
+
+![Parameterized Query](./img/ParameterizedQuery.png)
+
+### <a name="filter-query"></a> Filter the query
+
+Filters are included in search requests when you append the **$filter** parameter. 
+
+#### Filtered Query: `search=beach&$filter=Rating gt 4`
+
+* The **$filter** parameter returns results matching the criteria you provided. In this case, ratings greater than 4.
+
+* Filter syntax is an OData construction. For more information, see [Filter OData syntax](https://docs.microsoft.com/rest/api/searchservice/odata-expression-syntax-for-azure-search).
+
+![Filtered Query](./img/FilteredQuery.png)
+
+#### Linguistic Analysis Query: `search=beaches&highlight=Description`
+
+* Full text search recognizes basic variations in word forms. In this case, search results contain highlighted text for "beach", for hotels that have that word in their searchable fields, in response to a keyword search on "beaches". Different forms of the same word can appear in results because of linguistic analysis. 
+
+* Azure Cognitive Search supports 56 analyzers from both Lucene and Microsoft. The default used by Azure Cognitive Search is the standard Lucene analyzer.
+
+![Linguistic Analysis Query](./img/LinguisticAnalysisQuery.png)
+
+### <a name="fuzzy-search"></a> Try fuzzy search
+
+By default, misspelled query terms, like *seatle* for "Seattle", fail to return matches in typical search. The following example returns no results.
+
+#### Example (misspelled term, unhandled): `search=seatle`
+
+To handle misspellings, you can use fuzzy search. Fuzzy search is enabled when you use the full Lucene query syntax, which occurs when you do two things: set **queryType=full** on the query, and append the **~** to the search string.
+
+![Fuzzy Search Unhandeled](./img/FuzzySearchunhandeled.png)
+
+#### Example (misspelled term, handled): `search=seatle~&queryType=full`
+
+This example now returns documents that include matches on "Seattle".
+
+![Fuzzy Search Handeled](./img/FuzzySearchHandeled.png)
+
+When **queryType** is unspecified, the default simple query parser is used. The simple query parser is faster, but if you require fuzzy search, regular expressions, proximity search, or other advanced query types, you will need the full syntax.
+
+Fuzzy search and wildcard search have implications on search output. Linguistic analysis is not performed on these query formats. Before using fuzzy and wildcard search, review [How full text search works in Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/query-lucene-syntax) and look for the section about exceptions to lexical analysis.
+
+For more information about query scenarios enabled by the full query parser, see [Lucene query syntax in Azure Cognitive Search](https://docs.microsoft.com/rest/api/searchservice/lucene-query-syntax-in-azure-search).
+
+[Full List of Example Queries](https://docs.microsoft.com/en-us/azure/search/search-get-started-portal#example-queries)
+[Lucene Syntax](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples)
+
+## Indexing unstructured content (e.g. images, audio, etc.)
+
+[Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) allows us to also index unstructured data. More precisely, it add capabilities for data extraction, natural language processing (NLP), and image processing to Azure Search indexing pipeline (for more see [here](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro#key-features-and-concepts)). In Azure Cognitive Search, a skillset responsible for the pipeline of the data and consists of multiple skills. Some skills have been pre-included, but it is also possible for us to write our own skills.
+
+[Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-quickstart-blob)
+
+As before, let's choose the Sample dataset and choose the SQL DB `realestate-us-sample`.
+
+![Realestate Dataset](./img/RealestateDataset.png)
+
+Once we're done, we'll repeat the steps from before, `Import Dataset`, walk through the wizard, but this time, we'll configure the `Cognitive Search` part in the second tab.
+
+Next, we need to define the skillset. In our case, we'll enable all features:
+
+![Defining the skillset](./img/EnrichCognitiveSkills.png)
+
+Once we finished the next two tabs, Azure Cognitive Search will start indexing our data (this will take a bit longer, as it needs to run image recognition, OCR, etc. on the files).
+
+![Index Realestate](./img/IndexRealestate.png)
+
+In the following JSON we can see that the cognitive skills are enabled and that the Translate Skill has a result:
+
+![Realestate Cognitive Search](./img/RealestateQuery.png)
+
+![Realestate Cogntitive Skils](./img/RealestateTranslate.png)
+
+* [Simple Query Syntax](https://docs.microsoft.com/en-us/rest/api/searchservice/simple-query-syntax-in-azure-search)
+* [Lucene Query Syntax](https://docs.microsoft.com/en-us/rest/api/searchservice/lucene-query-syntax-in-azure-search)
+
+## Using the API
+
+We've been lazy and did everything through the portal - obviously not the way we want to work in the real world. Especially data ingestion and search should (and most likely needs) to be performed through the API:
+
+* [Create an index](https://docs.microsoft.com/en-us/azure/search/search-create-index-rest-api)
+* [Import Data](https://docs.microsoft.com/en-us/azure/search/search-import-data-rest-api)
+* [Search](https://docs.microsoft.com/en-us/azure/search/search-query-rest-api)
 
 ## Integrate Azure Search in an Node JS Application ##
 
-Create a Node.js application that that creates, loads, and queries an Azure Cognitive Search index. This article demonstrates how to create the application step-by-step. 
+Now let's jump into Code. We will create a Node.js application that that creates, loads, and queries an Azure Cognitive Search index. This article demonstrates how to create the application step-by-step. 
 
 ## Set up your environment
 
-Begin by opening the Cloud Shell in the Browser,a Bash console, Powershell console or other environment in which you've installed Node.js.
+Begin by opening the Cloud Shell in the Browser, a Bash console, Powershell console or other environment in which you've installed Node.js.
 
 1. Create a development directory, giving it the name `devcollege` :
 
@@ -64,9 +227,9 @@ Begin by opening the Cloud Shell in the Browser,a Bash console, Powershell conso
 
 2. Initialize an empty project with NPM by running `npm init`. Accept the default values, except for the License, which you should set to "MIT". 
 
-1. Add packages that will be depended on by the code and aid in development:
+3. Add packages that will be depended on by the code and aid in development:
 
-    ```powershell
+    ```bash
     npm install nconf node-fetch
     npm install --save-dev eslint eslint-config-prettier eslint-config-airbnb-base eslint-plugin-import prettier
     ```
@@ -113,12 +276,20 @@ Insert your search service data in the file **azure_search_config.json** :
 ```
 
 Replace the `[SERVICE_NAME]` value with the name of your search service. Replace `[ADMIN_KEY]` and `[QUERY_KEY]` with the key values you recorded earlier.  If your endpoint URL were https://mydemo.search.windows.net, your service name would be mydemo.
+
+![Search URL](./img/SearchUrl.png)
+
 In Settings > Keys, get an admin key for full rights on the service. There are two interchangeable admin keys, provided for business continuity in case you need to roll one over. You can use either the primary or secondary key on requests for adding, modifying, and deleting objects.
+
+![Search Key](./img/SearchKey.png)
+
 Get the query key as well. It's a best practice to issue query requests with read-only access.
 
 ## 1 - Create index 
 
-Find the file **hotels_quickstart_index.json**.  This file defines how Azure Cognitive Search works with the documents you'll be loading in the next step. Each field will be identified by a `name` and have a specified `type`. Each field also has a series of index attributes that specify whether Azure Cognitive Search can search, filter, sort, and facet upon the field. Most of the fields are simple data types, but some, like `AddressType` are complex types that allow you to create rich data structures in your index.  You can read more about [supported data types](https://docs.microsoft.com/rest/api/searchservice/supported-data-types) and [index attributes](https://docs.microsoft.com/azure/search/search-what-is-an-index#index-attributes). 
+Find the file **hotels_quickstart_index.json**.  This file defines how Azure Cognitive Search works with the documents you'll be loading in the next step. Each field will be identified by a `name` and have a specified `type`. Each field also has a series of index attributes that specify whether Azure Cognitive Search can search, filter, sort, and facet upon the field. 
+
+Most of the fields are simple data types, but some, like `AddressType` are complex types that allow you to create rich data structures in your index.  You can read more about [supported data types](https://docs.microsoft.com/rest/api/searchservice/supported-data-types) and [index attributes](https://docs.microsoft.com/azure/search/search-what-is-an-index#index-attributes). 
 
 Replace the following to **hotels_quickstart_index.json** or [download the file](https://github.com/Azure-Samples/azure-search-javascript-samples/blob/master/quickstart/hotels_quickstart_index.json). 
 
@@ -253,7 +424,6 @@ Replace the following to **hotels_quickstart_index.json** or [download the file]
     ]
 }
 ```
-    
 
 It's good practice to separate the specifics of a particular scenario from code that will be broadly applicable. The `AzureSearchClient` class defined in the file **AzureSearchClient.js** will know how to construct request URLs, make a request using the Fetch API, and react to the status code of the response.
 
@@ -287,7 +457,9 @@ getIndexUrl() { return `https://${this.searchServiceName}.search.windows.net/ind
 
 ```
 
-The next responsibility of `AzureSearchClient` is making an asynchronous request with the Fetch API. The asynchronous static method `request` takes a URL, a string specifying the HTTP method ("GET", "PUT", "POST", "DELETE"), the key to be used in the request, and an optional JSON object. The `headers` variable maps the `queryKey` (whether the admin key or the read-only query key) to the "api-key" HTTP request header. The request options always contain the `method` to be used and the `headers`. If `bodyJson` isn't `null`, the body of the HTTP request is set to the string representation of `bodyJson`. The `request` method returns the Fetch API's Promise to execute the HTTP request.
+The next responsibility of `AzureSearchClient` is making an asynchronous request with the Fetch API. The asynchronous static method `request` takes a URL, a string specifying the HTTP method ("GET", "PUT", "POST", "DELETE"), the key to be used in the request, and an optional JSON object. 
+
+The `headers` variable maps the `queryKey` (whether the admin key or the read-only query key) to the "api-key" HTTP request header. The request options always contain the `method` to be used and the `headers`. If `bodyJson` isn't `null`, the body of the HTTP request is set to the string representation of `bodyJson`. The `request` method returns the Fetch API's Promise to execute the HTTP request.
 
 ```javascript
 static async request(url, method, apiKey, bodyJson = null) {
@@ -456,14 +628,10 @@ In contrast, the `AzureSearchClient.createIndexAsync(indexDefinition)` method _d
 Use a terminal window for the following commands.
 
 1. Navigate to the folder that contains the **package.json** file and the rest of your code.
-1. Install the packages for the sample with `npm install`.  This command will download the packages upon which the code depends.
-1. Run your program with `node index.js`.
+2. Install the packages for the sample with `npm install`.  This command will download the packages upon which the code depends.
+3. Run your program with `node index.js`.
 
 You should see a series of messages describing the actions being taken by the program. If you want to see more detail of the requests, you can uncomment the [lines at the beginning of the `AzureSearchClient.request()` method]https://github.com/Azure-Samples/azure-search-javascript-samples/blob/master/quickstart/AzureSearchClient.js#L21-L27) in **AzureSearchClient.js**. 
-
-Open the **Overview** of your search service in the Azure portal. Select the **Indexes** tab. 
-
-In the next step, you'll add data to index. 
 
 ## 2 - Load Documents 
 
@@ -692,116 +860,6 @@ If you are using a free service, remember that you are limited to three indexes,
 
 ## Optional Add On for those who want to get to know Python ##
 
-## Create an Azure Search Service ##
-
-1. First, create a `Azure Search` instance in the Azure Portal
-
-2. For our purposes, the `Free Tier` is sufficient
-
-However, the `Free Tier` does not support additional replicas, scaling and is only able to index documents with up to 32000 characters/document. If we want to index longer documents, we need to go to a bigger tier (64000 for `Basic`, 4m for `Standard` and above - as of November 2018).
-
-Once provisioned, our service will be reachable via `https://xxxxxxx.search.windows.net`
-
-Azure Search [can index](https://docs.microsoft.com/en-us/azure/search/search-indexer-overview) data from a variety of sources:
-
-* Azure SQL Database or SQL Server on an Azure virtual machine
-* Azure Cosmos DB
-* Azure Blob Storage
-* Azure Table Storage
-* Indexing CSV blobs using the Azure Search Blob indexer
-* Indexing JSON blobs with Azure Search Blob indexer
-
-In our case, we'll upload our data to Blob Storage and let Azure Search index it from there. Hence, we need to create an new `Storage Account` and create a new `Blob container`, where we'll upload our [dataset](../day3/search-dataset-pdf.zip) to. We can do this completely through the Azure Portal, use [Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) or use the API/CLI.
-
-1. Once we have uploaded the PDF files, we can go into our Azure Search instance and goto `Import Data`
-
-2. Next, we need to define the `Data Source`
-
-3. We'll skip `Cognitive Search` for this example. Azure Search automatically looks at the Blob container and will now extract the content and the metadata from all the PDFs. Let's give our Index a better name
-
-4. Lastly, we need to give our Indexer a name and also set the schedule. In our case, we'll only run it once, but in a real   world scenario, we might want to keep it running to index new, incoming data:
-
-5. After a minute or two, our Indexer will have indexed all the PDFs and we should be able to query them.
-
-## Querying Content
-
-Azure Search now indexed all our PDFs via the `pdf-blob-indexer` into the `pdf-index` index. Ideally, we would use the REST API of Azure Search to perform sophisticated queries, but in our case, we can use the `Azure Search Explorer`:
-
-[Querying data](https://docs.microsoft.com/en-us/azure/search/search-query-overview) in Azure Search can get quite sophisticated, but for our example here, we can just put in a simple query:
-
-![Azure Search Query Example](./img/azure_search_explorer_example.png)
-
-Using double-quotes `"..."` will search for the whole string, rather than each substring. If we want to make a search term mandatory, we need to prefix a `+`. There is a billion more things we can do, but for now, we'll see that we get one document back, as one only one PDF contained the term `Content Moderator`:
-
-```json
-{
-    "@odata.context": "https://bootcampsearch42.search.windows.net/indexes('pdf-index')/$metadata#docs",
-    "value": [
-        {
-            "@search.score": 0.16848493,
-            "content": "\n05/11/2018 What are Azure Cognitive Services? | Microsoft Docs\n\nhttps://docs.microsoft.com/en-us/azure/cognitive-services/welcome 1/4\n\nAzure Cognitive Services are APIs, SDKs, and services available to help developers build intelligent\n\napplications ...",
-            "metadata_storage_path": "aHR0cHM6Ly9ib290Y2FtcHMuYmxvYi5jb3JlLndpbmRvd3MubmV0L2RhdGFzZXRzL1doYXQlMjBhcmUlMjBBenVyZSUyMENvZ25pdGl2ZSUyMFNlcnZpY2VzLnBkZg2"
-        }
-    ]
-}
-```
-
-If we want to figure out the original file, we can look at: `metadata_storage_path`. Since it is base64-encoded, we need to decode it, either via command line or by using e.g., [www.base64decode.org](https://www.base64decode.org/):
-
-```
-https://bootcamps.blob.core.windows.net/datasets/What%20are%20Azure%20Cognitive%20Services.pdf
-```
-
-Perfect, now we know which document contained the term `Content Moderator`.
-
-## Indexing unstructured content (e.g. images, audio, etc.)
-
-In the first part, we've seen that Azure Search can index data like PDFs, PowerPoints, etc., as long as the documents are easily machine readable (=text). [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) allows us to also index unstructured data. More precisely, it add capabilities for data extraction, natural language processing (NLP), and image processing to Azure Search indexing pipeline (for more see [here](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro#key-features-and-concepts)). In Azure Cognitive Search, a skillset responsible for the pipeline of the data and consists of multiple skills. Some skills have been pre-included, but it is also possible for us to write our own skills.
-
-[Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-quickstart-blob)
-
-As before, let's upload our data to Blob Storage and let Azure Search index it from there - in a separate index obviously. In our existing Storage Account, we'll create a new `Blob container`, where we'll upload our [dataset](../data/search-dataset-cognitive.zip) to.
-
-Once we're done, we'll repeat the steps from before, `Import Dataset`, walk through the wizard, but this time, we'll configure the `Cognitive Search` part in the second tab.
-
-Next, we need to define the skillset. In our case, we'll enable all features:
-
-![Defining the skillset](./img/cognitive_search_skillset.png)
-
-We might not want to make our `content` field retrievable, as it does not necessarily provide a lot of value - however, we want to keep it `searchable`, so that Azure Search can do its job. Since we have the original files in Blob and the location stored in `metadata_storage_path`, we can always just retrieve the original file.
-
-Once we finished the next two tabs, Azure Cognitive Search will start indexing our data (this will take a bit longer, as it needs to run image recognition, OCR, etc. on the files). We might see some error, which should be expected:
-
-```json
-{
-  "key": "https://xxxxxxx.blob.core.windows.net/dataset-cognitive/10-K-FY16.html",
-  "message": "Truncated extracted text to 32768 characters."
-}
-```
-
-Thank you `Free Tier` for only allowing 32768 characters per document...
-
-Let's try some search queries:
-
-* `"Pin to Dashboard"` --> returns `create-search-service.png` (text was recognized via OCR)
-* `"Charlotte"` --> returns `MSFT_cloud_architecture_contoso.pdf` (location was recognized via OCR in image)
-
-Good, so looks like our skillset worked. Please note that ideally we'd query through the API an directly specify the relevant fields, e.g., `location:Charlotte` in the second example:
-
-* [Simple Query Syntax](https://docs.microsoft.com/en-us/rest/api/searchservice/simple-query-syntax-in-azure-search)
-* [Lucene Query Syntax](https://docs.microsoft.com/en-us/rest/api/searchservice/lucene-query-syntax-in-azure-search)
-
-## Using the API
-
-We've been lazy and did everything through the portal - obviously not the way we want to work in the real world. Especially data ingestion and search should (and most likely needs) to be performed through the API:
-
-* [Create an index](https://docs.microsoft.com/en-us/azure/search/search-create-index-rest-api)
-* [Import Data](https://docs.microsoft.com/en-us/azure/search/search-import-data-rest-api)
-* [Search](https://docs.microsoft.com/en-us/azure/search/search-query-rest-api)
-
-
-## Optional Add On ##
-
 ## Create an Azure Cognitive Search index in Python using Jupyter notebooks ##
 
 ## Get a key and URL
@@ -810,7 +868,7 @@ REST calls require the service URL and an access key on every request. A search 
 
 1. [Sign in to the Azure portal](https://portal.azure.com/), and in your search service **Overview** page, get the URL. An example endpoint might look like `https://mydemo.search.windows.net`.
 
-1. In **Settings** > **Keys**, get an admin key for full rights on the service. There are two interchangeable admin keys, provided for business continuity in case you need to roll one over. You can use either the primary or secondary key on requests for adding, modifying, and deleting objects.
+2. In **Settings** > **Keys**, get an admin key for full rights on the service. There are two interchangeable admin keys, provided for business continuity in case you need to roll one over. You can use either the primary or secondary key on requests for adding, modifying, and deleting objects.
 
 All requests require an api-key on every request sent to your service. Having a valid key establishes trust, on a per request basis, between the application sending the request and the service that handles it.
 
@@ -1028,13 +1086,13 @@ This step shows you how to query an index using the [Search Documents REST API](
    searchstring = '&search=*&$count=true'
    ```
 
-1. In a new cell, provide the following example to search on the terms "hotels" and "wifi". Add $select to specify which fields to include in the search results.
+2. In a new cell, provide the following example to search on the terms "hotels" and "wifi". Add $select to specify which fields to include in the search results.
 
    ```python
    searchstring = '&search=hotels wifi&$count=true&$select=HotelId,HotelName'
    ```
 
-1. In another cell, formulate a request. This GET request targets the docs collection of the hotels-quickstart index, and attaches the query you specified in the previous step.
+3. In another cell, formulate a request. This GET request targets the docs collection of the hotels-quickstart index, and attaches the query you specified in the previous step.
 
    ```python
    url = endpoint + "indexes/hotels-quickstart/docs" + api_version + searchstring
@@ -1043,11 +1101,11 @@ This step shows you how to query an index using the [Search Documents REST API](
    pprint(query)
    ```
 
-1. Run each step. Results should look similar to the following output. 
+4. Run each step. Results should look similar to the following output. 
 
     ![Search an Index](./img/SearchString.png)
 
-1. Try a few other query examples to get a feel for the syntax. You can replace the `searchstring` with the following examples and then rerun the search request. 
+5. Try a few other query examples to get a feel for the syntax. You can replace the `searchstring` with the following examples and then rerun the search request. 
 
    Apply a filter: 
 
@@ -1074,11 +1132,6 @@ When you're working in your own subscription, it's a good idea at the end of a p
 You can find and manage resources in the portal, using the **All resources** or **Resource groups** link in the left-navigation pane.
 
 If you are using a free service, remember that you are limited to three indexes, indexers, and data sources. You can delete individual items in the portal to stay under the limit. 
-
-
-
-
-
 
 ## Play around a bit with Azure Search ##
 
