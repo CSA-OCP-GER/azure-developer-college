@@ -2,20 +2,19 @@
 
 ## Here is what you will learn ##
 
-- Create a Cosmos DB
-- Add Data to Cosmos DB
-- Create a Partition Key
+- Create a Cosmos DB via the Portal
 - Use ARM Template for automated deployment
 - Integrate Cosmos DB into Node.JS App
 - Add Data using Azure Data Factory
-- Query Data using Data Explorer
-- Indexing in Azure Cosmos DB using Data Explorer
-## Create a Cosmos DB ##
+- Query and Indexing Data using Data Explorer
+- Optional: Cosmos DB Change Feed
+
+# Create a Cosmos DB via Azure Portal
 
 Create a Cosmos DB:
 
 ```
-- Create a resource group - "cosmosappdevcollege"
+- Create a resource group - "AppDevCollege"
   - westeurope
 - Add Cosmos DB
 - Create an unique Account Name
@@ -26,6 +25,10 @@ Create a Cosmos DB:
 - Availability Zones: Disable 
 - Hit "Create"
 ```
+
+![Cosmos DB Create](./img/CosmosCreate.png)
+
+![Cosmos DB Create Details](./img/CosmosCreateDetails.png)
 
 ## Add Data to Cosmos DB ##
 
@@ -61,7 +64,9 @@ Create a Cosmos DB:
 
 - To change the query, select Edit Filter, replace the default query with, and then select Apply Filter.
 
-## Create a Partition Key ##
+![Cosmos Data: Create Item](./img/CosmosItemPartition.png)
+
+## Understand Partition Keys ##
 
 Why do we need partitioning?
 ```
@@ -104,7 +109,7 @@ You can form a partition key by concatenating multiple property values into a si
     ```
 
 
-## Use ARM Template for automated deployment ##
+# Use ARM Template for automated deployment
 
 - The following Azure Resource Manager template creates an Azure Cosmos account with:
     - Two containers that share 400 Requested Units per second (RU/s) throughput at the database level.
@@ -135,9 +140,13 @@ You can form a partition key by concatenating multiple property values into a si
         az cosmosdb show --resource-group <InsertRGName>  --name <InsertACName> --output tsv
 
 ```
+![Bash Cloud Shell command](./img/ARMDeployCosmos.png)
+
+![Result of deployed Cosmos DB via ARM Template](./img/ARMDeployCosmosResult.png)
+
 - Look at a Sample Azure Resource Management Script [ARM Template Cosmos DB](/cosmos.json)
 
-## Integrate Cosmos DB into Node.JS App ##
+# Integrate Cosmos DB into Node.JS App
 
 - Open a command prompt, create a new folder named git-samples, then close the command prompt.
 ```
@@ -160,7 +169,10 @@ You can form a partition key by concatenating multiple property values into a si
 ```
     code .
 ```
+![Cosmos DB integrated in an App (Visual Studio Code View)](./img/CosmosApp.png)
+
 - Go to Visual Studio Code and open the file app.js
+
 - In app.js: 
     - The CosmosClient object is initialized.
     ```
@@ -178,6 +190,8 @@ You can form a partition key by concatenating multiple property values into a si
     ```
         const { item } = await client.database(databaseId).container(containerId).items.create(itemBody);
     ```
+
+    ![Cosmos DB Client](./img/CosmosAppView2.png)
 
     - A SQL query over JSON is performed on the family database. The query returns all the children of the "Anderson" family.
     ```
@@ -200,6 +214,7 @@ You can form a partition key by concatenating multiple property values into a si
         console.log(`\tQuery returned ${resultString}\n`)
         }
     ```
+    ![Cosmos DB Query](./img/CosmosDBQuery.png)
 
 ## Update your connection string ##
 
@@ -223,9 +238,11 @@ You can form a partition key by concatenating multiple property values into a si
 
 - Optionally you can ran npm install and npm start to run the app
 
-## Create Azure Cosmos DB Database and Container
+![Cosmos DB Connection String](./img/CosmosConnectionString.png)
 
-*You will now create a database and container within your Azure Cosmos DB account.*
+# Add Data using Azure Data Factory
+
+## Use (just created) Azure Cosmos DB Database and create a new Container
 
 1. On the left side of the portal, click the **Resource groups** link.
 2. In the **Resource groups** blade, locate and select the **yourResourceGroup** (which you just created).
@@ -248,6 +265,8 @@ You can form a partition key by concatenating multiple property values into a si
 
     6. Click the **OK** button.
 
+![Cosmos DB: Food Collection](./img/CosmosFoodCollection.png)
+
 6. Wait for the creation of the new **database** and **container** to finish before moving on with this lab.
 
 ## Import Lab Data Into Container
@@ -262,9 +281,15 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 
 3. Click **Add** to add a new resource
 
+![Azure Data Factory](./img/DataFactoryCosmos.png)
+
 4. Search for **Data Factory** and select it. Create a new **Data Factory**. You should name this data factory **ImportNutritionDataAppdevColleg(yourname)** with a unique number appended and select the relevant Azure subscription. You should ensure your existing **yourResourceGroup** resource group is selected as well as a Version **V2**. Select **westeurope** as the region. Do **not** select **Enable GIT** (this may be checked by default). Click **create**.
 
+![Data Factory Details](./img/DataFactoryDetails.png)
+
 5. After creation, open your newly created Data Factory. Select **Author & Monitor** and you will launch ADF. You should see a screen similar to the screenshot below. Select **Copy Data**. We will be using ADF for a one-time copy of data from a source JSON file on Azure Blob Storage to a database in Cosmos DB’s SQL API. ADF can also be used for more frequent data transfers from Cosmos DB to other data stores.
+
+![Data Factory Copy Data](./img/CopyDataFactory.png)
 
 6. Edit basic properties for this data copy. You should name the task **ImportNutrition** and select to **Run once now**.
 
@@ -276,11 +301,17 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
     `https://cosmosdblabsv3.blob.core.windows.net/?sv=2018-03-28&ss=bfqt&srt=sco&sp=rlp&se=2022-01-01T04:55:28Z&st=2019-08-05T20:02:28Z&spr=https&sig=%2FVbismlTQ7INplqo6WfU8o266le72o2bFdZt1Y51PZo%3D`
 
 
+![Data Source Factory](./img/DataSourceFactory.png)
+
 9. Click **Next** and then **Browse** to select the **nutritiondata** folder. Then select **NutritionData.json**.
+
+![Nutrition JSON](./img/FactoryJSON.png)
 
 10. Do not check **Copy file recursively** or **Binary Copy**. Also ensure that other fields are empty.
 
 11. Select the file format as **JSON format**. Then select **Next**.
+
+![JSON Format](./img/DestinationJSON.png)
 
 12. You have now successfully connected the Blob Storage container with the nutrition.json file as the source.
 
@@ -289,6 +320,10 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 14. Name the linked service **targetcosmosdb** and select your Azure subscription and Cosmos DB account. You should also select the Cosmos DB **ImportDatabase** that you created earlier.
 
 15. Select your newly created **targetcosmosdb** connection as the Destination date store.
+
+![Target Cosmos DB](./img/TargetCosmosDB.png)
+
+![Target Cosmos DB](./img/TargetCosmosDB2.png)
 
 16. Select your **FoodCollection** container from the drop-down menu. You will map your Blob storage file to the correct Cosmos DB container. Click **Next** to continue.
 
@@ -301,6 +336,8 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 20. After a few minutes, refresh the page and the status for the ImportNutrition pipeline should be listed as **Succeeded**.
 
 21. Once the import process has completed, close the ADF. You will now proceed to validate your imported data. 
+
+![Data Factory Success](./img/DataFactorySuccess.png)
 
 ## Validate Imported Data
 
@@ -322,6 +359,7 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 
 7. Within the **FoodCollection** node, click the **Items** link to view a subset of the various documents in the container. Select a few of the documents and observe the properties and structure of the documents.
 
+![Data Explorer](./img/FoodCollectionDatafactory.png)
 
 # Querying in Azure Cosmos DB
 
@@ -354,6 +392,8 @@ WHERE food.foodGroup = "Snacks" and food.id = "19015"
 6. You will see that the query returned the single document where id is "19015" and the foodGroup is "Snacks".
 7. Explore the structure of this item as it is representative of the items within the **FoodCollection** container that we will be working with for the remainder of this section.
 
+![Food Query](./img/FoodQuery.png)
+
 ## Dot and quoted property projection accessors
 
 You can choose which properties of the document to project into the result using the dot notation. If you wanted to return only the item's id you could run the query below:
@@ -364,6 +404,7 @@ SELECT food.id
 FROM food
 WHERE food.foodGroup = "Snacks" and food.id = "19015"
 ```
+![Food Query](./img/FoodQuery2.png)
 
 Though less common, you can also access properties using the quoted property operator [""]. For example, SELECT food.id and SELECT food["id"] are equivalent. This syntax is useful to escape a property that contains spaces, special characters, or has the same name as a SQL keyword or reserved word.
 
@@ -372,6 +413,7 @@ SELECT food["id"]
 FROM food
 WHERE food["foodGroup"] = "Snacks" and food["id"] = "19015"
 ```
+![Food Query](./img/FoodQuery3.png)
 
 ## WHERE clauses
 
@@ -388,6 +430,7 @@ food.version
 FROM food
 WHERE (food.manufacturerName = "The Coca-Cola Company" AND food.version > 0)
 ```
+![Where Clause](./img/FoodWhere.png)
 
 This query will return the id, description, servings, tags, foodGroup, manufacturerName and version for items with "The Coca-Cola Company" for manufacturerName and a version greater than 0.
 
@@ -432,6 +475,8 @@ WHERE food.foodGroup = "Fruits and Fruit Juices"
 AND food.servings[0].description = "cup"
 ```
 
+![Where Clause](./img/FoodWhere2.png)
+
 ## ORDER BY clause
 
 Azure Cosmos DB supports adding an ORDER BY clause to sort results based on one or more properties
@@ -445,6 +490,7 @@ FROM food
 WHERE food.foodGroup = "Fruits and Fruit Juices" AND food.servings[0].description = "cup"
 ORDER BY food.servings[0].weightInGrams DESC
 ```
+![Oder By Query](./img/OrderBy.png)
 
 You can learn more about configuring the required indexes for an Order By clause in the later Indexing Lab or by reading [our docs](
 https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-order-by).
@@ -476,6 +522,8 @@ ORDER BY food.id
 OFFSET 10 LIMIT 10
 ```
 
+![Food Query](./img/FoodQuery4.png)
+
 When OFFSET LIMIT is used in conjunction with an ORDER BY clause, the result set is produced by doing skip and take on the ordered values. If no ORDER BY clause is used, it will result in a deterministic order of values.
 
 ## More advanced filtering
@@ -493,6 +541,8 @@ WHERE food.foodGroup IN ("Poultry Products", "Sausages and Luncheon Meats")
     AND (food.id BETWEEN "05740" AND "07050")
 ```
 
+![Food Query](./img/FoodQuery5.png)
+
 ## More advanced projection
 
 Azure Cosmos DB supports JSON projection within its queries. Let’s project a new JSON Object with modified property names. Run the query below to see the results.
@@ -508,6 +558,7 @@ SELECT {
 FROM food
 WHERE food.id = "21421"
 ```
+![Food Query](./img/FoodQuery6.png)
 
 ## JOIN within your documents
 
@@ -525,6 +576,7 @@ FROM food
 JOIN serving IN food.servings
 WHERE food.id = "03226"
 ```
+![Food Query](./img/FoodQuery7.png)
 
 JOINs are useful if you need to filter on properties within an array. Run the below example that has filter after the intra-document JOIN.
 
@@ -535,6 +587,7 @@ JOIN t IN c.tags
 JOIN s IN c.servings
 WHERE t.name = 'infant formula' AND s.amount > 1
 ```
+![Food Query](./img/FoodQuery8.png)
 
 ## System functions
 
@@ -554,6 +607,8 @@ AND nutrient.description = "Water"
 AND food.foodGroup IN ("Sausages and Luncheon Meats", "Legumes and Legume Products")
 AND food.id > "42178"
 ```
+
+![Food Query](./img/FoodQuery9.png)
 
 ## Correlated subqueries
 
@@ -576,6 +631,7 @@ JOIN s IN c.servings
 WHERE t.name = 'infant formula' AND (n.nutritionValue > 0 
 AND n.nutritionValue < 10) AND s.amount > 1
 ```
+![Food Query](./img/FoodQuery10.png)
 
 We could rewrite this query using three subqueries to optimize and reduce the Request Unit (RU) charge. Observe that the multi-value subquery always appears in the FROM clause of the outer query.
 
@@ -587,34 +643,7 @@ JOIN (SELECT VALUE n FROM n IN c.nutrients WHERE n.nutritionValue > 0 AND n.nutr
 JOIN (SELECT VALUE s FROM s IN c.servings WHERE s.amount > 1)
 ```
 
-### Scalar subqueries
-
-One use case of scalar subqueries is rewriting ARRAY_CONTAINS as EXISTS.
-
-Consider the following query that uses ARRAY_CONTAINS:
-
-```sql
-SELECT TOP 5 f.id, f.tags
-FROM food f
-WHERE ARRAY_CONTAINS(f.tags, {name: 'orange'})
-```
-
-Run the following query which has the same results but uses EXISTS:
-
-```sql
-SELECT TOP 5 f.id, f.tags
-FROM food f
-WHERE EXISTS(SELECT VALUE t FROM t IN f.tags WHERE t.name = 'orange')
-```
-
-The major advantage of using EXISTS is the ability to have complex filters in the EXISTS function, rather than just the simple equality filters which ARRAY_CONTAINS permits. Here is an example:
-
-```sql
-SELECT VALUE c.description
-FROM c
-JOIN n IN c.nutrients
-WHERE n.units= "mg" AND n.nutritionValue > 0
-```
+![Food Query](./img/FoodQuery11.png)
 
 # Indexing in Azure Cosmos DB
 
@@ -713,6 +742,8 @@ If you wanted to only index the manufacturerName, foodGroup, and nutrients array
     }
 ```
 
+![Index Policy](./img/IndexPolicy.png)
+
 In this example, we use the wildcard character '*' to indicate that we would like to index all paths within the nutrients array. However, it's possible we may just want to index the nutritionValue of each array element.
 
 In this next example, the indexing policy would explicitly specify that the nutritionValue path in the nutrition array should be indexed. Since we don't use the wildcard character '*', no additional paths in the array are indexed.
@@ -794,6 +825,8 @@ During the container re-indexing, write performance is unaffected. However, quer
 SELECT * FROM c WHERE c.manufacturerName = "Kellogg, Co."
 ```
 
+![Query](./img/QueryKellog.png)
+
 Navigate to the **Query Stats** tab. You should observe that this query still has a low RU charge, even after removing some properties from the index. Because the **manufacturerName** was the only property used as a filter in the query, it was the only index that was required.
 
 Now, replace the query text with the following and select **Execute Query**:
@@ -801,6 +834,7 @@ Now, replace the query text with the following and select **Execute Query**:
 ```sql
 SELECT * FROM c WHERE c.description = "Bread, blue corn, somiviki (Hopi)"
 ```
+![Query](./img/QueryCorn.png)
 
 You should observe that this query has a very high RU charge even though only a single document is returned. This is because no range index is currently defined for the `description` property.
 
@@ -809,170 +843,6 @@ If a query does not use the index, the **Index hit document count** will be 0. W
 ### Edit the indexing policy by excluding paths
 
 In addition to manually including certain paths to be indexed, you can exclude specific paths. In many cases, this approach can be simpler since it will allow all new properties in your document to be indexed by default. If there is a property that you are certain you will never use in your queries, you should explicitly exclude this path.
-
-We will create an indexing policy to index every path except for the **description** property.
-
-1. Navigate back to the **FoodCollection** in the Azure Portal and click the **Scale & Settings** link. In the **Indexing Policy** section, replace the existing json file with the following:
-
-```json
-{
-        "indexingMode": "consistent",
-        "includedPaths": [
-            {
-                "path": "/*"
-            }
-        ],
-        "excludedPaths": [
-            {
-                "path": "/description/*"
-            }
-        ]
-    }
-```
-
-This new indexing policy will create a range index on every property except for the description. Click **Save**. Azure Cosmos DB will update the index in the container, using your excess provisioned throughput to make the updates.
-
-During the container re-indexing, write performance is unaffected. However, queries may return incomplete results.
-
-1. After defining the new indexing policy, navigate to your **FoodCollection** and select the **Add New SQL Query** icon. Paste the following SQL query and select **Execute Query**:
-
-```sql
-SELECT * FROM c WHERE c.manufacturerName = "Kellogg, Co."
-```
-
-Navigate to the **Query Stats** tab. You should observe that this query still has a low RU charge since manufacturerName is indexed.
-
-Now, replace the query text with the following and select **Execute Query**:
-
-```sql
-SELECT * FROM c WHERE c.description = "Bread, blue corn, somiviki (Hopi)"
-```
-
-You should observe that this query has a very high RU charge even though only a single document is returned. This is because the `description` property is explicitly excluded in the indexing policy.
-
-## Adding a Composite Index
-
-For ORDER BY queries that order by multiple properties, a composite index is required. A composite index is defined on multiple properties and must be manually created.
-
-1. In the **Azure Cosmos DB** blade, locate and click the **Data Explorer** link on the left side of the blade.
-2. In the **Data Explorer** section, expand the **NutritionDatabase** database node and then expand the **FoodCollection** container node.
-3. Select the icon to add a **New SQL Query**. Paste the following SQL query and select **Execute Query**
-
-```sql
-    SELECT * FROM c ORDER BY c.foodGroup ASC, c.manufacturerName ASC
-```
-
-This query will fail with the following error:
-
-```
-"The order by query does not have a corresponding composite index that it can be served from."
-```
-
-In order to run a query that has an ORDER BY clause with one property, the default range index is sufficient. Queries with multiple properties in the ORDER BY clause require a composite index.
-
-4. Still within the **FoodCollection** node, click the **Scale & Settings** link. In the **Indexing Policy** section, you will add a composite index.
-
-Replace the **Indexing Policy** with the following text:
-
-```json
-{
-    "indexingMode": "consistent",
-    "automatic": true,
-    "includedPaths": [
-        {
-            "path": "/manufacturerName/*"
-        },
-        {
-            "path": "/foodGroup/*"
-        }
-    ],
-    "excludedPaths": [
-        {
-            "path": "/*"
-        },
-        {
-            "path": "/\"_etag\"/?"
-        }
-    ],
-    "compositeIndexes": [
-        [
-            {
-                "path": "/foodGroup",
-                "order": "ascending"
-            },
-            {
-                "path": "/manufacturerName",
-                "order": "ascending"
-            }
-        ]
-    ]
-}
-```
-
-5. **Save** this new indexing policy. The update should take approximately 10-15 seconds to apply to your container.
-
-This indexing policy defines a composite index that allows for the following ORDER BY queries. Test each of these by running them in your existing open query tab in the **Data Explorer**. When you define the order for properties in a composite index, they must either exactly match the order in the ORDER BY clause or be, in all cases, the opposite value.
-
-```sql
-    SELECT * FROM c ORDER BY c.foodGroup ASC, c.manufacturerName ASC
-    SELECT * FROM c ORDER BY c.foodGroup DESC, c.manufacturerName DESC
-```
-
-Now, try to run the following query, which the current composite index does not support.
-
-```sql
-    SELECT * FROM c ORDER BY c.foodGroup DESC, c.manufacturerName ASC
-```
-
-This query will not run without an additional composite index. You can modify the indexing policy to include an additional composite index.
-
-```json
-{
-    "indexingMode": "consistent",
-    "automatic": true,
-    "includedPaths": [
-        {
-            "path": "/manufacturerName/*"
-        },
-        {
-            "path": "/foodGroup/*"
-        }
-    ],
-    "excludedPaths": [
-        {
-            "path": "/*"
-        },
-        {
-            "path": "/\"_etag\"/?"
-        }
-    ],
-    "compositeIndexes": [
-        [
-            {
-                "path": "/foodGroup",
-                "order": "ascending"
-            },
-            {
-                "path": "/manufacturerName",
-                "order": "ascending"
-            }
-        ],
-        [
-            {
-                "path": "/foodGroup",
-                "order": "descending"
-            },
-            {
-                "path": "/manufacturerName",
-                "order": "ascending"
-            }
-        ]
-    ]
-}
-```
-
-You should now be able to run the query. After completing the lab, you can [learn more about defining composite indexes](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-indexing-policy#composite-indexing-policy-examples).
-
 
 ## Lab Cleanup
 
@@ -994,6 +864,6 @@ You should now be able to run the query. After completing the lab, you can [lear
 
 1. Close your browser application.
 
-## Optional: Cosmos DB Change Feed ##
+# Optional: Cosmos DB Change Feed
 
-![Azure Cosmos DB Change Feed](https://github.com/CosmosDB/labs/blob/master/dotnet/labs/08-change_feed_with_azure_functions.md)
+[Azure Cosmos DB Change Feed](https://github.com/CosmosDB/labs/blob/master/dotnet/labs/08-change_feed_with_azure_functions.md)
