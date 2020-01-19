@@ -2,11 +2,10 @@
 
 ## Here is what you will learn ##
 
-- Create an Azure Search Service
-- Create an Index
+- Create an Azure Search Service in the Portal
 - Add Cognitive Skills to Azure Search
-- Create an Azure Cognitive Search index in Python using Jupyter notebooks
-- Optional Add on: Integrate Azure Search in an Node JS Application
+- Integrate Azure Search in an Node JS Application
+- Optional Add on: Create an Azure Cognitive Search index in Python using Jupyter notebooks
 
 # What is Azure Cognitive Search?
 
@@ -424,6 +423,7 @@ Replace the following to **hotels_quickstart_index.json** or [download the file]
     ]
 }
 ```
+![Hotel Quickstart Index JSON](./img/hotel_quickstart_json.png)
 
 It's good practice to separate the specifics of a particular scenario from code that will be broadly applicable. The `AzureSearchClient` class defined in the file **AzureSearchClient.js** will know how to construct request URLs, make a request using the Fetch API, and react to the status code of the response.
 
@@ -858,7 +858,7 @@ You can find and manage resources in the portal, using the **All resources** or 
 If you are using a free service, remember that you are limited to three indexes, indexers, and data sources. You can delete individual items in the portal to stay under the limit. 
 
 
-## Optional Add On for those who want to get to know Python ##
+# Optional Add On for those who want to get to know Python ##
 
 ## Create an Azure Cognitive Search index in Python using Jupyter notebooks ##
 
