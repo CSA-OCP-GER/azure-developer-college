@@ -7,9 +7,26 @@
 - Create and use the  Computer Vision Service and integrate it into an Node.js App
 - Create and use the Face Cognitive Service
 
+# What are Azure Cognitive Services?
+
+Azure Cognitive Services: 
+- are APIs, SDKs, and services available to help developers build intelligent applications without having direct AI or data science skills or knowledge. 
+- enable developers to easily add cognitive features into their applications. 
+- The goal of Azure Cognitive Services is to help developers create applications that can see, hear, speak, understand, and even begin to reason. 
+- The catalog of services within Azure Cognitive Services can be categorized into five main pillars - Vision, Speech, Language, Web Search, and Decision.
+
+In this challenge we will focus on the following Cognitive Services:
+
+|Service Name|Service Description|
+|:-----------|:------------------|
+|[Text Analytics](https://docs.microsoft.com/azure/cognitive-services/text-analytics/ "Text Analytics")|Text Analytics provides natural language processing over raw text for sentiment analysis, key phrase extraction and language detection.|
+|[Translator Text](https://docs.microsoft.com/azure/cognitive-services/translator/ "Translator Text")|Translator text provides for machine-based text translation in near real-time.|
+[Computer Vision](https://docs.microsoft.com/azure/cognitive-services/computer-vision/ "Computer Vision")|The Computer Vision service provides you with access to advanced algorithms for processing images and returning information.|
+|[Face](https://docs.microsoft.com/azure/cognitive-services/face/ "Face")| The Face service provides access to advanced face algorithms, enabling face attribute detection and recognition.|
+
 # Create and use a Text Analysis Cognitive Service 
 
-You can solve these tasks in a programming language of your choice. For sake of convenience, we are providing hints in `Python`, which you can easily (and for free) run in [Azure Notebooks](https://notebooks.azure.com). SDK Support for `C#` or `.NET Core` is available for most challenges. Especially Azure Search features an easy-to-use `.NET SDK`. You can find code examples in the Azure documentation for the associated services.
+You can solve these tasks in a programming language of your choice. For sake of convenience, we are providing hints in `Node.js`. SDK Support for `C#` or `.NET Core` is available for most challenges. 
 
 |Azure Cognitive Services|Information|
 |---|---|
@@ -17,9 +34,6 @@ You can solve these tasks in a programming language of your choice. For sake of 
 
 
 :triangular_flag_on_post: **Goal:** Leverage Text Analytics API for extracting language, sentiment, key phrases, and entities from text
-
-In the language of your choice (Python solution is provided), write a small scripts that
-[Text Analytics Service with Other Programming Languages](https://docs.microsoft.com/en-us/azure/cognitive-services/Text-Analytics/quickstarts/nodejs)
 
 0. Go to the Azure Portal, create in **yourresourcegroup** a Text Analytics Service (in the `West Europe` region):
 
@@ -1293,6 +1307,18 @@ You should see the face information displayed as JSON data in the console window
 Find the Sample on Github here: [Intelligent Kiosk](https://github.com/microsoft/Cognitive-Samples-IntelligentKiosk)
 
 # Optional: For those who want to get to know Python 
+
+You can solve these tasks in a programming language of your choice. For sake of convenience, we are providing hints in `Python`, which you can easily (and for free) run in [Azure Notebooks](https://notebooks.azure.com). SDK Support for `C#` or `.NET Core` is available for most challenges. Especially Azure Search features an easy-to-use `.NET SDK`. You can find code examples in the Azure documentation for the associated services.
+
+|Azure Cognitive Services|Information|
+|---|---|
+|[Text Analytics API](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/)|https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/quickstarts/python|
+
+
+:triangular_flag_on_post: **Goal:** Leverage Text Analytics API for extracting language, sentiment, key phrases, and entities from text
+
+In the language of your choice (Python solution is provided), write a small scripts that
+[Text Analytics Service with Other Programming Languages](https://docs.microsoft.com/en-us/azure/cognitive-services/Text-Analytics/quickstarts/nodejs)
 
 Sign into [Azure Notebooks](https://notebooks.azure.com/) and create a new Project in:
 

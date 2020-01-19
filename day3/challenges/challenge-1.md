@@ -9,6 +9,16 @@
 - Query and Indexing Data using Data Explorer
 - Optional: Cosmos DB Change Feed
 
+# What is Azure Cosmos DB?
+
+Azure Cosmos DB:
+- is Microsoft's globally distributed, multi-model database service. 
+- With a click of a button, Cosmos DB enables you to elastically and independently scale throughput and storage across any number of Azure regions worldwide. 
+- You can elastically scale throughput and storage, and take advantage of fast, single-digit-millisecond data access using your favorite API including SQL, MongoDB, Cassandra, Tables, or Gremlin. 
+- Cosmos DB provides comprehensive [service level agreements](https://aka.ms/acdbsla) (SLAs) for throughput, latency, availability, and consistency guarantees, something no other database service offers.
+
+![Cosmos DB](./img/CosmosIntro.png)
+
 # Create a Cosmos DB via Azure Portal
 
 Create a Cosmos DB:
