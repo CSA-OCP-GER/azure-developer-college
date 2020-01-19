@@ -361,7 +361,7 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 
 ![Data Explorer](./img/FoodCollectionDatafactory.png)
 
-# Querying in Azure Cosmos DB
+# Querying and Indexing in Azure Cosmos DB
 
 Azure Cosmos DB SQL API accounts provide support for querying items using the Structured Query Language (SQL), one of the most familiar and popular query languages, as a JSON query language. In this lab, you will explore how to use these rich query capabilities directly through the Azure Portal. No separate tools or client side code are required.
 
@@ -645,7 +645,7 @@ JOIN (SELECT VALUE s FROM s IN c.servings WHERE s.amount > 1)
 
 ![Food Query](./img/FoodQuery11.png)
 
-# Indexing in Azure Cosmos DB
+## Indexing in Azure Cosmos DB
 
 In this lab, you will modify the indexing policy of an Azure Cosmos DB container. You will explore how you can optimize indexing policy for write or read heavy workloads as well as understand the indexing requirements for different SQL API query features.
 
@@ -844,7 +844,7 @@ If a query does not use the index, the **Index hit document count** will be 0. W
 
 In addition to manually including certain paths to be indexed, you can exclude specific paths. In many cases, this approach can be simpler since it will allow all new properties in your document to be indexed by default. If there is a property that you are certain you will never use in your queries, you should explicitly exclude this path.
 
-## Lab Cleanup
+# House Keeping: Lab Cleanup
 
 ### Use Azure CLI to Delete Resource Group
 
@@ -854,15 +854,15 @@ In addition to manually including certain paths to be indexed, you can exclude s
     az group list
     ```
 
-1. Type in the following command and press **Enter** to delete the **yourResourceGroup** *Resource Group*:
+2. Type in the following command and press **Enter** to delete the **yourResourceGroup** *Resource Group*:
 
     ```sh
     az group delete --name "yourResourceGroup" --no-wait --yes
     ```
 
-1. Close the **Cloud Shell** prompt at the bottom of the portal.
+3. Close the **Cloud Shell** prompt at the bottom of the portal.
 
-1. Close your browser application.
+4. Close your browser application.
 
 # Optional: Cosmos DB Change Feed
 

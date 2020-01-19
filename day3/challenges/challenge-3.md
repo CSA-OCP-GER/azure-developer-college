@@ -15,7 +15,7 @@ On the other side of your service, your application code issues query requests a
 
 ![Azure Cognitive Search Architecture](./img/AzureSearchArchitecture.png)
 
-# What are the Features of Azure Cognitive Search?
+## What are the Features of Azure Cognitive Search?
 
 ## Feature descriptions
 
@@ -29,7 +29,7 @@ In the SCM Application we are using the Lucene query syntax ([Lucene Query Synta
 View the full Azure Cognitive Search Feature list here:
 [Azure Cognitive Search Feature list](https://docs.microsoft.com/en-us/azure/search/search-what-is-azure-search#feature-descriptions)
 
-## Deploy an Azure Search Service in the Portal
+# Create an Azure Search Service in the Portal
 
 0. Create a Resoure Group and add a Resource called **Azure Cognitive Search**
 
@@ -170,7 +170,7 @@ For more information about query scenarios enabled by the full query parser, see
 [Full List of Example Queries](https://docs.microsoft.com/en-us/azure/search/search-get-started-portal#example-queries)
 [Lucene Syntax](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples)
 
-## Adding Cognitive Skills - to index unstructured content (e.g. images, audio, etc.)
+# Add Cognitive Skills to Azure Search - to index unstructured content (e.g. images, audio, etc.)
 
 [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) allows us to also index unstructured data. More precisely, it add capabilities for data extraction, natural language processing (NLP), and image processing to Azure Search indexing pipeline (for more see [here](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro#key-features-and-concepts)). In Azure Cognitive Search, a skillset responsible for the pipeline of the data and consists of multiple skills. Some skills have been pre-included, but it is also possible for us to write our own skills.
 
@@ -207,7 +207,7 @@ We've been lazy and did everything through the portal - obviously not the way we
 * [Import Data](https://docs.microsoft.com/en-us/azure/search/search-import-data-rest-api)
 * [Search](https://docs.microsoft.com/en-us/azure/search/search-query-rest-api)
 
-## Integrate Azure Search in an Node JS Application ##
+# Integrate Azure Search in an Node JS Application
 
 Now let's jump into Code. We will create a Node.js application that that creates, loads, and queries an Azure Cognitive Search index. This article demonstrates how to create the application step-by-step. 
 
@@ -851,13 +851,25 @@ The **AzureSearchClient** class encapsulates the configuration, URLs, and basic 
 
 The overall behavior of the `run` function is to delete the Azure Cognitive Search index if it exists, create the index, add some data, and perform some queries.  
 
-## Clean up resources
+# House Keeping: Lab Cleanup
 
-When you're working in your own subscription, it's a good idea at the end of a project to identify whether you still need the resources you created. Resources left running can cost you money. You can delete resources individually or delete the resource group to delete the entire set of resources.
+### Use Azure CLI to Delete Resource Group
 
-You can find and manage resources in the portal, using the **All resources** or **Resource groups** link in the left-navigation pane.
+1. In the **Cloud Shell** command prompt at the bottom of the portal, type in the following command and press **Enter** to list all resource groups in the subscription:
 
-If you are using a free service, remember that you are limited to three indexes, indexers, and data sources. You can delete individual items in the portal to stay under the limit. 
+    ```sh
+    az group list
+    ```
+
+2. Type in the following command and press **Enter** to delete the **yourResourceGroup** *Resource Group*:
+
+    ```sh
+    az group delete --name "yourResourceGroup" --no-wait --yes
+    ```
+
+3. Close the **Cloud Shell** prompt at the bottom of the portal.
+
+4. Close your browser application.
 
 
 # Optional Add On for those who want to get to know Python ##
@@ -1127,15 +1139,9 @@ This step shows you how to query an index using the [Search Documents REST API](
    searchstring = '&search=pool&$orderby=Address/City&$select=HotelId, HotelName, Address/City, Address/StateProvince, Tags'
    ```
 
-## Clean up
 
-When you're working in your own subscription, it's a good idea at the end of a project to identify whether you still need the resources you created. Resources left running can cost you money. You can delete resources individually or delete the resource group to delete the entire set of resources.
 
-You can find and manage resources in the portal, using the **All resources** or **Resource groups** link in the left-navigation pane.
-
-If you are using a free service, remember that you are limited to three indexes, indexers, and data sources. You can delete individual items in the portal to stay under the limit. 
-
-## Play around a bit with Azure Search ##
+# Optional: Play around a bit with Azure Search 
 
 - https://azjobsdemo.azurewebsites.net/
 - https://docs.microsoft.com/en-us/samples/azure-samples/search-dotnet-asp-net-mvc-jobs/search-dotnet-asp-net-mvc-jobs/

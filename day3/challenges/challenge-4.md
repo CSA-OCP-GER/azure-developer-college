@@ -1268,7 +1268,7 @@ You should see the face information displayed as JSON data in the console window
 ]
 ```
 
-## House Keeping: Lab Cleanup
+# House Keeping: Lab Cleanup
 
 ### Use Azure CLI to Delete Resource Group
 
@@ -1287,8 +1287,6 @@ You should see the face information displayed as JSON data in the console window
 3. Close the **Cloud Shell** prompt at the bottom of the portal.
 
 4. Close your browser application.
-
-
 
 # Optional: Play around with the: Intelligent Kiosk 
 
