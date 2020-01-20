@@ -643,6 +643,10 @@ AND n.nutritionValue < 10) AND s.amount > 1
 ```
 ![Food Query](./img/FoodQuery10.png)
 
+Let's look at the Request Unit Statistics:
+
+![Query Statistics](./img/QueryStatshigh.png)
+
 We could rewrite this query using three subqueries to optimize and reduce the Request Unit (RU) charge. Observe that the multi-value subquery always appears in the FROM clause of the outer query.
 
 ```sql
@@ -654,6 +658,12 @@ JOIN (SELECT VALUE s FROM s IN c.servings WHERE s.amount > 1)
 ```
 
 ![Food Query](./img/FoodQuery11.png)
+
+Let's compare the Request Unit Statistics:
+
+![Query Statistics](./img/QueryStatslow.png)
+
+You should observe a lower Request Unit charge.
 
 ## Indexing in Azure Cosmos DB
 
@@ -837,6 +847,10 @@ SELECT * FROM c WHERE c.manufacturerName = "Kellogg, Co."
 
 ![Query](./img/QueryKellog.png)
 
+Let's look at the Request Unit Statistics:
+
+![Query Statistics](./img/QueryStatsIndexLow.png)
+
 Navigate to the **Query Stats** tab. You should observe that this query still has a low RU charge, even after removing some properties from the index. Because the **manufacturerName** was the only property used as a filter in the query, it was the only index that was required.
 
 Now, replace the query text with the following and select **Execute Query**:
@@ -845,6 +859,10 @@ Now, replace the query text with the following and select **Execute Query**:
 SELECT * FROM c WHERE c.description = "Bread, blue corn, somiviki (Hopi)"
 ```
 ![Query](./img/QueryCorn.png)
+
+Let's compare the Request Unit Statistics:
+
+![Query Statistics](./img/QueryStatsIndexHigh.png)
 
 You should observe that this query has a very high RU charge even though only a single document is returned. This is because no range index is currently defined for the `description` property.
 
