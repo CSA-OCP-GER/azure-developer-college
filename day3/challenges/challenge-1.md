@@ -238,12 +238,12 @@ You can form a partition key by concatenating multiple property values into a si
 - Copy your URI value from the portal (using the copy button) and make it the value of the endpoint key in config.js.
 
 ```
-  config.endpoint = "https://FILLME.documents.azure.com"
+  config.endpoint = "https://<FILLME>.documents.azure.com"
 ```
 - Then copy your PRIMARY KEY value from the portal and make it the value of the config.key in config.js. You've now updated      your app with all the info it needs to communicate with Azure Cosmos DB.
 
 ```
-    config.key = "FILLME"
+    config.key = "<FILLME>"
 ```
 
 - Optionally you can ran npm install and npm start to run the app
