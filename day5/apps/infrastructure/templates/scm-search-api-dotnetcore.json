@@ -70,6 +70,21 @@
         "azureSearchPartitionCount": {
             "type": "int",
             "defaultValue": 1
+        },
+        "aadInstance": {
+            "type": "string"
+        },
+        "aadClientId": {
+            "type": "string"
+        },
+        "aadTenantId": {
+            "type": "string"
+        },
+        "aadDomain": {
+            "type": "string"
+        },
+        "aadClientIdUri": {
+            "type": "string"
         }
     },
     "variables": {
@@ -170,7 +185,12 @@
                 "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]",
                 "ContactSearchOptions__IndexName": "[variables('indexername')]",
                 "ContactSearchOptions__ServiceName": "[parameters('azureSearchServiceName')]",
-                "ContactSearchOptions__AdminApiKey": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('azureSearchServiceName')), '2015-08-19').primaryKey]"
+                "ContactSearchOptions__AdminApiKey": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('azureSearchServiceName')), '2015-08-19').primaryKey]",
+                "AzureAdOptions__Instance": "[parameters('aadInstance')]",
+                "AzureAdOptions__Domain": "[parameters('aadDomain')]",
+                "AzureAdOptions__TenantId": "[parameters('aadTenantId')]",
+                "AzureAdOptions__ClientId": "[parameters('aadClientId')]",
+                "AzureAdOptions__ClientIdUri": "[parameters('aadClientIdUri')]"
             }
         },
         {

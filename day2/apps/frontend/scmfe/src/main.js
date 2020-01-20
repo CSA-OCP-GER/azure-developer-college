@@ -15,6 +15,8 @@ Vue.use(VueAppInsights, {
   router
 });
 
+Vue.prototype.$uisettings = window.uisettings;
+
 new Vue({
   vuetify,
   router,

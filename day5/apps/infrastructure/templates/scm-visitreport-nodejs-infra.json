@@ -34,6 +34,12 @@
         },
         "serviceBusNamespaceName": {
             "type": "string"
+        },
+        "aadClientIdUri": {
+            "type": "string"
+        },
+        "aadTenantId": {
+            "type": "string"
         }
     },
     "variables": {
@@ -88,6 +94,14 @@
                         {
                             "name": "COSMOSDB",
                             "value": "[reference(resourceId(parameters('commonResGroup'), 'Microsoft.DocumentDb/databaseAccounts', parameters('cosmosDbAccount')), '2015-04-08').documentEndpoint]"
+                        },
+                        {
+                            "name": "TENANT_ID",
+                            "value": "[parameters('aadTenantId')]"
+                        },
+                        {
+                            "name": "AUDIENCE",
+                            "value": "[parameters('aadClientIdUri')]"
                         }
                     ],
                     "connectionStrings": [
