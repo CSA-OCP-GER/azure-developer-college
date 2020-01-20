@@ -11,14 +11,14 @@ const getters = {
 
 // actions
 const actions = {
-    uploadImage({ commit, dispatch }, payload) {
+    uploadImage({ commit, dispatch, rootGetters }, payload) {
         var {
             blob,
             fileType
         } = payload;
         dispatch("wait/start", "apicall", { root: true });
         commit("clearImage");
-        var client = getResourcesHttpClient();
+        var client = getResourcesHttpClient(rootGetters["auth/accessToken"]);
         const config = {
             headers: {
                 "content-type": fileType

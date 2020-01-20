@@ -5,19 +5,29 @@ const databaseId = 'scmvisitreports';
 const containerId = 'visitreports';
 const eventEmitter = require('../events/emitter');
 
-async function listReports(contactid) {
+async function listReports(sub, contactid) {
     var querySpec = null;
     if (contactid == undefined || contactid == null || contactid == '') {
         querySpec = {
-            query: "SELECT c.id, c.contact, c.subject, c.visitDate FROM c where c.type = 'visitreport'"
+            query: "SELECT c.id, c.contact, c.subject, c.visitDate FROM c where c.type = 'visitreport' and c.userid = @sub",
+            parameters: [
+                {
+                    name: "@sub",
+                    value: sub
+                }
+            ]
         }
     } else {
         querySpec = {
-            query: "SELECT c.id, c.contact, c.subject, c.visitDate FROM c where c.type = 'visitreport' AND c.contact.id = @contactid",
+            query: "SELECT c.id, c.contact, c.subject, c.visitDate FROM c where c.type = 'visitreport' AND c.contact.id = @contactid and c.userid = @sub",
             parameters: [
                 {
                     name: "@contactid",
                     value: contactid
+                },
+                {
+                    name: "@sub",
+                    value: sub
                 }
             ]
         }
@@ -33,9 +43,10 @@ async function listReports(contactid) {
     }
 }
 
-async function createReports(report) {
+async function createReports(sub, report) {
     report.id = uuidv4();
     report.type = "visitreport";
+    report.userid = sub;
     try {
         const { item } = await client.database(databaseId).container(containerId).items.upsert(report);
         report.id = item.id;
@@ -46,13 +57,17 @@ async function createReports(report) {
     }
 }
 
-async function readReports(id) {
+async function readReports(sub, id) {
     const querySpec = {
-        query: "SELECT * FROM c where c.id = @id AND c.type = 'visitreport'",
+        query: "SELECT * FROM c where c.id = @id AND c.type = 'visitreport' and c.userid = @sub",
         parameters: [
             {
                 name: "@id",
                 value: id
+            },
+            {
+                name: "@sub",
+                value: sub
             }
         ]
     };
@@ -64,26 +79,62 @@ async function readReports(id) {
     }
 }
 
-async function updateReports(id, report) {
+async function updateReports(sub, id, report) {
+    // find it!
+    const querySpec = {
+        query: "SELECT * FROM c where c.id = @id AND c.type = 'visitreport' and c.userid = @sub",
+        parameters: [
+            {
+                name: "@id",
+                value: id
+            },
+            {
+                name: "@sub",
+                value: sub
+            }
+        ]
+    };
     try {
-        report.type = "visitreport";
-        const { item } = await client.database(databaseId).container(containerId).item(report.id, 'visitreport').replace(report);
-        eventEmitter.emit('updated', report);
-        return true;
+        const { resources: results } = await client.database(databaseId).container(containerId).items.query(querySpec, { enableCrossPartitionQuery: true }).fetchAll();
+        if (results.length > 0) {
+            report.type = "visitreport";
+            report.userid = sub;
+            const { item } = await client.database(databaseId).container(containerId).item(report.id, 'visitreport').replace(report);
+            eventEmitter.emit('updated', report);
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         throw new Error(error.message);
     }
 }
 
-async function deleteReports(id) {
+async function deleteReports(sub, id) {
+    // find it!
+    const querySpec = {
+        query: "SELECT * FROM c where c.id = @id AND c.type = 'visitreport' and c.userid = @sub",
+        parameters: [
+            {
+                name: "@id",
+                value: id
+            },
+            {
+                name: "@sub",
+                value: sub
+            }
+        ]
+    };
     try {
-        const { item } = await client.database(databaseId).container(containerId).item(id, 'visitreport').delete();
-        eventEmitter.emit('deleted', { id: item.id });
-        return true;
-    } catch (error) {
-        if (error.code == 404) {
+        const { resources: results } = await client.database(databaseId).container(containerId).items.query(querySpec, { enableCrossPartitionQuery: true }).fetchAll();
+        if (results.length > 0) {
+            const { item } = await client.database(databaseId).container(containerId).item(id, 'visitreport').delete();
+            eventEmitter.emit('deleted', { id: item.id });
+            return true;
+        } else {
             return false;
         }
+    } catch (error) {
         throw new Error(error.message);
     }
 }

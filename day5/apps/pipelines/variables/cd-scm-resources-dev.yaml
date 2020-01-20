@@ -21,3 +21,5 @@ variables:
     value: appinsightsscmd5-dev
   - name: serviceBusNamespaceName
     value: adcd5sb-dev
+  - name: aadInstance
+    value: "https://login.microsoftonline.com"

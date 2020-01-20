@@ -21,3 +21,6 @@ variables:
     value: scmcontactsdb
   - name: serviceBusNamespaceName
     value: adcd5sb-dev
+  - name: aadInstance
+    value: "https://login.microsoftonline.com"
+  

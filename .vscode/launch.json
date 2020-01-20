@@ -14,7 +14,7 @@
             "postDebugTask": "day2serveScmFrontendTerminate"
         },
         {
-            "name": "Day2 - Launch SCM API",
+            "name": "Day2 - Launch SCM Contacts API",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "day2buildScm",
@@ -54,6 +54,12 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }
+        },
+        {
+            "name": "Day 2 - Attach to Azure Functions",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:azureFunctions.pickProcess}"
         }
     ]
 }

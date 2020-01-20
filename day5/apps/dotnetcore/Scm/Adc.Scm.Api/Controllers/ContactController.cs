@@ -1,7 +1,9 @@
-﻿using Adc.Scm.Api.Models;
+﻿using Adc.Scm.Api.Authorization;
+using Adc.Scm.Api.Models;
 using Adc.Scm.Api.Services;
 using Adc.Scm.Events;
 using Adc.Scm.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -33,6 +35,7 @@ namespace Adc.Scm.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = AuthorizationScopes.ContactsRead)]
         [ProducesResponseType(typeof(List<Contact>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get()
         {
@@ -42,6 +45,7 @@ namespace Adc.Scm.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = AuthorizationScopes.ContactsRead)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetById(Guid id)
@@ -55,6 +59,7 @@ namespace Adc.Scm.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthorizationScopes.ContactsCreate)]
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Add([FromBody]Contact contact)
         {
@@ -66,6 +71,7 @@ namespace Adc.Scm.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = AuthorizationScopes.ContactsUpdate)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Contact), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -86,6 +92,7 @@ namespace Adc.Scm.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = AuthorizationScopes.ContactsDelete)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> Delete(Guid id)

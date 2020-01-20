@@ -2,18 +2,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "day2buildScm",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/day2/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
             "label": "day2serveScmFrontend",
             "command": "npm",
             "type": "process",
@@ -84,7 +72,19 @@
             ]
         },
         {
-            "label": "day2publishScm",
+            "label": "day2buildScm",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/day2/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day2publishScmContacts",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -126,6 +126,62 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "day2runFuncHost",
+            "type": "func",
+            "dependsOn": "day2BuildFunc",
+            "options": {
+                "cwd": "${workspaceFolder}/day2/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/bin/Debug/netcoreapp2.1"
+            },
+            "command": "host start",
+            "isBackground": true,
+            "problemMatcher": "$func-watch"
+        },
+        {
+            "label": "day2CleanFunc",
+            "command": "dotnet",
+            "args": [
+                "clean",
+                "${workspaceFolder}/day2/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/Adc.Scm.Resources.ImageResizer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day2BuildFunc",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/day2/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/Adc.Scm.Resources.ImageResizer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "dependsOn": "day2CleanFunc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day2PublishFunc",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "${workspaceFolder}/day2/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/Adc.Scm.Resources.ImageResizer.csproj",
+                "--configuration",
+                "Release",
+                "-o",
+                "${workspaceFolder}/day2/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/publish",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "problemMatcher": "$msCompile"
+        },
     ]
 }

@@ -1,8 +1,11 @@
+using Adc.Scm.Resources.Api.Authentication;
+using Adc.Scm.Resources.Api.Authorization;
 using Adc.Scm.Resources.Api.Formatter;
 using Adc.Scm.Resources.Api.Monitoring;
 using Adc.Scm.Resources.Api.Repositories;
 using Adc.Scm.Resources.Api.Services;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +27,15 @@ namespace Adc.Scm.Resources.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Initialize authentication
+            services.AddAuthentication(options => {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddAzureAdBearer(options => Configuration.Bind("AzureAdOptions", options));
+
+            // Initialize authorization
+            services.AddContactsAuthorization();
+
             // Initialize ApplicationInsights
             services.AddSingleton<ITelemetryInitializer, ApiTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
@@ -41,6 +53,27 @@ namespace Adc.Scm.Resources.Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Resources API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme 
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
             });
 
             services.AddCors(options =>
@@ -71,6 +104,7 @@ namespace Adc.Scm.Resources.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
