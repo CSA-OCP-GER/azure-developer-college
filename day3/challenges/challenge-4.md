@@ -580,16 +580,9 @@ If you'd like to compare your code against ours, the complete sample is availabl
 
 ![Result: Translate API](./img/translate-text-result.png)
 
-# Create and use the  Computer Vision Service and integrate it into an Node.js App
-
-## Computer Vision client library for Node.js
-
-
-
-## Setting up
+# Create and use the Computer Vision Service using Node.js App
 
 ### Create a Computer Vision Azure resource
-
 
 First, create a `Computer Vision` Service in **YourResourceGroup** in the Azure Portal
 
@@ -605,10 +598,9 @@ To create and run the sample, do the following steps:
 
 1. Create a new Node.JS file in Visual Studio Code.
 2. Optionally, replace the value of `imageUrl` with the URL of a different image that you want to analyze.
-3. Optionally, replace the value of the `language` request parameter with a different language.
-4. Add the code provided below to a new `.js` file.
-5. Copy your Text Analytics key and endpoint into the code. 
-6. Run the program from a Terminal within Visual Studio Code, change into the directory where the code is and 
+3. Add the code provided below to a new `.js` file.
+4. Copy your Endpoint and key into the code. 
+5. Run the program from a Terminal within Visual Studio Code, change into the directory where the code is and 
 run `npm install` and `node analyze-image.js`.
 
 ```javascript

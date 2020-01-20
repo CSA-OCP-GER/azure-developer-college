@@ -269,9 +269,9 @@ Insert your search service data in the file **azure_search_config.json** :
 
 ```json
 {
-    "serviceName" : "[SERVICE_NAME]",
-    "adminKey" : "[SEARCH_SERVICE_ADMIN_KEY]",
-    "queryKey" : "[QUERY_KEY]",
+    "serviceName" : "<SERVICE_NAME>",
+    "adminKey" : "<SEARCH_SERVICE_ADMIN_KEY>",
+    "queryKey" : "<QUERY_KEY>",
     "indexName" : "hotels-quickstart"
 }
 ```
@@ -574,7 +574,7 @@ The [**nconf** package](https://github.com/indexzero/nconf) allows you to specif
 ```javascript
 function getAzureConfiguration() {
     const config = nconf.file({ file: 'azure_search_config.json' });
-    if (config.get('serviceName') === '[SEARCH_SERVICE_NAME' ) {
+    if (config.get('serviceName') === '<SEARCH_SERVICE_NAME>' ) {
         throw new Error("You have not set the values in your azure_search_config.json file. Change them to match your search service's values.");
     }
     return config;
@@ -983,8 +983,7 @@ This index is named "hotels-quickstart" and has the field definitions you see be
 
    The response includes the JSON representation of the schema. 
 
-> [!Tip]
-> Another way to verify index creation is to check the Indexes list in the portal.
+- Another way to verify index creation is to check the Indexes list in the portal.
 
 <a name="load-documents"></a>
 
