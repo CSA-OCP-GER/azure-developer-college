@@ -183,5 +183,220 @@
             "type": "process",
             "problemMatcher": "$msCompile"
         },
+
+
+
+
+        {
+            "label": "day3serveScmFrontend",
+            "command": "npm",
+            "type": "process",
+            "isBackground": true,
+            "args": [
+                "run",
+                "serve"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/day3/apps/frontend/scmfe"
+            },
+            "problemMatcher": {
+                "owner": "npm",
+                "fileLocation": "relative",
+                "pattern": [
+                    {
+                        "regexp": ".",
+                        "file": 1,
+                        "location": 2,
+                        "message": 3
+                    }
+                ],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".+Executing task: npm run serve",
+                    "endsPattern": ".+App running at:",
+                }
+            }
+        },
+        {
+            "label": "day3serveScmFrontend",
+            "command": "npm",
+            "type": "process",
+            "isBackground": true,
+            "args": [
+                "run",
+                "serve"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/day3/apps/frontend/scmfe"
+            },
+            "problemMatcher": {
+                "owner": "npm",
+                "fileLocation": "relative",
+                "pattern": [
+                    {
+                        "regexp": ".",
+                        "file": 1,
+                        "location": 2,
+                        "message": 3
+                    }
+                ],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".+Executing task: npm run serve",
+                    "endsPattern": ".+App running at:",
+                }
+            }
+        },
+        {
+            "label": "day3serveScmFrontendTerminate",
+            "type": "process",
+            "command": [
+                "${command:workbench.action.tasks.terminate}"
+            ],
+            "args": [
+                "day3serveScmFrontend"
+            ]
+        },
+        {
+            "label": "day3buildScm",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day3publishScmContacts",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj",
+                "--configuration",
+                "Release",
+                "-o",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm/Adc.Scm.Api/publish",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day3buildScmResources",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api/Adc.Scm.Resources.Api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day3publishScmResources",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api/Adc.Scm.Resources.Api.csproj",
+                "--configuration",
+                "Release",
+                "-o",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api/publish",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day3runFuncHost",
+            "type": "func",
+            "dependsOn": "day3BuildFunc",
+            "options": {
+                "cwd": "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/bin/Debug/netcoreapp2.1"
+            },
+            "command": "host start",
+            "isBackground": true,
+            "problemMatcher": "$func-watch"
+        },
+        {
+            "label": "day3CleanFunc",
+            "command": "dotnet",
+            "args": [
+                "clean",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/Adc.Scm.Resources.ImageResizer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day3BuildFunc",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/Adc.Scm.Resources.ImageResizer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "dependsOn": "day3CleanFunc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day3PublishFunc",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/Adc.Scm.Resources.ImageResizer.csproj",
+                "--configuration",
+                "Release",
+                "-o",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer/publish",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "problemMatcher": "$msCompile"
+        },
+
+        {
+            "label": "day3buildScmSearch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Adc.Scm.Search.Api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "day3publishScmSearch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Adc.Scm.Search.Api.csproj",
+                "--configuration",
+                "Release",
+                "-o",
+                "${workspaceFolder}/day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/publish",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
     ]
 }
