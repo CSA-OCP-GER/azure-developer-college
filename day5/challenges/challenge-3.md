@@ -5,11 +5,11 @@
 - Create Azure AD's client and server applications to integrate Azure AD into the SCM Contacts API
 - Configure and deploy the SCM Contacts API to Azure with Azure AD integration
 
-In the previous challenges you have learned some basics about the OpenID Connect and OAuth2 flows. You have seen how you can sign in users and how to acquire an access token for an Azure AD's protected resource. In this challenge we will integrate Azure AD into the SCm Contacts API step by step. Of course we will use Azure Pipelines to build an deploy the SCM Contacts API to Azure.
+In the previous challenges you have learned some basics about the OpenID Connect and OAuth2 flows. You have seen how you can sign in users and how to acquire an access token for an Azure AD's protected resource. In this challenge we will integrate Azure AD into the SCM Contacts API step by step. Of course we will use Azure Pipelines to build and deploy the SCM Contacts API to Azure.
 
 ## Create the Azure AD client and server application
 
-In [challenge-2](./challenge-2.md) you have already seen how to create an Azure AD client application to sign in users and how to create an API application that exposes OAuth2 permission. We have to do the same for the sample application. 
+In [challenge-2](./challenge-2.md) you have already seen how to create an Azure AD client application to sign in users and how to create an API application that exposes OAuth2 permissions. We have to do the same for the sample application. 
 
 There is already a script available in the repository to create both applications for you. You can find the script in [day5/apps/infrastructure/aad-integration.sh](../apps/infrastructure/scripts/aad-integration.sh).
 
@@ -65,6 +65,7 @@ Yesterday we have created CI/CD Builds for all services. Today we want to contin
 
 
 1. Create and checkout a new branch named *features/scmcontactsaad* in your Azure Repo. 
+   
    **Note:** Make sure that you create the branch in the Azure Repo where you imported the Azure Developer College's sources yesterday. 
 2. Open the build file `scm-contacts-ci.yaml` under `day4/apps/pipelines` and change everything from `day4` to `day5`
 3. Save the definition, commit the changes and push the branch to your remote repository
@@ -98,7 +99,7 @@ Now that you have deployed the SCM Contacts API to your environment on Azure it'
 That is what we expected! Your SCM Contacts API now requires a valid access token.
 To acquire a valid acces token we can create a simple request as we already did in [challenge-2](./challenge-2.md).
 
-We use the `Token Echo Server` again to request an access token from Azure AD for the SCM Contacts API. The tool is listening on port 5001 on your local machine. Tokens are accepted on the route `http://localhost:5001/api/tokenechofragment`. Before we can start the token request we have to add the url `http://localhost:5001/api/tokenechofragment` as a valid reply url to the client Azure AD application. Go to your Azure AD in the Azure portal, open the client application `scmfe-dev`that your created for the `Development` stage and add the url. You can add the reply url under *Authentication->Redirect URIs*.
+We use the `Token Echo Server` again to request an access token from Azure AD for the SCM Contacts API. The tool is listening on port 5001 on your local machine. Tokens are accepted on the route `http://localhost:5001/api/tokenechofragment`. Before we can start the token request we have to add the url `http://localhost:5001/api/tokenechofragment` as a valid reply url to the client Azure AD application. Go to your Azure AD in the Azure portal, open the client application `scmfe-dev`that you created for the `Development` stage and add the url. You can add the reply url under *Authentication --> Redirect URIs*.
 
 ![TokenEchoServer Reply Url](./images/tokenechoserver-redirecturl.png)
 
@@ -148,3 +149,13 @@ Bearer <your access_token>
 ```
 
 Authorize the Swagger UI and retry a the GET request. If you want you can now add contacts for the signed in user.
+
+## Wrap up
+
+In this challenge we have adjusted our deployment process to protect the SCM Contacts API with Azure AD. ASP.NET Core comes with an Authentication Middleware that must only be configured to require a JWT Bearer token for each request. Have a look at the code and see how the Middleware is configured. 
+To map the required OAuth2 permission to an API Route ASP.NET Core provides an attribute where you can specify the required Policy.
+
+```C#
+[Authorize(Policy = AuthorizationScopes.ContactsRead)]
+```
+

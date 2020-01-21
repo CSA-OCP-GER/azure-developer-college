@@ -148,3 +148,7 @@ echo "var uisettings = { \"tenantId\": \"$(AadTenantId)\", \"audience\": \"$(Aad
 ```
 Make sure that you copy the whole line!
 
+## Wrap up
+
+You've done it. There is nothing more to add, just test the application and enjoy your success :-)
+
