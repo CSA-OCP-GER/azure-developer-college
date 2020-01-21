@@ -8,9 +8,9 @@
 
 # Day5 - Goal
 
-You already have deploed the Azure Developer College's sample application to your Azure subscription. Although the application is up and running we can not use different user accounts to create Contacts and VisitReports per user. The current deployed application does not support any user authentication.
+You already have deployed the Azure Developer College's sample application to your Azure subscription. Although the application is up and running we can not use different user accounts to create Contacts and VisitReports per user. The current deployed application does not support any user authentication.
 
-Today we we want to integrate Azure Active Directory as an Identity provider in your application to authenticate and to authorize an Azure AD user to access the sample application. 
+Today we we want to integrate Azure Active Directory as an Identity Provider in your application to authenticate and to authorize an Azure AD user to access the sample application. 
 
 Azure Active Directory (Azure AD) is Microsoft’s cloud-based identity and access management service, which helps your employees sign in and access resources in:
 - External resources, such as Microsoft Office 365, the Azure portal, and thousands of other SaaS applications.
@@ -32,13 +32,13 @@ Authorization is the act of granting an authenticated security principal permiss
 
 ## Protect APIs with Azure AD
 
-On Day5 you will learn how you can protect your APIs (microservices) with Azure AD. In addition you will learn how OAuth2 permission are used to grant access to API's client applications and how a signed-in user can grant access. The sample application defines the following OAuth2 permission:
+On Day5 you will learn how you can protect your APIs (microservices) with Azure AD. In addition you will learn how OAuth2 permissions are used to grant access to API's client applications and how a signed-in user can grant access. The sample application defines the following OAuth2 permissions
 
   |OAuth2 permission|Description|
   |-----------------|-----------|
   |Contacts.Create|Allows the client app to create contacts of the signe-in user|
-  |Contacts.Read|Allows the client app to read contacts of the signe-in user|
-  |Contacts.Update|Allows the client app to update contacts of the signe-in user|
+  |Contacts.Read|Allows the client app to read contacts of the signed-in user|
+  |Contacts.Update|Allows the client app to update contacts of the signed-in user|
   |Contacts.Delete|Allows the client app to delete contacts of the signed-in user|
   |VisitReports.Create|Allows the client app to create VisitReports for the signed-in user|
   |VisitReports.Read|Allows the client app to read VisitReports of the signed-in user|
@@ -48,7 +48,7 @@ On Day5 you will learn how you can protect your APIs (microservices) with Azure 
 
 ## Sign in users
 
-You will see how the sample application's Single Page Application (SPA) uses MSAL to sign in users and how to acquire an access token to access the APIs in the name of the signe-in user. When an access token was acquired it is forwarded with each request to the APIs and the APIs can use the token to get needed information about the signe-in user.
+You will see how the sample application's Single Page Application (SPA) uses MSAL to sign in users and how to acquire an access token to access the APIs in the name of the signed-in user. When an access token was acquired it is forwarded with each request to the APIs and the APIs can use the token to get needed information about the signed-in user.
 
 ## Microsoft Authentication Library
 
@@ -57,5 +57,7 @@ You will see how the sample application's Single Page Application (SPA) uses MSA
 ## Architecure
 
 At the end of the day we will have integrated the sample application into Azure AD:
+
+![Architecture Overview](./images/../challenges/images/architecture-overview.png)
 
    
