@@ -98,7 +98,7 @@ When the deployment of the new Service Bus has finished, we need to add a Servic
 
 Service Bus Queue Properties:
 
-- name: *thumbnails*
+- Name: *thumbnails*
 
 When successfully added, go to **Shared Access Policies** of the Service Bus Queue and add two policies:
 
@@ -113,17 +113,17 @@ We also nee a topic for handling *Contacts* changes (create, update etc.) with c
 
 Contacts Topic Properties:
 
-- name: *scmtopic*
+- Name: *scmtopic*
 
 Leave all other settings as is and click **Create**. When finished, open the topic and add two subscriptions.
 
 Subscription for Search Service / indexing of contacts:
 
-- name: *scmcontactsearch*
+- Name: *scmcontactsearch*
 
 Subscription for Visit Reports Service
 
-- name: *scmcontactvisitreport*
+- Name: *scmcontactvisitreport*
 
 When successfully added, go back to **Shared Access Policies** of the Service Bus Topic **scmtopic** and add two policies:
 
@@ -138,7 +138,7 @@ We also need a topic for handling *Visit Report* changes (create, update etc.). 
 
 Visit Reports Topic Properties:
 
-- name: *scmvrtopic*
+- Name: *scmvrtopic*
 
 Leave all other settings as is and click **Create**. 
 
@@ -181,28 +181,41 @@ We will reuse the Web Apps for Contacts and Resources as well as the Azure Funct
 Azure Web App for **Contacts Service**:
 
 Application Settings:
-- Name: **EventServiceOptions__ServiceBusConnectionString** / Value: use the Connection String from the Shared Access Policy (**Topic scmtopic**) for sending messages - **scmtopicsend**
+
+| Name | Value / Hint |
+| - | - |
+| EventServiceOptions__ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Topic scmtopic**) for sending messages - **scmtopicsend** |
 
 Connection Strings:
-- Name **DefaultConnectionString** / Value: go to the Azure SQL DB you created and use the ADO.NET connection string (under "**Settings**" / "**Connection strings**")
+
+| Name | Value / Hint |
+| - | - |
+| DefaultConnectionString | go to the Azure SQL DB you created and use the ADO.NET connection string (under "**Settings**" / "**Connection strings**") |
 
 Azure Web App for **Resources Service**:
 
 Application Settings:
-- Name: **ImageStoreOptions__ThumbnailContainer** / Value: *thumbnails*
-- Name: **ImageStoreOptions__ImageContainer** / Value: *rawimages*
-- Name: **ImageStoreOptions__StorageAccountConnectionString** / Value: use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same)
-- Name: **ServiceBusQueueOptions__ImageContainer** / Value: *rawimages*
-- Name: **ServiceBusQueueOptions__ThumbnailContainer** / Value: *thumbnails*
-- Name: **ServiceBusQueueOptions__ThumbnailQueueConnectionString** / Value (send): use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailssend**
+
+| Name | Value / Hint |
+| - | - |
+| ImageStoreOptions__ThumbnailContainer | *thumbnails* |
+| ImageStoreOptions__ImageContainer | *rawimages* |
+| ImageStoreOptions__StorageAccountConnectionString | use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same) |
+| ServiceBusQueueOptions__ImageContainer | *rawimages* |
+| ServiceBusQueueOptions__ThumbnailContainer | *thumbnails* |
+| ServiceBusQueueOptions__ThumbnailQueueConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailssend** |
+
 
 Azure Function for **Image Manipulation / Resizer Service**:
 
 Configuration / Application Settings:
 
-- Name: **ServiceBusConnectionString** / Value: use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailslisten**
-- Name: **ImageProcessorOptions__ImageWidth** / Value: *100*
-- Name: **ImageProcessorOptions__StorageAccountConnectionString** / Value: use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same)
+| Name | Value / Hint |
+| - | - |
+| ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailslisten** |
+| ImageProcessorOptions__ImageWidth | *100* |
+| ImageProcessorOptions__StorageAccountConnectionString | use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same) |
+
 
 ### Redeploy your services for Contacts, Resources and Image Manipulation ###
 
@@ -220,9 +233,12 @@ To be able to run the Contacts Search service (where we leverage the core functi
 
 When finished, apply these settings to the Web App Configuration settings:
 
-- Name: **ContactSearchOptions__AdminApiKey** / Value: use the Primary Admin Key from Azure Search (under **Settings / Keys**)
-- Name: **ContactSearchOptions__IndexName** / Value: *scmcontacts*
-- Name: **ContactSearchOptions__ServiceName** / Value: the nanme of your previously created Azure Search (just the subdomain! So from <https://adcd3search-dev.search.windows.net>, only **adcd3search-dev**)
+| Name | Value / Hint |
+| - | - |
+| ContactSearchOptions__AdminApiKey | use the Primary Admin Key from Azure Search (under **Settings / Keys**) |
+| ContactSearchOptions__IndexName | *scmcontacts* |
+| ContactSearchOptions__ServiceName | the nanme of your previously created Azure Search (just the subdomain! So from <https://adcd3search-dev.search.windows.net>, only **adcd3search-dev**) |
+
 
 **Last but not least**, deploy the Contacts Search (folder *day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api*) service from VS Code the the newly created Web App.
 
