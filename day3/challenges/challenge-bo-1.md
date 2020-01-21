@@ -183,13 +183,13 @@ Azure Web App for **Contacts Service**:
 Application Settings:
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | EventServiceOptions__ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Topic scmtopic**) for sending messages - **scmtopicsend** |
 
 Connection Strings:
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | DefaultConnectionString | go to the Azure SQL DB you created and use the ADO.NET connection string (under "**Settings**" / "**Connection strings**") |
 
 Azure Web App for **Resources Service**:
@@ -197,7 +197,7 @@ Azure Web App for **Resources Service**:
 Application Settings:
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | ImageStoreOptions__ThumbnailContainer | *thumbnails* |
 | ImageStoreOptions__ImageContainer | *rawimages* |
 | ImageStoreOptions__StorageAccountConnectionString | use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same) |
@@ -211,7 +211,7 @@ Azure Function for **Image Manipulation / Resizer Service**:
 Configuration / Application Settings:
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailslisten** |
 | ImageProcessorOptions__ImageWidth | *100* |
 | ImageProcessorOptions__StorageAccountConnectionString | use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same) |
@@ -234,7 +234,7 @@ To be able to run the Contacts Search service (where we leverage the core functi
 When finished, apply these settings to the Web App Configuration settings:
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | ContactSearchOptions__AdminApiKey | use the Primary Admin Key from Azure Search (under **Settings / Keys**) |
 | ContactSearchOptions__IndexName | *scmcontacts* |
 | ContactSearchOptions__ServiceName | the nanme of your previously created Azure Search (just the subdomain! So from <https://adcd3search-dev.search.windows.net>, only **adcd3search-dev**) |
@@ -265,7 +265,7 @@ To deploy the Visist Reports API, we - as usual - need another Web App. As this 
 Create the Linux Web App in West Europe with the following parameters.
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | Resource Group | Create a new resource group, e.g. **scm-breakout-tux-rg** |
 | Publish | *Code* |
 | Runtime Stack | *Node 12 LTS* |
@@ -278,14 +278,14 @@ When the Web App has been created, go to the Configuration section and add the f
 **Azure Web App / Configuration / Application Settings**
 
 | Name | Value |
-| - | - |
+| --- | --- |
 | APPINSIGHTS_KEY | \<empty> |
 | COSMOSDB | the endpoint to the Cosmos DB, e.g. <https://adcd3cosmos-dev.documents.azure.com:443/> |
 
 Azure Web App / Configuration / Connection Strings
 
 | Name | Value | Type |
-| - | - | - |
+| --- | --- | --- |
 | COSMOSKEY | Primary Key of your Cosmos DB | Custom
 | SBCONTACTSTOPIC_CONNSTR | Primary Connection String of the Service Bus **Contacts** Topic (**scmtopic** / *scmtopiclisten*) | Custom
 | SBVRTOPIC_CONNSTR | Primary Connection String of the Service Bus **Visit Reports** Topic (**scmvrtopic** / *scmvrtopicsend*) | Custom
@@ -317,7 +317,7 @@ Now that we have introduced a few new services (and maybe some of the former URL
 Open the settings.js file in folder *day3/apps/frontend/scmfe/public/settings* and adjust the settings to fit the URLs of your Web Apps. You will need:
 
 | Name | Value |
-| - | - |
+| --- | --- |
 | endpoint | URL of the contacts API endpoint, e.g. https://adcday3scmapi-dev.azurewebsites.net/ |
 | resourcesEndpoint | URL of the resources API endpoint, e.g. https://adcday3scmresourcesapi-dev.azurewebsites.net/ |
 | searchEndpoint | URL of the search API endpoint, e.g. https://adcday3scmrsearchapi-dev.azurewebsites.net/ |

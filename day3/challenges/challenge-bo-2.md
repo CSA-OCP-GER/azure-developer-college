@@ -41,7 +41,7 @@ So please open the "Create a Resource" wizard and start creating an Azure Functi
 Create the Azure Function App in West Europe with the following parameters.
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | Resource Group | Create a new resource group, e.g. **scm-breakout-tuxfunc-rg** |
 | Publish | *Code* |
 | Runtime Stack | *Node.js* |
@@ -52,7 +52,7 @@ Create the Azure Function App in West Europe with the following parameters.
 Create it and when the Function App has been deployed, go to the Configuration section and add the following App settings.
 
 | Name | Value / Hint |
-| - | - |
+| --- | --- |
 | ServiceBusConnectionString | Primary Connection String of the Service Bus **Visit Reports** Topic (**scmvrtopic** / *scmvrtopiclisten* Shared Access Key) |
 | COSMOSDB | the endpoint to the Cosmos DB, e.g. <https://adcd3cosmos-dev.documents.azure.com:443/> |
 | COSMOSKEY | Primary Key of your Cosmos DB |
