@@ -228,21 +228,118 @@ When finished, apply these settings to the Web App Configuration settings:
 
 ## Let's press "Pause" for a moment - What have we done so far? ##
 
-We have just migrated our initial services (Contacts and Resources, Image Manipulation) to Azure Service Bus Queues and Topics. We redeployed new versions of these services to make use of Azure Service Bus. We also added Storage Services to our application. The Contacts Service now uses Azure SQL DB.
+The was a lot of manual typing so far, so let's hold on for a moment. We have just migrated our initial services (Contacts and Resources, Image Manipulation) to Azure Service Bus Queues and Topics. We redeployed new versions of these services to make use of Azure Service Bus. We also added Storage Services to our application. The Contacts Service now uses Azure SQL DB.
 
-In addition, we added an Azure Search service plus an API that is able to talk to Azure Search and query for contacts. The contacts will be added / updated "on-the-fly" whenever a Contact is changed - notification is done via Service Bus Topics.
+In addition, we added an Azure Search service plus an API that is able to talk to Azure Search and query for contacts. The contacts will be added / updated in the search index "on-the-fly" whenever a Contact is changed - notification is done via Service Bus Topics.
 
-Regarding our architecture, we are now here:
+Regarding our architecture, we are at this stage:
 
 ![architecture_day3breakout1](./img/architecture_day3breakout1.png "architecture_day3breakout1")
 
-Now, let's add the Visit Report API. We're on the home stretch :)
+Now, let's add the Visit Report API. Trust us, we're on the home stretch :)
 
 ## Deploy new Visit Reports Service ##
 
+To deploy the Visist Reports API, we - as usual - need another Web App. As this service runs on NodeJS and we want to leverage Azure Web Apps on Linux this time, let's create one that is backed by a Linux OS.
+
+> **Important**: Currently, you can't mix Windows and Linux Web Apps in the same resource group, so we create another resource group to host the NodeJS Linux WebApp.
+
+**Azure WebApp Properties**
+
+Create the Linux Web App in West Europe with the following parameters.
+
+| Name | Value / Hint |
+| - | - |
+| Resource Group | Create a new resource group, e.g. **scm-breakout-tux-rg** |
+| Publish | *Code* |
+| Runtime Stack | *Node 12 LTS* |
+| App Service Plan | Create a new one: OS - *Linux*, SKU - *Basic*, Size - *Small*  |
+
+When the Web App has been created, go to the Configuration section and add the following settings (App settings + Connection strings!).
+
+![day3_bo_tux_vr](./img/day3_bo_tux_vr.png "day3_bo_tux_vr")
+
+**Azure Web App / Configuration / Application Settings**
+
+| Name | Value |
+| - | - |
+| APPINSIGHTS_KEY | \<empty> |
+| COSMOSDB | the endpoint to the Cosmos DB, e.g. <https://adcd3cosmos-dev.documents.azure.com:443/> |
+
+Azure Web App / Configuration / Connection Strings
+
+| Name | Value | Type |
+| - | - | - |
+| COSMOSKEY | Primary Key of your Cosmos DB | Custom
+| SBCONTACTSTOPIC_CONNSTR | Primary Connection String of the Service Bus **Contacts** Topic (**scmtopic** / *scmtopiclisten*) | Custom
+| SBVRTOPIC_CONNSTR | Primary Connection String of the Service Bus **Visit Reports** Topic (**scmvrtopic** / *scmvrtopicsend*) | Custom
+
+Now, from an infrastructure point of view, we are ready to deploy the NodeJS app. If you haven't run the app on your local machine, open a terminal and got to folder: *day3/apps/nodejs/visitreport*. Execute the following command:
+
+```shell
+$ npm install
+```
+
+This will install all the neccessary dependencies of the NodeJS Visit Reports service. When that has finished, you can deploy the serviec to the previously created Web App. 
+
+Therefor, go to the Azure Tools Extension in Visual Studio Code (*App Service* section), find your Linux Web App and *right-click-deploy*, choosing the folder *day3/apps/nodejs/visitreport* as a deployment source.
+
+In the output window, watch how the NodeJS app is copied to the Web App and is bein started by Azure.
+
+You can check, if it's running correctly by opening a browser window and point it to the following URL:
+
+https://<YOUR_WEB_APP_NAME>.azurewebsites.net/docs
+
+You will see the Swagger UI of the service (in the **Explore** textbox, replace *json* with *yaml* to view all operations).
+
+![day3_bo_tux_vr_swagger](./img/day3_bo_tux_vr_swagger.png "day3_bo_tux_vr_swagger")
 
 ## Deploy new Frontend ##
 
+Now that we have introduced a few new services (and maybe some of the former URLs have changed), we also need to redeploy the VueJS frontend. Of course, we also added a few changes in the UI itself (please see the intro section). So we definetly want that new version running now in Azure.
+
+Open the settings.js file in folder *day3/apps/frontend/scmfe/public/settings* and adjust the settings to fit the URLs of your Web Apps. You will need:
+
+| Name | Value |
+| - | - |
+| endpoint | URL of the contacts API endpoint, e.g. https://adcday3scmapi-dev.azurewebsites.net/ |
+| resourcesEndpoint | URL of the resources API endpoint, e.g. https://adcday3scmresourcesapi-dev.azurewebsites.net/ |
+| searchEndpoint | URL of the search API endpoint, e.g. https://adcday3scmrsearchapi-dev.azurewebsites.net/ |
+| reportsEndpoint | URL of the visit reports API endpoint, e.g. https://adcday3scmvr-dev.azurewebsites.net |
+| enableStats | false (we will be adding statistics when we introduced Cognitive Services in the next challenge) |
+| aiKey | "" (just leave it empty) |
+
+**Sample:**
+
+```json
+var uisettings = {
+    "endpoint": "https://adcday3scmapi-dev.azurewebsites.net/",
+    "resourcesEndpoint": "https://adcday3scmresourcesapi-dev.azurewebsites.net/",
+    "searchEndpoint": "https://adcday3scmrsearchapi-dev.azurewebsites.net/",
+    "reportsEndpoint": "https://adcday3scmvr-dev.azurewebsites.net",
+    "enableStats": false,
+    "aiKey": ""
+}
+```
+
+After you have adjusted the settings, open a terminal at *day3/apps/frontend/scmfe* and run...
+
+```shell
+$ npm install && npm run build
+```
+
+The VueJS app is built into folder *dist* of the same directory. Please copy that folder with the **Storage Explorer** to the Storage Account you used for hosting the frontend (container: **$web**. Please delete any contents from Day 2 before copying the new version).
+
+When everything is set up correctly and the services work as expected, you should be able to open the SPA and test the Contacts and Visit Reports services, as well as the Search service. 
+
+Add and edit a few new contacts and create some visit reports for them.
+
+![scm_day3](./img/scm_day3.png "scm_day3")
+![scm_day3_vr](./img/scm_day3_vr.png "scm_day3_vr")
 
 # Wrap-Up #
 
+So, we know, this was a lot of manual work to do, to add a simple microservice-oriented application to Azure. There are a lot of moving parts in that kind of applications and you will want to avoid deploying such applications manually. That's why we will be introducing Azure DevOps on Day 4, so that you can build and deploy the infrastructure as well as the services automatically.
+But hey, we wanted to show you how it's done "the hard way" to bring you relief the day after :) Azure DevOps, FTW!
+
+We now have one more challenge to complete (Cognitive Services), until the application is finished from a services perspective.
