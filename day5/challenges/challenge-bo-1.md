@@ -1,136 +1,150 @@
-# Break Out: Integrate Azure AD into the sample application
+# Break Out: Integrate the sample application into Azure AD
 
 ## Here is what you will learn
 
-- Create Azure AD's client and server applications to integrate Azure AD into the sample application
-- Configure and deploy the sample application to Azure with Azure AD integration
+Deploy the sample application with Azure AD Integration.
 
-In the previous challenges you have learned some basics about the OpenID Connect and OAuth2 flows. You have seen how you can sign in users and how to acquire an access token for an Azure AD's protected resource. In this Break Out session we will integrate Azure AD into the sample application step by step. Of course we will use Azure Pipelines to build an deploy the application to Azure.
+In [challenge-3](./challenge-3.md) we already created the needed Azure AD applications to integrate the SCM Contacts API into Azure AD. We acquired an access_token from Azure AD and made a request to the API. Now it's time to integrate all APIs of the sample application into Azure AD.
 
-## Create the Azure AD client and server application
+Here is the list of the remaining services we have to integrate into Azure AD:
+- SCM Resource API
+- SCM Search API
+- SCM Visitreports API
+- SCM Textanalytics
+- SCM Frontend
 
-In [challenge-2](./challenge-2.md) you have already seen how to create an Azure AD client application to sign in users and how to create an API application that exposes OAuth2 permission. We have to do the same for the sample application. 
+As in [challenge-3](./challenge-3.md) we always perform the following steps for each service:
+1. Create and checkout a new branch
+2. Edit the the existing build definition and change everything from `day4` to `day5`
+3. Save the definition, commit the changes and push the branch to the remote repository
+4. Run the build targeting the feature branch
+5. Edit the Release defintion, add the needed variables and adjust the deployment tasks
+6. Run the Release build
+7. Merge the feature branch into the master branch
 
-There is already a script available in the repository to create both applications for you. You can find the script in [day5/apps/infrastructure/aad-integration.sh](../apps/infrastructure/scripts/aad-integration.sh).
 
-The script creates the server application first and then the client application for the sample application. The script uses a [oauth2-permissions.json](../apps/infrastructure/scripts/oauth2-permissions.json) file where all needed OAuth2 permission are defined.
+We don't need to create additional Azure AD applications for the remaining services. All APIs uses the same Azure AD application that we already created in [challenge-3](./challenge-3.md) for each stage (Development and Production). The Frontend services uses the client application.
 
-Open a shell, use Azure CLI to connect to the Azure AD Tenant where you want to create the applications:. If you have created a new Azure AD that is not linked to an Azure subscription, add the additional option *--allow-no-subscription*:
+**Note:** Be carefull that you don't confuse the IDs of the stage `Development` and `Testing`.
 
-```shell
-az login --allow-no-subscription
+## SCM Resource API
+
+Feature branch: __features/scmresourcesaad__
+
+Build definition yaml: __scm-resources-ci.yaml__
+
+Release defintion: __SCM-Resources-CD__
+
+CD Build variables for stage __Development__:
+
+|Name|Value|ARM Template parameter| Stage |
+|----|-----|----------------------|-------|
+|AadInstance|https://login.microsoftonline.com|aadInstance|Development|
+|AadClientId|API AppId, the value that you received from the output when you created the Azure AD application|aadClientId|Development|
+|AadTenantId|The id of your Azure AD Tenant|aadTenantId|Development|
+|AadDomain|The domain name of your Azure AD e.g. azuredevcollege.onmicrosoft.com|aadDomain|Development|
+|AadClientIdUri|http://scmapi-dev|aadClientIdUri|Development|
+
+CD Build variables for stage __Testing__
+
+|Name|Value|ARM Template parameter| Stage |
+|----|-----|----------------------|-------|
+|AadInstance|https://login.microsoftonline.com|aadInstance|Testing|
+|AadClientId|API AppId, the value that you received from the output when you created the Azure AD application for stage Testing|aadClientId|Testing|
+|AadTenantId|The id of your Azure AD Tenant|aadTenantId|Testing|
+|AadDomain|The domain name of your Azure AD e.g. azuredevcollege.onmicrosoft.com|aadDomain|Testing|
+|AadClientIdUri|http://scmapi-test|aadClientIdUri|Testing|
+
+## SCM Search API
+
+Feature branch: __features/scmsearchaad__
+
+Build definition yaml: __scm-search-ci.yaml__
+
+Release definition: __SCM-Search-CD__
+
+CD Build variables for stage __Development__:
+
+|Name|Value|ARM Template parameter| Stage |
+|----|-----|----------------------|-------|
+|AadInstance|https://login.microsoftonline.com|aadInstance|Development|
+|AadClientId|API AppId, the value that you received from the output when you created the Azure AD application|aadClientId|Development|
+|AadTenantId|The id of your Azure AD Tenant|aadTenantId|Development|
+|AadDomain|The domain name of your Azure AD e.g. azuredevcollege.onmicrosoft.com|aadDomain|Development|
+|AadClientIdUri|http://scmapi-dev|aadClientIdUri|Development|
+
+CD Build variables for stage __Testing__
+
+|Name|Value|ARM Template parameter| Stage |
+|----|-----|----------------------|-------|
+|AadInstance|https://login.microsoftonline.com|aadInstance|Testing|
+|AadClientId|API AppId, the value that you received from the output when you created the Azure AD application for stage Testing|aadClientId|Testing|
+|AadTenantId|The id of your Azure AD Tenant|aadTenantId|Testing|
+|AadDomain|The domain name of your Azure AD e.g. azuredevcollege.onmicrosoft.com|aadDomain|Testing|
+|AadClientIdUri|http://scmapi-test|aadClientIdUri|Testing|
+
+## SCM VisitReports API
+
+Feature branch: __features/scmvisitreportsaad__
+
+Build definition yaml: __scm-visitreports-ci.yaml__
+
+Release definition: __SCM-VisitReports-CD__
+
+CD Build variables for stage __Development__:
+
+**Note:** You only need to adjust the deployment task that uses the ARM template __scm-visitreport-nodejs-infra.json__
+
+|Name|Value|ARM Template parameter| Stage |
+|----|-----|----------------------|-------|
+|AadTenantId|The id of your Azure AD Tenant|aadTenantId|Development|
+|AadClientIdUri|http://scmapi-dev|aadClientIdUri|Development|
+
+CD Build variables for stage __Testing__
+
+|Name|Value|ARM Template parameter| Stage |
+|----|-----|----------------------|-------|
+|AadTenantId|The id of your Azure AD Tenant|aadTenantId|Testing|
+|AadClientIdUri|http://scmapi-test|aadClientIdUri|Testing|
+
+
+## SCM Textanalytics
+
+Feature branch: __features/scmtextanalyticsaad__
+
+Build definition yaml: __scm-textanalytics-ci.yaml__
+
+Release definition: __SCM-TextAnalytics-CD__
+
+**Note:** As the service SCM TextAnalytics does not offer an accessible API there is no need to adjust the Release build. We only need to adjust the build definition, create a new build and deploy it to Azure.
+
+## SCM Frontend
+
+Feature branch: __features/scmfrontendaad__
+
+Build definition yaml: __scm-frontend-ci.yaml__
+
+Release definition: __SCM-Frontend-CD__
+
+CD Build variables for stage __Development__:
+
+|Name|Value|
+|----|-----|
+|AadTenantId|the Id of your Azure Ad Tenant|
+|AadApiClientIdUri|http://scmapi-dev|
+|AadFrontendClientId|UI AppId, the value that you received from the output when you created the Azure AD application for stage Development|
+
+CD Build variables for stage __Testing__:
+
+|Name|Value|
+|----|-----|
+|AadTenantId|the Id of your Azure Ad Tenant|
+|AadApiClientIdUri|http://scmapi-test|
+|AadFrontendClientId|UI AppId, the value that you received from the output when you created the Azure AD application for stage Testing|
+
+**Note** As on Day4 we have to configure the settings for the SCM Frontend. Adjust the Azure CLI task which applies the settings to `dist/settings.js` as follows:
 ```
-
-We have to run the script twice. Once for creating the applications for our `Development` stage and once for the `Testing` stage.
-Please use the following parameters to run the script for the `Development` stage:
-
-|Parameter|Value|
-|---------|-----|
-|API-APP-NAME|scmapi-dev|
-|API-APP-URI|http://scmapi-dev|
-|UI-APP-NAME|scmfe-dev|
-|UI-APP-REPLY-URL|the url of your SCM Frontend deployment of stage `Development`|
-
-Use the following parameter for the *Testing* stage:
-
-|Parameter|Value|
-|---------|-----|
-|API-APP-NAME|scmapi-test|
-|API-APP-URI|http://scmapi-test|
-|UI-APP-NAME|scmfe-test|
-|UI-APP-REPLY-URL|the url of your SCM Frontend deployment of stage *Testing*|
-
-Navigate to the directory that contains the oauth2-permissions.json file and run the script twice.
-
-__Note:__ Please note down the `UI AppId` and `API AppId` from the output after each run!
-
+echo "var uisettings = { \"tenantId\": \"$(AadTenantId)\", \"audience\": \"$(AadApiClientIdUri)\", \"clientId\": \"$(AadFrontendClientId)\", \"enableStats\": true, \"endpoint\": \"$(ContactsEndpoint)\", \"resourcesEndpoint\": \"$(ResourcesEndpoint)\", \"searchEndpoint\": \"$(SearchEndpoint)\", \"reportsEndpoint\": \"$(ReportsEndpoint)\", \"aiKey\": \"`az resource show -g $(ResourceGroupName) -n $(ApplicationInsightsName) --resource-type "microsoft.insights/components" --query "properties.InstrumentationKey" -o tsv`\" };" > $(System.ArtifactsDirectory)/_SCM-Frontend-CI/drop/dist/settings/settings.js
 ```
-scripts> ./aad-integration.sh <API-APP-NAME> <API-APP-URI> <UI-APP-NAME> <UI-APP-REPLY-URL>
-```
-
-The output:
-```
-...
-...
-UI AppId: <please note down>
-API AppId <please note down>
-```
-
-After you have run the script twice navigate to your Azure AD and checkout the newly created applications. You should see four new applications.
-
-## Protect SCM Contacts API with Azure AD
-
-Now that we have created the needed applications in Azure AD it's time to deploy the SCM Contacts API to Azure with Azure AD integration to protect the API. After the deployment the API can only be accessed with a valid access token issued by Azure AD.
-Yesterday we have created CI/CD Builds for all services. Today we want to continue with Azure Pipelines to deploy all services with Azure AD integration.
-
-
-1. Create and checkout a new branch named *features/scmcontactsaad* in your Azure Repo. 
-   **Note:** Make sure that you create the branch in the Azure Repo where you imported the Azure Developer College's sources yesterday. 
-2. Open the build file `scm-contacts-ci.yaml` under `day4/apps/pipelines` and change everything from `day4` to `day5`
-3. Save the definition, commit the changes and push the branch to your remote repository
-4. Navigate to your Azure DevOps Project and run the pipleine `SCM-Contacts-CI` targeting the branch `features/scmcontactsaad`
-5. Go to Releases and edit `SCM-Contacts-CD`
-6. Add the following variables and map it to the ARM Template's parameters:
-    
-    |Name|Value|ARM Template parameter| Stage |
-    |----|-----|----------------------|-------|
-    |AadInstance|https://login.microsoftonline.com|aadInstance|Development|
-    |AadClientId|API AppId, the value that you received from the output when you created the Azure AD application|aadClientId|Development|
-    |AadTenantId|The id of your Azure AD Tenant|aadTenantId|Development|
-    |AadDomain|The domain name of your Azure AD e.g. azuredevcollege.onmicrosoft.com|aadDomain|Development|
-    |AadClientIdUri|http://scmapi-dev|aadClientIdUri|Development|
-
-    |Name|Value|ARM Template parameter| Stage |
-    |----|-----|----------------------|-------|
-    |AadInstance|https://login.microsoftonline.com|aadInstance|Testing|
-    |AadClientId|API AppId, the value that you received from the output when you created the Azure AD application for stage Testing|aadClientId|Testing|
-    |AadTenantId|The id of your Azure AD Tenant|aadTenantId|Testing|
-    |AadDomain|The domain name of your Azure AD e.g. azuredevcollege.onmicrosoft.com|aadDomain|Testing|
-    |AadClientIdUri|http://scmapi-test|aadClientIdUri|Testing|
-7.  Run the release build
-
-## Validate the SCM Contacts API
-
-Now that you have deployed the SCM Contacts API to your environment on Azure it's time to browse the Swagger UI of the API on your *Development* stage. Open the Azure portal, go to the API App and browse to the Swagger UI. Try to execute a get request. You will notice that you get back a 401:
-
-![401 Swagger](./images/401-swagger-contacts.png)
-
-That is what we expected! Your SCM Contacts API now requires a valid access token.
-To acquire a valid acces token we can create a simple request as we already did in [challenge-2](./challenge-2.md).
-
-We use the `Token Echo Server` again to request an access token from Azure AD for the SCM Contacts API. The tool is listening on port 5001 on your local machine. Tokens are accepted on the route `http://localhost:5001/api/tokenechofragment`. Before we can start the token request we have to add the url `http://localhost:5001/api/tokenechofragment` as a valid reply url to the client Azure AD application. Go to your Azure AD in the Azure portal, open the client application `scmfe-dev`that your created for the `Development` stage and add the url. You can add the reply url under *Authentication->Redirect URIs*.
-
-![TokenEchoServer Reply Url](./images/tokenechoserver-redirecturl.png)
-
-Open a shell and run the Token Echo Server from [`day4/apps/token-echo-server`](../apps/token-echo-server)
-
-```Shell
-dotnet run
-``` 
-
-Replace `TENANT_ID` with your AAD Tenant Id and `APPLICATION_ID` with the client application's Id (this is the id *UI AppId* that you received when you created the first client application). Open a browser and paste the request:
-
-```HTTP
-https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/authorize?
-client_id=APPLICATION_ID
-&response_type=id_token+token
-&redirect_uri=http%3A%2F%2Flocalhost%3A5001%2Fapi%2Ftokenechofragment
-&response_mode=fragment
-&scope=openid%20profile%20http%3A%2F%2Fscmapi-dev%2FContacts.Read%20http%3A%2F%2Fscmapi-dev%2FContacts.Create%20http%3A%2F%2Fscmapi-dev%2FContacts.Update%20http%3A%2F%2Fscmapi-dev%2FContacts.Delete%20http%3A%2F%2Fscmapi-dev%2FVisitReports.Create%20http%3A%2F%2Fscmapi-dev%2FVisitReports.Update%20http%3A%2F%2Fscmapi-dev%2FVisitReports.Update%20http%3A%2F%2Fscmapi-dev%2FVisitReports.Delete
-&nonce=1234
-```
-
-After executing the request and you have signed in, Azure AD shows you a consent page and you have to grant access for the requested API permissions.
-
-![Permission Request](./images/permission-request.png)
-
-After giving consent, have a look at your browser's address bar. The `access_token` is in the fragment of the url and should look something like this:
-
-```
-http://localhost:5001/api/tokenechofragment#access_token=eyJ0eX...&token_type=Bearer&expires_in=3599&scope=openid+profile+User.Read+email&id_token=eyJ0eXAiOi...&session_state=0f76c823-eac5-4ec0-9d4a-edf40b783583
-```
-
-Make sure to only copy the `access_token`, not the full remainder of the string!
-
-Go to [https://jwt.ms](http://jwt.ms), paste the token and have a look at the decoded token.
+Make sure that you copy the whole line!
 

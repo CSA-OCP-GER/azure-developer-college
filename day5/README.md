@@ -1,8 +1,9 @@
 # Day 5 Identity and Architecture
 
-- [Challenge 0 - Request an ID Token from Azure AD](challenges/challenge-0.md)
-- [Challenge 1 - Receive an ID Token in a Fragment URL](challenges/challenge-1.md)
-- [Challenge 2 - OAuth2 Implicit Flow](challenges/challenge-2.md)
+- [Challenge 0 - Request an ID Token from Azure AD](./challenge-0.md)
+- [Challenge 1 - Receive an ID Token in a Fragment URL](./challenge-1.md)
+- [Challenge 2 - OAuth2 Implicit Flow](./challenge-2.md)
+- [Challenge 3 - Integrate Azure AD into the SCM Contacts API](./challenges/challenge-3.md)
 - :small_orange_diamond: *[Breakout! - Integrate the sample application into Azure AD](challenges/challenge-bo-1.md)* :small_orange_diamond:
 
 # Day5 - Goal
