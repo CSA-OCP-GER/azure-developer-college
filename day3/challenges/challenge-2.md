@@ -75,14 +75,64 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
 
   ```UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO```
   
-6. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To exit enter exit.
+6. Query the data
+
+   ```SELECT * FROM CEOs;```
+  
+6. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To ```exit``` enter exit.
 
 
 ## Secure the Azure SQL DB ##
 
 There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
 
-### Secure the access to the Azure SQL DB ###
+### Network Security for Azure SQL DB ###
+
+To help protect the data, firewalls prevent network access to the database server until access is explicitly granted based on IP address or Azure Virtual network traffic origin. Earlier we opened up the SQL Server for our own IP address by creating a firewall rule. Now we are having a look at Virtual network firewall rules.
+
+1. Create the Virtual Network
+
+```az network vnet create --name [Name of your VNet] --resource-group [Name of your RG] --location westeurope --address-prefixes [xxx.xxx.xxx.xxx/xx]```
+
+2. Create the service endpoint and take a look at what was created
+
+```az network vnet subnet create --name [Name of your Subnet] --resource-group [Name of your RG] --vnet-name [Name of your VNet] --address-prefix [xxx.xxx.xxx.xxx/xx] --service-endpoints Microsoft.SQL```
+
+```az network vnet subnet show --name [Name of your Subnet] --resource-group [Name of your RG] --vnet-name [Name of your VNet]```
+
+3. Create a VNet rule on the server to secure it to the subnet Note
+
+```az sql server vnet-rule create --name [Name of your VNet Rule] --resource-group [Name of your RG] --vnet-name [Name of your VNet] --subnet [Name of your Subnet] --server [Name of your SQL Server]```
+
+Note: Controlling access with firewall rules does not apply to a managed instance.
+
+### Access Management for Azure SQL DB ###
+
+Under Access Management we are taking a look at authentication and authorization. Authentication is the process of proving the user is who they claim to be. Authorization refers to the permissions assigned to a user within an Azure SQL Database, and determines what the user is allowed to do.
+
+Azure SQL Database supports two types of authentication: SQL authentication, as has been set up with the server admin and password while creating the Azure SQL Server. And Azure Active Directory authentication.
+
+1. Let's have a look at the SQL authentication. As server admin you can create additional SQL logins and users - which enables other users to connect to the SQL Database. For this one open the Azure portal.
+
+```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+
+```CREATE USER Marvin WITH PASSWORD = '42_as_ANSWER!'; GO```
+
+2. Now create a new Table with this user.
+
+```exit```
+
+```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
+
+```CREATE TABLE Bees (EmployerID int, LastName varchar(255), FirstName varchar(255), Role varchar (255), StartYear int); GO```
+
+Add some Data to the table and query them.
+
+When doing this remember that there is still a firewall rule in place - the new User currently has to operate under the same IP address you previously added to the SQL server firewall rule.
+
+Note: The Azure Active Directory authentication is a far more suitable and contemporary solution. Learn more about it at our Friday sessions.
+
+Authorization refers to the permissions assigned to a user. Permissions are controlled by adding user accounts to database roles and assigning database-level permissions to those roles or by granting the user certain object-level permissions.
 
 1. SQL Database backup/Configure retention policies
 
