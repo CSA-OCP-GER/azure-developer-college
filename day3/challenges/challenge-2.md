@@ -41,34 +41,48 @@ We are going to use the Azure CLI as well as the Azure Portal for this exercise.
 A Table will be created and Data entered
 
 Use the Azure Cloud Shell
-1. Get to know the Database
 
-  ```az sql db list --resource-group [Name of your RG] | jq '[.[]|{name: .name}]'```
-  ```az sql db show --resource-group [Name of your RG] --name MicrosoftEmployees | jq '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
+1. Get to know your environment
+
+  ```az sql server list --resource-group [Name of your RG]```
+  ```az sql db list --resource-group [Name of your RG] --server [Name of your Server]```
+  
+If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query
+
+  ```az sql db list --resource-group [Name of your RG] --query '[].{Name:name}'```
+  
+  ```az sql db show --resource-group [Name of your RG] --name MicrosoftEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
   
 2. Connect to the DB
 
-  ```az sql db show-connection-string --resource-group [Name of your RG] --client sqlcmd --name MicrosoftEmployees```
-  ```sqlcmd -S tcp ...```
+  ```az sql db show-connection-string --name MicrosoftEmployees --server [Name of your Server] --client sqlcmd```
 
-3. Add a table
+Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
+  
+  ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+  
+After running this you should see a ```1>```. Now you can run SQL Queries. If you are unfamiliar with their Syntax feel free to take some time getting used to it.
+
+3. Add a table.
 
   ```CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO```
 
 4. Add Data to your table
 
-  ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (3141, 'Nadella', 'Satya', 51, 2014); GO```
+  ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO```
 
 5. Update the Age of Satya Nadella in the Table
 
   ```UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO```
   
-6. Add the other CEOs Microsoft has had to the list as well (the ID is fictional)
+6. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To exit enter exit.
 
 
 ## Secure the Azure SQL DB ##
 
-We are going to have to use either the Azure portal or PowerShell for parts of securing the Azure SQL DB, due to the Azure Data Explorers Endpoints
+There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
+
+# Secure the access to the Azure SQL DB #
 
 1. SQL Database backup/Configure retention policies
 
