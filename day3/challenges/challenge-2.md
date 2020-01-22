@@ -132,33 +132,65 @@ When doing this remember that there is still a firewall rule in place - the new 
 
 Note: The Azure Active Directory authentication is a far more suitable and contemporary solution. Learn more about it at our Friday sessions.
 
-Authorization refers to the permissions assigned to a user. Permissions are controlled by adding user accounts to database roles and assigning database-level permissions to those roles or by granting the user certain object-level permissions.
+Authorization refers to the permissions assigned to a user. Permissions are controlled by adding user accounts to database roles and assigning database-level permissions to those roles or by granting the user certain object-level permissions. As always there is more than one way to implement this.
+
+1. There are also database roles for SQL Server and database. You will find fixed roles as well as custom roles. Let's have a look at the fixed roles. To add and remove users to or from a database role, use the ADD MEMBER and DROP MEMBER options of the ALTER ROLE statement.
+
+    ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+
+   ```ALTER ROLE  db_backupoperator  
+      {  
+        ADD MEMBER database_principal  
+        |  DROP MEMBER database_principal  
+        |  WITH NAME = new_name  
+      }  
+      [;]  ```
+
+2. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
+
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+   
+   ```REVOKE SELECT ON OBJECT::CEOs.EmployerID TO Marvin; GO```
+   
+   ```exit```
+   
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
+   
+Now try to access the variable. 
+As Admin you can grant access again like this:
+
+   ```GRANT SELECT ON OBJECT::CEOs.EmployerID TO Marvin; GO```
+
+### Threat protection ###
+
+SQL Database secures data by providing auditing and threat detection capabilities.
+
+1. As part of that Advanced Threat Protection is analyzing your SQL Server logs to detect unusual behavior and potentially harmful attempts to access or exploit databases. Alerts are created for suspicious activities such as SQL injection, potential data infiltration, and brute force attacks or for anomalies in access patterns to catch privilege escalations and breached credentials use. Alerts are viewed from the Azure Security Center, where the details of the suspicious activities are provided and recommendations for further investigation given along with actions to mitigate the threat. We are going to enable this feature.
+
+   ```az sql db threat-policy update --resource-group [Name of your RG] --server [Name of your Server] --name MicrosoftEmployees --email-account-admins Enabled --email-addresses [any E-Mail Address]```
+
+2. SQL Database auditing tracks database activities and helps to maintain compliance with security standards by recording database events to an audit log in a customer-owned Azure storage account. Auditing allows users to monitor ongoing database activities, as well as analyze and investigate historical activity to identify potential threats or suspected abuse and security violations.
+First we need to create a storage account to save the audit logs to.
+
+```az storage account create --name [Name of your Storage Account] --resource-group [Name of your RG] --location westeurope```
+
+```az sql db audit-policy update --storage-account [Name of your Storage Account] --server [Name of your Server] --resource-group [Name of your RG] --name [Name of your DB]```
+
+This is a complex topic. To grasp it fully visit the Azure portal. Go to your Azure SQL DB. Under Security move to the Auditing tab. Now enable Log Analytics and Event Hub.
+
+### Information protection and encryption ###
+
+
 
 1. SQL Database backup/Configure retention policies
 
-  ```Get-AzSqlDatabase -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL DB Server] | Get-AzSqlDatabaseLongTermRetentionPolicy```
-  ```Get-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees```
-  ```Set-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -WeeklyRetention P8W -MonthlyRetention P5M -YearlyRetention P5Y -WeekOfYear 1```
   
 2. Restore a Database
 
-  ```Restore-AzSqlDatabase -PointInTime [DateTime] -ResourceId [String] -ServerName [String] -TargetDatabaseName [String]```  or  ```az sql db restore```
-  ```Get-AzSqlDeletedDatabaseBackup -DeletionDate [DateTime] -ResourceGroupName [String] -ServerName [String] -DatabaseName [String]```
     
-  
 1. High-availability
   - Zone-redundancy configuration - change tier, Accelerated Database Recovery
 
-1. Restrict Network access with firewall-rules
-
-```az aql server firewall-rule list --server [Name of your SQL Server] --resource-group [Name of your RG]```
-```az sql server firewall-rule create --name [Name of a firewall-rule] --server [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --start-ip-address [choose IP address] --end-ip-address [choose IP address]```
-
-2. Restrict Database access (SSMS)
-
-SQL authentication:
-```CREATE USER ApplicationUser WITH PASSWORD = ['another password'];```
-```ALTER ROLE db_datareader ADD MEMBER ApplicationUser; ALTER ROLE db_datawriter ADD MEMBER ApplicationUser;```
 
 AD authentication:
 ```CREATE USER [Azure AD principal name] FROM EXTERNAL PROVIDERS;```
@@ -169,14 +201,13 @@ AD authentication:
   ```Set-AzSqlDatabaseTransparentDataEncryption -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
   ```Get-AzSqlDatabaseTransparentDataEncryptionActivity -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
   
-4. Monitor the DB
-  - activate Azrue SQL DB Monitoring
-  ```New-AzOperationalInsightsWorkspace -Location westeurope -Name [Name of your Workspace] -Sku Standard -ResourceGroupName [Name of your RG]```
-  ```Set-AzDiagnosticSetting -ResourceID [your resource Id] -StorageAccountId [your storage account Id] -Enabled $true```
-  ```Set-AzDiagnisticSettubgs -ResourceID [your resource Id] -WorkspaceId [your Workspace Id]```
-  
-  - Advanced Data Security
+## Connect the Azure SQL DB to a Web Application ##
 
+1. Get Web App basics
+
+2. Create Web App
+
+3. Modify Web App?
 
 ## Azure SQL DB elastic pools ##
 
