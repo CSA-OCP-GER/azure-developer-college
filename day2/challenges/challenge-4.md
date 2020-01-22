@@ -16,13 +16,13 @@ Before we can get into Azure Resource Manager and the related templates, we need
 - **Resource Provider** – an Azure service for creating a resource through the Azure Resource Manager. For example, “Microsoft.Web” to create a web app, “Microsoft.Storage” to create a storage account etc.
 - **Azure Resource Manager (ARM) Templates** – a JSON file that describes one or more resources that are deployed into a Resource Group. The template can be used to consistently and repeatedly provision the resources.
 
-One great advantage when using ARM templates, is the **traceability** of changes to your infrastructure. Templates can be stored together with the **source code** of your application in the code repository (***Infratructure as Code***). If you have established Continuous Integration / Deployment in your development process (which we will do on ***Day 4***), you can execute the deployment of the infrastructure from Jenkins, TeamCity or Azure DevOps. No one has to worry about an update of the environment – web apps, databases, caches etc. will be created and configured automatically – no manual steps are necessary (which can be error-prone, as we all know :)).
+One great advantage when using ARM templates, is the **traceability** of changes to your infrastructure. Templates can be stored together with the **source code** of your application in the code repository (***Infratructure as Code***). If you have established Continuous Integration / Deployment in your development process (which we will do on ***Day 4***), you can execute the deployment of the infrastructure from Jenkins, TeamCity or Azure DevOps. No one has to worry about an update of the environment – web apps, databases, caches etc. will be created and configured automatically – no manual steps are necessary (which can be error-prone, as we all know).
 
 ## Azure Resource Manager ##
 
 The Azure Resource Manager is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure subscription. 
 
-You can access the resource manager by several ways:
+You can access the resource manager through several ways:
 
 - Azure Portal
 - Azure Powershell
@@ -32,7 +32,7 @@ You can access the resource manager by several ways:
 
 ![arm](./img/consistent-management-layer.png "arm")
 
-As you can see in the picture above, the Resource Manager is made of several **Resource Providers** (RP) that are ultimately responsible for provisioning the requested service. Resource providers can be independently enabled or disabled. To see, what RPs are active in your subscription, you can either check the Portal (Subscription --> Resource Providers) or use Azure CLI to query the resource manager:
+As you can see in the picture above, the Resource Manager is made of several **Resource Providers** (RP) that are ultimately responsible for provisioning the requested service/resource. Resource providers can be independently enabled or disabled. To see, what RPs are active in your subscription, you can either check the Portal (Subscription --> Resource Providers) or use Azure CLI to query the resource manager:
 
 ```shell
 $ az provider list -o table
@@ -62,9 +62,11 @@ Microsoft.Sql                           RegistrationRequired  Registered
 ...
 ```
 
-### Sample ###
+![providers](./img/portal_resource_providers.png "providers")
 
-If you deploy e.g. a Storage Account, the template for it looks like that:
+### Basic Sample ###
+
+If you deploy e.g. a Storage Account, the (relevant part of the) template for it looks like that:
 
 ```json
 "resources": [
@@ -82,7 +84,7 @@ If you deploy e.g. a Storage Account, the template for it looks like that:
 ]
 ```
 
-If you use the portal or Azure CLI to apply that template, it will be converted to this:
+If you use the Portal or Azure CLI to apply that template, it will be converted to REST call like this:
 
 ``` 
 PUT
@@ -98,7 +100,7 @@ REQUEST BODY
 }
 ``` 
 
-As you can see, deployments in Azure will always be executed against a **resource group**! In this sample, the template will be ultimately picked-up by the **Microsoft.Storage** resource provider, which then will be responsible to create a Storage Account for you.
+As you can see, deployments in Azure will always be executed against a **resource group**, as mentioned before! In this sample, the template will be ultimately picked-up by the **Microsoft.Storage** resource provider, which then will be responsible for creating a Storage Account for you.
 
 ## ARM Templates ##
 
@@ -106,10 +108,10 @@ So, you already now had a brief look how an ARM template looks like. Let's make 
 
 An ARM Template usually consists of several parts:
 
-- **parameters** – Parameters that are passed from the outside to the template. Typically, from the commandline or your deployment tool (e.g. Azure DevOps, Jenkins...)
+- **parameters** – Parameters that are passed from the outside to the template. Typically, from the commandline or your deployment tool (e.g. Terraform, Azure DevOps, Jenkins...)
 - **variables** – variables for internal use. Typically, parameters are “edited”, e.g. names are concatenated and stored in variables for later use.
 - **resources** – the actual resources to be created
-- **outputs** – Output parameters that are returned to the caller after the resources are created. With *outputs* you can achieve multi-stage deployments by passing outputs to the next ARM template in your deployment chain.
+- **outputs** – Output parameters that are returned to the caller after the template has been successfully applied. With *outputs* you can achieve multi-stage deployments by passing outputs to the next ARM template in your deployment chain.
 
 ```json
 {
@@ -124,7 +126,7 @@ An ARM Template usually consists of several parts:
 
 ## A Basic Template ##
 
-So, to stick to our sample from above (Storage Account), let's create a basic template that will create a Storage Account and makes use of some very neat features (*Template Functions*). Here it is:
+So, to sticking to our sample from above (Storage Account), let's create a basic template that will create a Storage Account and makes use of a very helpful feature (*Template Functions*). Here it is:
 
 ```json
 {
@@ -176,13 +178,13 @@ So, to stick to our sample from above (Storage Account), let's create a basic te
 }
 ```
 
-Some notes on the template above:
+*Some notes on the template above:*
 
-As you can see, we are able to use functions to do dynamic stuff within a template, e.g. reading keys (```listKeys()```) or using parameter (```parameters()```). The are of course other functions e.g. for string manipulation (*concatenate*, *padLeft*, *split*...), numeric functions, comparison functions, conditionals etc. You can find all available template functions and their documentation here: <https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions>
+As you can see, we are able to use functions to do dynamic stuff within a template, e.g. reading keys (```listKeys()```) or using parameter (```parameters()```). There are, of course, other functions e.g. for string manipulation (*concatenate*, *padLeft*, *split*...), numeric functions, comparison functions, conditionals etc. You can find all available template functions and their documentation here: <https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions>
 
 Please make yourself familiar with the list!
 
-So now, let's deploy the template and see what we will receive as output.
+So now, let's deploy the template and see what we will receive as output (sample template is prepared in folder: *day2/challenges/armtemplates/basic*).
 
 ```shell
 $ az group create -n basicarm-rg -l westeurope
@@ -234,12 +236,14 @@ You can supply the parameters file via the ```@```syntax:
 az group deployment create -g basicarm-rg -n firsttemplate --template-file=./azuredeploy.json --parameters=@azuredeploy.params.json
 ```
 
-Some prefer the *parameters file*-approach, because you can set up parameter files for different environments, e.g. azuredeploy.params.**DEV**.json, azuredeploy.params.**TEST**.json, azuredeploy.params.**PROD**.json.
+Most people prefer the *parameters file*-approach, because you can set up parameter files for different environments, e.g. azuredeploy.params.**DEV**.json, azuredeploy.params.**TEST**.json, azuredeploy.params.**PROD**.json etc.
 
 **Warning**: There exist two modes, how you can deploy an ARM template:
 
 - **Complete** – resources that are not present in the template, but do exist in the resource group, are deleted.
 - **Incremental** – resources that are not present in the template, but exist in the resource group, remain unchanged.
+
+The default mode is *incremental*, so that you don't have to bother running *new* templates on existing resource groups. You can force to apply a template in *complete* mode by adding the parameter ```--mode Complete``` to the deployment command.
 
 ## Automatically set configuration properties in Web / Function Apps ##
 
@@ -367,7 +371,7 @@ I'd like to point you attention to a few new things here. First and foremost, we
 ]
 ```
 
-We tell the Azure Resource Manager, that the **Azure Web App depends on other resources**. This has the effect, that the creation of the Web App will be posponed until the Storage Account and the AppService Plan have been created. This sure makes sense, because we want to read the Storage Account Key and put it into the Web App configuration settings:
+We tell the Azure Resource Manager, that the **Azure Web App depends on other resources**. This has the effect, that the creation of the Web App will be postponed until the Storage Account and the AppService Plan have been created. This sure makes sense, because we want to read the Storage Account Key and put it into the Web App configuration settings:
 
 ```json
 {
@@ -380,9 +384,9 @@ We tell the Azure Resource Manager, that the **Azure Web App depends on other re
 }
 ```
 
-The template would fail, if we wouldn't add the the dependency, because the Azure Resource Manager will delegate the **provisioning of resources to the resource providers in parallel** (which is one of the advantages over Powershell or Azure CLI for resource creation - it will be done in parallel. With PS or Azure CLI would be executed sequentially)! So, it would not wait until the Storage Account is present...the template would Therefore throw an error as soon as the Storage Account Key would be read (from a resource that might not exist).
+The template would fail, if we wouldn't add the the dependency, because the Azure Resource Manager will delegate the **provisioning of resources to the resource providers in parallel** (which is one of the advantages over Powershell or Azure CLI for resource creation - it will be done in parallel. With PS or Azure CLI the script/commands would be executed sequentially)! So, it would not wait until the Storage Account is present...the template would therefore throw an error as soon as the Storage Account Key would be read (from a resource that might not exist).
 
-Deploy the ARM template via Azure CLI to a new resource group and check afterwards, if the Storage Account key is present in the Web App Configuration settings.
+Deploy the ARM template via Azure CLI to a new resource group and check afterwards, if the Storage Account key is present in the Web App Configuration settings. Sample is prepared for you under: *day2/challenges/armtemplates/basicpluswebapp*.
 
 ![arm](./img/arm_deploy_basicplus.png "arm")
 
@@ -392,8 +396,7 @@ Now that we have seen the basic structure of an ARM template and how we can depl
 
 ![arm](./img/arm_infra_large.png "arm")
 
-You can find the ARM template and the correspondig parameters file in folder *day2/challenges/armtemplates/largeinfra*. Make yourself familiar with the template. 
-
+You can find the ARM template and the correspondig parameters file in folder *day2/challenges/armtemplates/largeinfra*. Make yourself familiar with the template. Afterwards, create a new resource group, e.g. *complexarm-rg* and deploy the template.
 
 While you are deploying the template (create a new resource group and apply the template), here are a few parts, you should hav a look at in the meantime:
 
@@ -412,3 +415,9 @@ When the deployment has finished, check your resource group and open the "Deploy
 ## House Keeping ##
 
 Remove the sample resource groups for the basic/basic+ and large infra services.
+
+```shell
+$ az group delete -n armbasic-rg
+$ az group delete -n armbasicplus-rg
+$ az group delete -n complexarm-rg
+```
