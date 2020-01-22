@@ -13,7 +13,7 @@ If of interest we could show how to set up a DB with SQL Server Management Studi
 
 ## Create an Azure SQL DB ##
 
-You can either use the portal or the Azure Cloud Shell
+We are going to use the Azure CLI as well as the Azure Portal for this exercise.
 1. Create a resource group
 
 ```az group create --name [Name of your RG] --location westeurope```
@@ -26,6 +26,10 @@ You can either use the portal or the Azure Cloud Shell
 
 ```az sql db create --name MicrosoftEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
 
+4. There are several options to make the Azure SQL DB accessible. Per default the access is not permitted via the Azure SQL Server. To allow you to interact with your DB you can create a Firewall-Rule to allow your IP on the Server and hence the DB
+
+```az sql server firewall-rule create --name [Name of your Firewall Rule] --resource-group [Name of your RG] --server [Name of your server] --start-ip-address [your IP address] --end-ip-address [your IP address]```
+
 4. Optional: Add scalability options
 
 ```az sql db list-usage --name MicrosoftEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
@@ -34,7 +38,7 @@ You can either use the portal or the Azure Cloud Shell
 
 ## Add Data to SQL DB ##
 
-Add Azure Data Studio training and/or SSMS queriing
+A Table will be created and Data entered
 
 Use the Azure Cloud Shell
 1. Get to know the Database
@@ -50,9 +54,16 @@ Use the Azure Cloud Shell
 3. Add a table
 
   ```CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO```
-  ```SELECT name FROM sys.tabled; GO```
+
+4. Add Data to your table
+
   ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (3141, 'Nadella', 'Satya', 51, 2014); GO```
-  ```UPDATE CEOs SET Age=52 WHERE EmployerID=3141; GO```
+
+5. Update the Age of Satya Nadella in the Table
+
+  ```UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO```
+  
+6. Add the other CEOs Microsoft has had to the list as well (the ID is fictional)
 
 
 ## Secure the Azure SQL DB ##
