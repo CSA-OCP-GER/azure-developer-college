@@ -23,7 +23,7 @@ Give the **Topic** a name, e.g. *message* and leave the other parameters as prop
 
 Also, create a **Subscription** via the menu bar. Give it a name, e.g. *testsubscription*, and again leave all other parameters as is. 
 
-When the **Topic** and the **Subscription** have been created, we need to copy the **Connection String** to our Service Bus. Therfore, got to "Shared Access Policy", "RootManagedSharedAccessKey" and copy the **Primary Connection String**.
+When the **Topic** and the **Subscription** have been created, we need to copy the **Connection String** to our Service Bus. Therefore, got to "Shared Access Policy", "RootManagedSharedAccessKey" and copy the **Primary Connection String**.
 
 ### Add a Producer ###
 

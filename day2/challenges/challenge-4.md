@@ -380,7 +380,7 @@ We tell the Azure Resource Manager, that the **Azure Web App depends on other re
 }
 ```
 
-The template would fail, if we wouldn't add the the dependency, because the Azure Resource Manager will delegate the **provisioning of resources to the resource providers in parallel** (which is one of the advantages over Powershell or Azure CLI for resource creation - it will be done in parallel. With PS or Azure CLI would be executed sequentially)! So, it would not wait until the Storage Account is present...the template would therfore throw an error as soon as the Storage Account Key would be read (from a resource that might not exist).
+The template would fail, if we wouldn't add the the dependency, because the Azure Resource Manager will delegate the **provisioning of resources to the resource providers in parallel** (which is one of the advantages over Powershell or Azure CLI for resource creation - it will be done in parallel. With PS or Azure CLI would be executed sequentially)! So, it would not wait until the Storage Account is present...the template would Therefore throw an error as soon as the Storage Account Key would be read (from a resource that might not exist).
 
 Deploy the ARM template via Azure CLI to a new resource group and check afterwards, if the Storage Account key is present in the Web App Configuration settings.
 

@@ -298,7 +298,7 @@ $ npm install
 
 This will install all the neccessary dependencies of the NodeJS Visit Reports service. When that has finished, you can deploy the serviec to the previously created Web App. 
 
-Therefor, go to the Azure Tools Extension in Visual Studio Code (*App Service* section), find your Linux Web App and *right-click-deploy*, choosing the folder *day3/apps/nodejs/visitreport* as a deployment source.
+Therefore, go to the Azure Tools Extension in Visual Studio Code (*App Service* section), find your Linux Web App and *right-click-deploy*, choosing the folder *day3/apps/nodejs/visitreport* as a deployment source.
 
 In the output window, watch how the NodeJS app is copied to the Web App and is bein started by Azure.
 
