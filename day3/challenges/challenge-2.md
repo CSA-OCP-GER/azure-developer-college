@@ -82,7 +82,7 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
 
 There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
 
-# Secure the access to the Azure SQL DB #
+### Secure the access to the Azure SQL DB ###
 
 1. SQL Database backup/Configure retention policies
 
