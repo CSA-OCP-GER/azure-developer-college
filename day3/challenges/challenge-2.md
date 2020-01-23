@@ -19,32 +19,32 @@ SQL Database enables you to easily define and scale performance within two diffe
 We are going to use the Azure CLI as well as the Azure Portal for this exercise.
 1. Create a resource group
 
-```az group create --name [Name of your RG] --location westeurope```
+   ```az group create --name [Name of your RG] --location westeurope```
 
-![Create an Azure SQL DB](./img/Create_RG_CLI.png)
+   ![Create an Azure SQL DB](./img/Create_RG_CLI.png)
 
 2. Create an Azure SQL Server
 
-```az sql server create --name [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --admin-user [Name of your Server Admin] --admin-password [Your Admin Password]```
+   ```az sql server create --name [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --admin-user [Name of your Server Admin] --admin-password [Your Admin Password]```
 
-![Create an Azure SQL DB](./img/Create_SQL_Server_CLI.png)
+   ![Create an Azure SQL DB](./img/Create_SQL_Server_CLI.png)
 
 3. Create an Azure SQL DB
 
-```az sql db create --name MSFTEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
+   ```az sql db create --name MSFTEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
 
-![Create an Azure SQL DB](./img/Create_SQL_DB_CLI.png)
+   ![Create an Azure SQL DB](./img/Create_SQL_DB_CLI.png)
 
 4. There are several options to make the Azure SQL DB accessible. Per default the access is not permitted via the Azure SQL Server. To allow you to interact with your DB you can create a Firewall-Rule to allow your IP on the Server and hence the DB
 
-```az sql server firewall-rule create --name [Name of your Firewall Rule] --resource-group [Name of your RG] --server [Name of your server] --start-ip-address [your IP address] --end-ip-address [your IP address]```
+   ```az sql server firewall-rule create --name [Name of your Firewall Rule] --resource-group [Name of your RG] --server [Name of your server] --start-ip-address [your IP address] --end-ip-address [your IP address]```
 
-![Create an Azure SQL DB](./img/Create_SQL_FR_CLI.png)
+   ![Create an Azure SQL DB](./img/Create_SQL_FR_CLI.png)
 
 4. Optional: Add scalability options
 
-```az sql db list-usage --name MSFTEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
-```az sql db create --name MSFTEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 2 --zone-redundant false```
+   ```az sql db list-usage --name MSFTEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
+   ```az sql db create --name MSFTEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 2 --zone-redundant false```
   
 
 ## Add Data to SQL DB ##
@@ -55,46 +55,46 @@ Use the Azure Cloud Shell
 
 1. Get to know your environment
 
-  ```az sql server list --resource-group [Name of your RG]```
-  ```az sql db list --resource-group [Name of your RG] --server [Name of your Server]```
+   ```az sql server list --resource-group [Name of your RG]```
+   ```az sql db list --resource-group [Name of your RG] --server [Name of your Server]```
   
 If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query
 
-  ```az sql db list --resource-group [Name of your RG] --query '[].{Name:name}'```
+   ```az sql db list --resource-group [Name of your RG] --query '[].{Name:name}'```
   
-  ```az sql db show --resource-group [Name of your RG] --name MSFTEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
+   ```az sql db show --resource-group [Name of your RG] --name MSFTEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
   
 2. Connect to the DB
 
-  ```az sql db show-connection-string --name MSFTEmployees --server [Name of your Server] --client sqlcmd```
+   ```az sql db show-connection-string --name MSFTEmployees --server [Name of your Server] --client sqlcmd```
 
-Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
+   Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
   
-  ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
   
-After running this you should see a ```1>```. Now you can run SQL Queries. If you are unfamiliar with their Syntax feel free to take some time getting used to it.
+   After running this you should see a ```1>```. Now you can run SQL Queries. If you are unfamiliar with their Syntax feel free to take some time getting used to it.
 
 3. Add a table.
 
-  ```CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO```
+   ```CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO```
   
-  ![Create an Azure SQL Table](./img/Create_SQL_Table_CLI.png)
+   ![Create an Azure SQL Table](./img/Create_SQL_Table_CLI.png)
 
 4. Add Data to your table
 
-  ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO```
+   ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO```
   
-  ![Add data](./img/Add_SQL_data_CLI.png)
+   ![Add data](./img/Add_SQL_data_CLI.png)
 
 5. Update the Age of Satya Nadella in the Table
 
-  ```UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO```
+   ```UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO```
   
 6. Query the data
 
-   ```SELECT * FROM CEOs;```
+    ```SELECT * FROM CEOs;```
    
-   ![Query SQL DB](./img/Query_SQL_DB_CLI.png)
+    ![Query SQL DB](./img/Query_SQL_DB_CLI.png)
   
 7. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To ```exit``` enter exit.
 
@@ -108,7 +108,7 @@ The source code for Azure Data Studio and its data providers is available on Git
 
 1. Connect to your SQL Server by using the SQL Server Name you created earlier and the SQL Login.
 
-![ADS](./img/ADS1.png)
+   ![ADS](./img/ADS1.png)
 
 2. Create a new Query and with it a new Table
 
@@ -125,7 +125,7 @@ The source code for Azure Data Studio and its data providers is available on Git
        );
        GO```
        
-![ADS](./img/ADS2.png)
+   ![ADS](./img/ADS2.png)
 
 3. Insert at least four data rows into your new table creating a new Query in the Azure Data Studio
 
@@ -136,7 +136,7 @@ The source code for Azure Data Studio and its data providers is available on Git
         ( ... )
       GO```
 
-![ADS](./img/ADS3.png)
+   ![ADS](./img/ADS3.png)
 
 4. View the data returned by a query
 
@@ -148,7 +148,7 @@ The source code for Azure Data Studio and its data providers is available on Git
 
 There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
 
-![Security Layers](./img/sql-security-layer.png)
+   ![Security Layers](./img/sql-security-layer.png)
 
 ### Network Security for Azure SQL DB ###
 
@@ -168,7 +168,7 @@ To help protect the data, firewalls prevent network access to the database serve
 
    ```az sql server vnet-rule create --name [Name of your VNet Rule] --resource-group [Name of your RG] --vnet-name [Name of your VNet] --subnet [Name of your Subnet] --server [Name of your SQL Server]```
 
-Note: Controlling access with firewall rules does not apply to a managed instance.
+   Note: Controlling access with firewall rules does not apply to a managed instance.
 
 ### Access Management for Azure SQL DB ###
 
@@ -178,39 +178,39 @@ Azure SQL Database supports two types of authentication: SQL authentication, as 
 
 1. Let's have a look at the SQL authentication. As server admin you can create additional SQL logins and users - which enables other users to connect to the SQL Database. For this one open the Azure portal.
 
-```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
 
-```CREATE USER Marvin WITH PASSWORD = '42_as_ANSWER!'; GO```
+   ```CREATE USER Marvin WITH PASSWORD = '42_as_ANSWER!'; GO```
 
 2. Now create a new Table with this user.
 
-```exit```
+   ```exit```
 
-```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
 
-```CREATE TABLE Bees (EmployerID int, LastName varchar(255), FirstName varchar(255), RoleName varchar (255), StartYear int); GO```
+   ```CREATE TABLE Bees (EmployerID int, LastName varchar(255), FirstName varchar(255), RoleName varchar (255), StartYear int); GO```
 
-Add some Data to the table and query them.
+   Add some Data to the table and query them.
 
-When doing this remember that there is still a firewall rule in place - the new User currently has to operate under the same IP address you previously added to the SQL server firewall rule.
+   When doing this remember that there is still a firewall rule in place - the new User currently has to operate under the same IP address you previously added to the SQL server firewall rule.
 
-Note: The Azure Active Directory authentication is a far more suitable and contemporary solution. Learn more about it at our Friday sessions.
+   Note: The Azure Active Directory authentication is a far more suitable and contemporary solution. Learn more about it at our Friday sessions.
 
-Authorization refers to the permissions assigned to a user. Permissions are controlled by adding user accounts to database roles and assigning database-level permissions to those roles or by granting the user certain object-level permissions. As always there is more than one way to implement this.
+   Authorization refers to the permissions assigned to a user. Permissions are controlled by adding user accounts to database roles and assigning database-level permissions to those roles or by granting the user certain object-level permissions. As always there is more than one way to implement this.
 
 3. There are also database roles for SQL Server and database. You will find fixed roles as well as custom roles. Let's have a look at the fixed roles. To add and remove users to or from a database role, use the ADD MEMBER and DROP MEMBER options of the ALTER ROLE statement.
 
     ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
 
-   ```ALTER ROLE  db_backupoperator  
-      {  
+    ```ALTER ROLE  db_backupoperator  
+       {  
         ADD MEMBER database_principal  
         |  DROP MEMBER database_principal  
         |  WITH NAME = new_name  
-      }  
-      [;]  ```
+       }  
+       [;]```
  
- ![Fixed Rules](./img/permissions-of-database-roles.png)
+  ![Fixed Rules](./img/permissions-of-database-roles.png)
 
 4. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
 
@@ -222,8 +222,8 @@ Authorization refers to the permissions assigned to a user. Permissions are cont
    
    ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
    
-Now try to access the variable. 
-As Admin you can grant access again like this:
+   Now try to access the variable. 
+   As Admin you can grant access again like this:
 
    ```GRANT SELECT ON OBJECT::CEOs.EmployerID TO Marvin; GO```
 
@@ -279,7 +279,7 @@ Helping meet data privacy standards and regulatory compliance requirements.
 1. Go to the Azure Portal. In your SQL Database Advanced Threat protection you will find information about your Data.
    Look up if you can change any of the metrics.
    
-![Advanced Data Security](./img/ADS-lookup.png)
+   ![Advanced Data Security](./img/ADS-lookup.png)
 
 ## SQL Databace backup and retention policies ##
 
@@ -291,10 +291,10 @@ In our current database geo redundant backups therefore are not possible.
 1. Go to the Azure portal and navigate to your SQL server. Under Manage Backups you will find the retention policies. Change the retention policy for MicrosoftEmployees to Monthly Backups that should be kept for 8 weeks.
    On the Available backups tab, you will find backups from which you can restore a specific database.
    
-As a declarative abstraction on top of the existing active geo-replication feature, Auto-failover groups are a SQL Database feature that allows you to manage replication and failover of a group of databases on a SQL Database server or all databases in a managed instance to another region.
-They are designed to simplify deployment and management of geo-replicated databases at scale.
+   As a declarative abstraction on top of the existing active geo-replication feature, Auto-failover groups are a SQL Database feature that allows you to manage replication and failover of a group of databases on a SQL Database server or all databases in a managed instance to another region.
+   They are designed to simplify deployment and management of geo-replicated databases at scale.
 
-When you are using auto-failover groups with automatic failover policy, any outage that impacts one or several of the databases in the group results in automatic failover. Typically these are incidents that cannot be self-mitigated by the built-in automatic high availability operations. The examples of failover triggers include an incident caused by a SQL tenant ring or control ring being down due to an OS kernel memory leak on several compute nodes, or an incident caused by one or more tenant rings being down because a wrong network cable was cut during routine hardware decommissioning. For more information, see SQL Database High Availability.
+   When you are using auto-failover groups with automatic failover policy, any outage that impacts one or several of the databases in the group results in automatic failover. Typically these are incidents that cannot be self-mitigated by the built-in automatic high availability operations. The examples of failover triggers include an incident caused by a SQL tenant ring or control ring being down due to an OS kernel memory leak on several compute nodes, or an incident caused by one or more tenant rings being down because a wrong network cable was cut during routine hardware decommissioning. For more information, see SQL Database High Availability.
 
 1. Create another Azure SQL Server
 
@@ -322,8 +322,8 @@ This tutorial shows how to create a .NET Core app and connect it to a SQL Databa
 
 1. Clone the sample application
 
-  ```git clone https://github.com/azure-samples/dotnetcore-sqldb-tutorial```
-  ```cd dotnetcore-sqldb-tutorial```
+   ```git clone https://github.com/azure-samples/dotnetcore-sqldb-tutorial```
+   ```cd dotnetcore-sqldb-tutorial```
 
 2. Install the required packages, run database migrations, and start the application.
 
