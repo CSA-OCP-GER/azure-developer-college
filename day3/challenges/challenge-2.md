@@ -7,9 +7,7 @@
 - Add Data to the Azure SQL DB
 - Secure the Azure SQL DB
 - Azure SQL DB elastic pools
-- Use ARM Template for automated deployment
-Next to creating a single SQL DB we could also create a managed instance and an instance pools
-If of interest we could show how to set up a DB with SQL Server Management Studio.
+- 
 
 ## Create an Azure SQL DB ##
 
