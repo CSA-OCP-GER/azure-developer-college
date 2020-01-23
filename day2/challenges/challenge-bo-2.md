@@ -159,7 +159,7 @@ $ npm run build
  DONE  Build complete. The dist directory is ready to be deployed.
 ```
 
-This starts a local build of the VueJS application, which puts all results/artifacts (the static website itself) into the **dist** folder. When the build has finished, copy that *dist* folder via the Storage Explorer to your Storage Account in the ***$web*** container.
+This starts a local build of the VueJS application, which puts all results/artifacts (the static website itself) into the **dist** folder. When the build has finished, copy the content of that *dist* folder via the Storage Explorer to your Storage Account in the ***$web*** container.
 
 ![storage_explorer_static_website](./img/storage_explorer_static_website.png "storage_explorer_static_website")
 
