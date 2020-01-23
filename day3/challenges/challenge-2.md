@@ -18,17 +18,25 @@ We are going to use the Azure CLI as well as the Azure Portal for this exercise.
 
 ```az group create --name [Name of your RG] --location westeurope```
 
+![Create an Azure SQL DB](./img/Create_RG_CLI.png)
+
 2. Create an Azure SQL Server
 
 ```az sql server create --name [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --admin-user [Name of your Server Admin] --admin-password [Your Admin Password]```
+
+![Create an Azure SQL DB](./img/Create_SQL_Server_CLI.png)
 
 3. Create an Azure SQL DB
 
 ```az sql db create --name MicrosoftEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
 
+![Create an Azure SQL DB](./img/Create_SQL_DB_CLI.png)
+
 4. There are several options to make the Azure SQL DB accessible. Per default the access is not permitted via the Azure SQL Server. To allow you to interact with your DB you can create a Firewall-Rule to allow your IP on the Server and hence the DB
 
 ```az sql server firewall-rule create --name [Name of your Firewall Rule] --resource-group [Name of your RG] --server [Name of your server] --start-ip-address [your IP address] --end-ip-address [your IP address]```
+
+![Create an Azure SQL DB](./img/Create_SQL_FR_CLI.png)
 
 4. Optional: Add scalability options
 
@@ -66,10 +74,14 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
 3. Add a table.
 
   ```CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO```
+  
+  ![Create an Azure SQL Table](./img/Create_SQL_Table_CLI)
 
 4. Add Data to your table
 
   ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO```
+  
+  ![Add data](./img/Add_SQL_data_CLI)
 
 5. Update the Age of Satya Nadella in the Table
 
@@ -78,13 +90,17 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
 6. Query the data
 
    ```SELECT * FROM CEOs;```
+   
+   ![Query SQL DB](./img/Query_SQL_DB_CLI)
   
-6. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To ```exit``` enter exit.
+7. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To ```exit``` enter exit.
 
 
 ## Secure the Azure SQL DB ##
 
 There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
+
+![Security Layers](./img/sql-security-layer)
 
 ### Network Security for Azure SQL DB ###
 
@@ -145,6 +161,8 @@ Authorization refers to the permissions assigned to a user. Permissions are cont
         |  WITH NAME = new_name  
       }  
       [;]  ```
+ 
+ ![Fixed Rules](./img/permissions-of-database-roles)
 
 4. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
 
@@ -213,6 +231,8 @@ Helping meet data privacy standards and regulatory compliance requirements.
 1. Go to the Azure Portal. In your SQL Database Advanced Threat protection you will find information about your Data.
    Look up if you can change any of the metrics.
    
+![Advanced Data Security](./img/ADS-lookup)
+
 ## SQL Databace backup and retention policies ##
 
 You make the choice between configuring your server for either locally redundant backups or geographically redundant backups at server creation.
