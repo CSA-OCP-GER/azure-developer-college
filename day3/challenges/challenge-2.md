@@ -75,13 +75,13 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
 
   ```CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO```
   
-  ![Create an Azure SQL Table](./img/Create_SQL_Table_CLI)
+  ![Create an Azure SQL Table](./img/Create_SQL_Table_CLI.png)
 
 4. Add Data to your table
 
   ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO```
   
-  ![Add data](./img/Add_SQL_data_CLI)
+  ![Add data](./img/Add_SQL_data_CLI.png)
 
 5. Update the Age of Satya Nadella in the Table
 
@@ -91,7 +91,7 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
 
    ```SELECT * FROM CEOs;```
    
-   ![Query SQL DB](./img/Query_SQL_DB_CLI)
+   ![Query SQL DB](./img/Query_SQL_DB_CLI.png)
   
 7. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To ```exit``` enter exit.
 
@@ -100,7 +100,7 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
 
 There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
 
-![Security Layers](./img/sql-security-layer)
+![Security Layers](./img/sql-security-layer.png)
 
 ### Network Security for Azure SQL DB ###
 
@@ -162,7 +162,7 @@ Authorization refers to the permissions assigned to a user. Permissions are cont
       }  
       [;]  ```
  
- ![Fixed Rules](./img/permissions-of-database-roles)
+ ![Fixed Rules](./img/permissions-of-database-roles.png)
 
 4. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
 
@@ -231,7 +231,7 @@ Helping meet data privacy standards and regulatory compliance requirements.
 1. Go to the Azure Portal. In your SQL Database Advanced Threat protection you will find information about your Data.
    Look up if you can change any of the metrics.
    
-![Advanced Data Security](./img/ADS-lookup)
+![Advanced Data Security](./img/ADS-lookup.png)
 
 ## SQL Databace backup and retention policies ##
 
