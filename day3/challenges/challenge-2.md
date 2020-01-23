@@ -144,8 +144,6 @@ The source code for Azure Data Studio and its data providers is available on Git
    
    ```SELECT * FROM dbo.CEOs;```
 
-![ADS](./img/ADS4.png)
-
 ## Secure the Azure SQL DB ##
 
 There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
