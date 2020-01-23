@@ -47,6 +47,15 @@ PR Build name: __SCM-Resource-PR__
 
 CD Build name: __SCM-Resources-CD__
 
+CD Build Tasks:
+1. Azure resource group deployment --> __scm-resources-api-dotnetcore.json__
+2. Azure App Service Deploy --> __Adc.Scm.Resources.Api.zip__
+   - App Service type --> __API App__
+   - App Service name --> __$(ApiAppName)__
+3. Azure App Service deploy --> __Adc.Scm.Resources.ImageResizer.zip__
+   - App Service type --> __Function App on Windows__
+   - App Service name --> __$(ResizerFunctionName)__
+
 CD Build variables stage *Development*:
 
    | Variable | Value | Scope | ARM Template Parameter |
@@ -100,6 +109,15 @@ CI Build name: __SCM-Search-CI__
 PR Build name: __SCM-Search-PR__
 
 CD Build name: __SCM-Search-CD__
+
+CD Build Tasks:
+1. Azure Resource group deployment --> __scm-search-api-dotnetcore.json__
+2. Azure App Service Deploy --> __Adc.Scm.Search.Api.zip__
+   - App Service type --> __Web App on Windows__
+   - App Service name --> __$(ApiAppName)__
+3. Azure App Service Deploy --> __Adc.Scm.Search.Indexer.zip__
+   - App Service type --> __Function App on Windows__
+   - App Service name --> __$(IndexerFunctionName)__
 
 CD Build variables stage *Development*:
 
@@ -165,6 +183,13 @@ CI Build name: __SCM-Visitreports-CI__
 PR Build name: __SCM-Visitreports-PR__
 
 CD Build name: __SCM-Visitreports-CD__
+
+CD Build Tasks:
+1. Azure Resource group deployment --> __scm-visitreport-nodejs-db.json__
+2. Azure Resource group deployment --> __scm-visitreport-nodejs-infra.json__
+3. Azure App Service deploy --> __Adc.Scm.VisitReports.zip__
+   - App Service type --> __Web App on Linux__
+   - App Service name --> __$(ApiAppName)__
 
 CD Build variables stage *Development*:
 
@@ -292,6 +317,13 @@ PR Build name: __SCM-Textanalytics-PR__
 
 CD Build name: __SCM-Textanalytics-CD__
 
+CD Build Tasks:
+1. Azure Resource group deployment --> __scm-textanalytics-nodejs-common.json__
+2. Azure Resource group deployment --> __scm-textanalytics-nodejs-infra.json__
+3. Azure App Service deploy --> __Adc.Scm.Textanalytics.zip__
+   - App Service type --> __Function App on Linux__
+   - App Service name: --> __$(FunctionAppName)__
+ 
 CD Build variables stage *Development*:
 
    | Variable | Value | Scope |
@@ -340,7 +372,7 @@ that you apply the ARM Template __scm-textanalytics-nodejs-infra.json__ to Resou
    |scm-textanalytics-nodejs-infra.json|serviceBusNamespaceName|ServiceBusNamespaceName|ResourceGroupNameFunc|
    |scm-textanalytics-nodejs-infra.json|commonResGroup|ResourceGroupName|ResourceGroupNameFunc|
 
-**Hints:** To build SCm textanalytics we need to use NodeJs version 10.x.
+**Hints:** To build SCM Textanalytics we need to use NodeJs version 10.x.
 
 ```yaml
 pr: none
@@ -356,7 +388,7 @@ trigger:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: "12.x"
+      versionSpec: "10.x"
     displayName: "Install Node.js"
   - task: Bash@3
     inputs:
