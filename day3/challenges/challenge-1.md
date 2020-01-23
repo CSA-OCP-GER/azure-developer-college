@@ -144,8 +144,6 @@ $ az cosmosdb show --resource-group adc-cosmos-db-rg  --name <YOUR_NEW_ACCOUNT_N
 
 ![Result of deployed Cosmos DB via ARM Template](./img/ARMDeployCosmosResult.png)
 
-- Look at a Sample Azure Resource Management Script [ARM Template Cosmos DB](/cosmos.json)
-
 ## Integrate Cosmos DB into a Node.JS App ##
 
 We now want to show you, how to integrate Azure Cosmos DB with a NodeJS application. You can find SDKs for a lot of programming languages out there - as a sample, we will be using the NodeJS SDK.
