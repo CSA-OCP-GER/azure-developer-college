@@ -101,16 +101,20 @@ We have now been able to run the application locally. Of course, we want to have
 
 So, first of all, let's deploy the backend to Azure. You already know how to do it ([Challenge 1 - Azure Web Applications](./challenge-1.md) is your "cheat sheet"), so here is just an overview:
 
-1. create a new resource group, name it e.g. *scm-breakout-rg*, location *West Europe*
-1. create an Azure Web App (you can choose to use the Portal or the Azure CLI)
+1. create a new resource group, name it e.g. **scm-breakout-rg**, location *West Europe*
+1. create an Azure Web App (OS: **Windows**, RuntimeStack: **.NET Core 3.0**, Size: **B1**, AppInsights is not needed at the moment). You can choose to use the Portal or the Azure CLI.
 1. deploy the Contacts API to Azure
 1. after deployment, check whether the API is running (open the Swagger UI)
 
-> **Hint for Step 3**: now that we have a lot of projects in our folder, VS Code is not able to determine which project to pick when deploying via the Azure App Services extension. We first need to publish the project to a local folder and take that as our deployment source. There is already a predefined task for you, called **day2publishScmContacts** (btw, all tasks are defined in the **.vscode** folder). To run it, simply press **F1** and choose **"Tasks: Run Task"**. In the dropdown, select **day2publishScmContacts**. A release build will be started and the outputs placed in the folder **apps/dotnetcore/Scm/Adc.Scm.Api/publish** folder. Choose that folder when "right-click-deploying" from the Azure AppService extension (via "Browse...").
+> **Hint for Step 3**: now that we have a lot of projects in our folder, VS Code is not able to determine which project to pick when deploying via the Azure Tools App Services extension. We first need to publish the project to a local folder and take that as our deployment source. There is already a predefined task for you, called **day2publishScmContacts** (btw, all tasks are defined in the **.vscode** folder). To run it, simply press **F1** and choose **"Tasks: Run Task"**. In the dropdown, select **day2publishScmContacts**. A release build will be started and the outputs placed in the folder **apps/dotnetcore/Scm/Adc.Scm.Api/publish** folder. Choose that folder when "right-click-deploying" from the Azure AppService extension (via "Browse...").
 
 When everything works as expected in Azure, go back to the **settings.js** file of your SPA and adjust the **endpoint** property. Enter the value of your newly deployed API for it, e.g. https://mynewcontactsapi.azurewebsites.net/.
 
 Open the browser and check, if your application still works as expected.
+
+## Finished before Time? ##
+
+Try adding slots to your app and deploy the service to the slot, afterwards swap it!
 
 # Wrap-Up #
 
