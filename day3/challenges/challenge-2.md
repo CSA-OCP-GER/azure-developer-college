@@ -13,7 +13,7 @@ If of interest we could show how to set up a DB with SQL Server Management Studi
 
 ## Create an Azure SQL DB ##
 
-You can either use the portal or the Azure Cloud Shell
+We are going to use the Azure CLI as well as the Azure Portal for this exercise.
 1. Create a resource group
 
 ```az group create --name [Name of your RG] --location westeurope```
@@ -26,6 +26,10 @@ You can either use the portal or the Azure Cloud Shell
 
 ```az sql db create --name MicrosoftEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
 
+4. There are several options to make the Azure SQL DB accessible. Per default the access is not permitted via the Azure SQL Server. To allow you to interact with your DB you can create a Firewall-Rule to allow your IP on the Server and hence the DB
+
+```az sql server firewall-rule create --name [Name of your Firewall Rule] --resource-group [Name of your RG] --server [Name of your server] --start-ip-address [your IP address] --end-ip-address [your IP address]```
+
 4. Optional: Add scalability options
 
 ```az sql db list-usage --name MicrosoftEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
@@ -34,56 +38,159 @@ You can either use the portal or the Azure Cloud Shell
 
 ## Add Data to SQL DB ##
 
-Add Azure Data Studio training and/or SSMS queriing
+A Table will be created and Data entered
 
 Use the Azure Cloud Shell
-1. Get to know the Database
 
-  ```az sql db list --resource-group [Name of your RG] | jq '[.[]|{name: .name}]'```
-  ```az sql db show --resource-group [Name of your RG] --name MicrosoftEmployees | jq '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
+1. Get to know your environment
+
+  ```az sql server list --resource-group [Name of your RG]```
+  ```az sql db list --resource-group [Name of your RG] --server [Name of your Server]```
+  
+If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query
+
+  ```az sql db list --resource-group [Name of your RG] --query '[].{Name:name}'```
+  
+  ```az sql db show --resource-group [Name of your RG] --name MicrosoftEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
   
 2. Connect to the DB
 
-  ```az sql db show-connection-string --resource-group [Name of your RG] --client sqlcmd --name MicrosoftEmployees```
-  ```sqlcmd -S tcp ...```
+  ```az sql db show-connection-string --name MicrosoftEmployees --server [Name of your Server] --client sqlcmd```
 
-3. Add a table
+Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
+  
+  ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+  
+After running this you should see a ```1>```. Now you can run SQL Queries. If you are unfamiliar with their Syntax feel free to take some time getting used to it.
+
+3. Add a table.
 
   ```CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO```
-  ```SELECT name FROM sys.tabled; GO```
-  ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (3141, 'Nadella', 'Satya', 51, 2014); GO```
-  ```UPDATE CEOs SET Age=52 WHERE EmployerID=3141; GO```
+
+4. Add Data to your table
+
+  ```INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO```
+
+5. Update the Age of Satya Nadella in the Table
+
+  ```UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO```
+  
+6. Query the data
+
+   ```SELECT * FROM CEOs;```
+  
+6. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To ```exit``` enter exit.
 
 
 ## Secure the Azure SQL DB ##
 
-We are going to have to use either the Azure portal or PowerShell for parts of securing the Azure SQL DB, due to the Azure Data Explorers Endpoints
+There are many tasks surrounding the securing of an Azure SQL DB and and Azure SQL Server.
+
+### Network Security for Azure SQL DB ###
+
+To help protect the data, firewalls prevent network access to the database server until access is explicitly granted based on IP address or Azure Virtual network traffic origin. Earlier we opened up the SQL Server for our own IP address by creating a firewall rule. Now we are having a look at Virtual network firewall rules.
+
+1. Create the Virtual Network
+
+```az network vnet create --name [Name of your VNet] --resource-group [Name of your RG] --location westeurope --address-prefixes [xxx.xxx.xxx.xxx/xx]```
+
+2. Create the service endpoint and take a look at what was created
+
+```az network vnet subnet create --name [Name of your Subnet] --resource-group [Name of your RG] --vnet-name [Name of your VNet] --address-prefix [xxx.xxx.xxx.xxx/xx] --service-endpoints Microsoft.SQL```
+
+```az network vnet subnet show --name [Name of your Subnet] --resource-group [Name of your RG] --vnet-name [Name of your VNet]```
+
+3. Create a VNet rule on the server to secure it to the subnet Note
+
+```az sql server vnet-rule create --name [Name of your VNet Rule] --resource-group [Name of your RG] --vnet-name [Name of your VNet] --subnet [Name of your Subnet] --server [Name of your SQL Server]```
+
+Note: Controlling access with firewall rules does not apply to a managed instance.
+
+### Access Management for Azure SQL DB ###
+
+Under Access Management we are taking a look at authentication and authorization. Authentication is the process of proving the user is who they claim to be. Authorization refers to the permissions assigned to a user within an Azure SQL Database, and determines what the user is allowed to do.
+
+Azure SQL Database supports two types of authentication: SQL authentication, as has been set up with the server admin and password while creating the Azure SQL Server. And Azure Active Directory authentication.
+
+1. Let's have a look at the SQL authentication. As server admin you can create additional SQL logins and users - which enables other users to connect to the SQL Database. For this one open the Azure portal.
+
+```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+
+```CREATE USER Marvin WITH PASSWORD = '42_as_ANSWER!'; GO```
+
+2. Now create a new Table with this user.
+
+```exit```
+
+```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
+
+```CREATE TABLE Bees (EmployerID int, LastName varchar(255), FirstName varchar(255), Role varchar (255), StartYear int); GO```
+
+Add some Data to the table and query them.
+
+When doing this remember that there is still a firewall rule in place - the new User currently has to operate under the same IP address you previously added to the SQL server firewall rule.
+
+Note: The Azure Active Directory authentication is a far more suitable and contemporary solution. Learn more about it at our Friday sessions.
+
+Authorization refers to the permissions assigned to a user. Permissions are controlled by adding user accounts to database roles and assigning database-level permissions to those roles or by granting the user certain object-level permissions. As always there is more than one way to implement this.
+
+1. There are also database roles for SQL Server and database. You will find fixed roles as well as custom roles. Let's have a look at the fixed roles. To add and remove users to or from a database role, use the ADD MEMBER and DROP MEMBER options of the ALTER ROLE statement.
+
+    ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+
+   ```ALTER ROLE  db_backupoperator  
+      {  
+        ADD MEMBER database_principal  
+        |  DROP MEMBER database_principal  
+        |  WITH NAME = new_name  
+      }  
+      [;]  ```
+
+2. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
+
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+   
+   ```REVOKE SELECT ON OBJECT::CEOs.EmployerID TO Marvin; GO```
+   
+   ```exit```
+   
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
+   
+Now try to access the variable. 
+As Admin you can grant access again like this:
+
+   ```GRANT SELECT ON OBJECT::CEOs.EmployerID TO Marvin; GO```
+
+### Threat protection ###
+
+SQL Database secures data by providing auditing and threat detection capabilities.
+
+1. As part of that Advanced Threat Protection is analyzing your SQL Server logs to detect unusual behavior and potentially harmful attempts to access or exploit databases. Alerts are created for suspicious activities such as SQL injection, potential data infiltration, and brute force attacks or for anomalies in access patterns to catch privilege escalations and breached credentials use. Alerts are viewed from the Azure Security Center, where the details of the suspicious activities are provided and recommendations for further investigation given along with actions to mitigate the threat. We are going to enable this feature.
+
+   ```az sql db threat-policy update --resource-group [Name of your RG] --server [Name of your Server] --name MicrosoftEmployees --email-account-admins Enabled --email-addresses [any E-Mail Address]```
+
+2. SQL Database auditing tracks database activities and helps to maintain compliance with security standards by recording database events to an audit log in a customer-owned Azure storage account. Auditing allows users to monitor ongoing database activities, as well as analyze and investigate historical activity to identify potential threats or suspected abuse and security violations.
+First we need to create a storage account to save the audit logs to.
+
+```az storage account create --name [Name of your Storage Account] --resource-group [Name of your RG] --location westeurope```
+
+```az sql db audit-policy update --storage-account [Name of your Storage Account] --server [Name of your Server] --resource-group [Name of your RG] --name [Name of your DB]```
+
+This is a complex topic. To grasp it fully visit the Azure portal. Go to your Azure SQL DB. Under Security move to the Auditing tab. Now enable Log Analytics and Event Hub.
+
+### Information protection and encryption ###
+
+
 
 1. SQL Database backup/Configure retention policies
 
-  ```Get-AzSqlDatabase -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL DB Server] | Get-AzSqlDatabaseLongTermRetentionPolicy```
-  ```Get-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees```
-  ```Set-AzSqlDatabaseBackupLongTermRetentionPolicy -ResourceGroupName [Name of your RG] -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -WeeklyRetention P8W -MonthlyRetention P5M -YearlyRetention P5Y -WeekOfYear 1```
   
 2. Restore a Database
 
-  ```Restore-AzSqlDatabase -PointInTime [DateTime] -ResourceId [String] -ServerName [String] -TargetDatabaseName [String]```  or  ```az sql db restore```
-  ```Get-AzSqlDeletedDatabaseBackup -DeletionDate [DateTime] -ResourceGroupName [String] -ServerName [String] -DatabaseName [String]```
     
-  
 1. High-availability
   - Zone-redundancy configuration - change tier, Accelerated Database Recovery
 
-1. Restrict Network access with firewall-rules
-
-```az aql server firewall-rule list --server [Name of your SQL Server] --resource-group [Name of your RG]```
-```az sql server firewall-rule create --name [Name of a firewall-rule] --server [Name of your SQL Server] --resource-group [Name of your RG] --location westeurope --start-ip-address [choose IP address] --end-ip-address [choose IP address]```
-
-2. Restrict Database access (SSMS)
-
-SQL authentication:
-```CREATE USER ApplicationUser WITH PASSWORD = ['another password'];```
-```ALTER ROLE db_datareader ADD MEMBER ApplicationUser; ALTER ROLE db_datawriter ADD MEMBER ApplicationUser;```
 
 AD authentication:
 ```CREATE USER [Azure AD principal name] FROM EXTERNAL PROVIDERS;```
@@ -94,14 +201,13 @@ AD authentication:
   ```Set-AzSqlDatabaseTransparentDataEncryption -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
   ```Get-AzSqlDatabaseTransparentDataEncryptionActivity -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
   
-4. Monitor the DB
-  - activate Azrue SQL DB Monitoring
-  ```New-AzOperationalInsightsWorkspace -Location westeurope -Name [Name of your Workspace] -Sku Standard -ResourceGroupName [Name of your RG]```
-  ```Set-AzDiagnosticSetting -ResourceID [your resource Id] -StorageAccountId [your storage account Id] -Enabled $true```
-  ```Set-AzDiagnisticSettubgs -ResourceID [your resource Id] -WorkspaceId [your Workspace Id]```
-  
-  - Advanced Data Security
+## Connect the Azure SQL DB to a Web Application ##
 
+1. Get Web App basics
+
+2. Create Web App
+
+3. Modify Web App?
 
 ## Azure SQL DB elastic pools ##
 
