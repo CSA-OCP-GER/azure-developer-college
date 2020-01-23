@@ -3,6 +3,7 @@
 ![Azure Pipelines](./images/pipelines.svg)
 
 ## Here is what you will learn
+- Create a Service Connection to deploy Azure resources
 - Create a CI build to create and version your deployment artifacts
 - Create a CD build to deploy your artifacts to Azure
 
@@ -17,6 +18,18 @@ Azure Pipelines combines continuous integration (CI) and continuous delivery (CD
 Here is an overview of what we want to achieve in this challenge:
 
 ![CI-CD-Flow](./images/ci-cd-build-flow.png)
+
+## Create an Azure Service Connection
+
+Before we can start to deploy Azure resources we need to create a Service Connection to Azure's Resource Manager that allows us to access your Azure subscription. When the Azure Pipeline's build agent executes deployment steps the build agent must use a ServicePrincipal that was granted to access your Azure subscription as an *Owner*. You can define service connections in Azure Pipelines that are available for use in all your tasks.  
+
+1. In your Azure DevOps project, open the Service connections page from the project settings page
+2. Choose *New Service connection* and select *Azure Resource Manager*
+3. Give your connection a name
+4. Select *Subscription* under Scope level
+5. Select your subscription and click *OK*
+
+**Hint:** After you have clicked *OK* Azure DevOps tries to access Azure AD on behalf of the signed-in user (that's you, of course) to create a Service Principal and assigns it the *Owner* role of your selected subscription. If you get an error you can use the *use the full version of the service connection dialog* link to use a predefined Service Principal that was created by your Azure AD administrator.
 
 ## Create your first CI Build
 
@@ -58,7 +71,7 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
              artifactName: drop
    ```
    Here we specified to copy the needed ARM Template to our artifact's drop location named *"drop"*.
-   First we use a copy task to copy the ARM Template to the build agent's *"ArtifactStagingDirectory"*. This directory is a temp directory on the build agent. After that we can publish the build agent's artifact directory to link the created artifacts to the build.
+   First we use a copy task to copy the ARM Template to the build agent's *"ArtifactStagingDirectory"*. This directory is a temp directory on the build agent. After that we can publish the build agent's artifact directory to link the created artifacts to the build. In addition we specified to use a build agent that uses the latest Ubuntu version. [Here](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops#use-a-microsoft-hosted-agent) you can find a list of supported build agent images.
 
 6. Commit your changes and push the branch to your remote repository.
 7. Navigate to your Azure DevOps project
@@ -83,7 +96,7 @@ Now that we have created the build artifact, we can create a Release build to de
 2. Choose the action item to create a new Pipeline and start with an *"Empty Job"*.
 3. Rename *"Stage1"* to *"Development"*
 4. Rename the Release pipeline to *"SCM-Common-CD"*
-5. Under Articfacts *"Add an artifact"* and select your *"SCM-Common-CI"* and always use the latest build.
+5. Click *"Add an artifact"* and select your *"SCM-Common-CI"* and always use the latest build.
 6. Click the *"Flash"* icon under artifacts and set the trigger to *"Continuous deployment trigger"*. This will trigger the Release pipeline whenever a new deployment artrifact of the build *"SCM-Common-CI"* is created.
 7. Go to the variable section and add the following variables:
    - ResourceGroupName - ADC-DAY4-SCM-DEV
@@ -92,7 +105,7 @@ Now that we have created the build artifact, we can create a Release build to de
    - ServiceBusSKU - Standard
    - CosmosDbAccountName - |your prefix|-scm-dev (the account name must be globally unique)
 8. Go to the Tasks section of the *"Development"* stage and add the task *"Azure resource group deployment"*
-   - Select the Azure subscription 
+   - Select the Azure subscription
    - Use the variable for the ResourceGroup: $(ResourceGroup)
    - Select a location where you want to deploy the Azure resources
    - Under *Template* select the *"scm-common.json"* ARM template by clicking *"..."*
@@ -100,6 +113,8 @@ Now that we have created the build artifact, we can create a Release build to de
       ```
       -applicationInsightsName $(ApplicationInsightsName) -serviceBusNamespaceName $(ServiceBusNamespaceName) -serviceBusSKU $(ServiceBusSku) -cosmosDbAccountName $(CosmosDbAccountName)
       ```
+   - ![SCM Common CD tasks](./images/scm-common-cd-tasks.png)
+
 9. Save the definition and run the pipeline by clicking *"Create release"*.
 
 ### Add a Testing stage to your CD Build
@@ -118,6 +133,7 @@ In addition we add a *"Pre-deployment conditions"* step to control the deploymen
 
 5. Move all existing variables to the scope of the *Development* stage
 6. Add all variables again with the same name but change all values to contain the word *test* as suffix or prefix and apply them to the scope *Testing*
+   ![SCm Common CD Variables](./images/scm-common-cd-variables.png)
 7. Switch back to the pipeline view of your release definition and set the *Pre-deployment conditions* as follows
    ![Pre-deployment conditions](./images/pre-deployment-conditions.png)
 
