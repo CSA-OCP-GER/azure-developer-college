@@ -180,7 +180,23 @@ This is a complex topic. To grasp it fully visit the Azure portal. Go to your Az
 
 ### Information protection and encryption ###
 
+There are different Methods to secure the information stored in a SQL Database. We are going to look at the standards. For advanced security you can look up the Azure Key Vault and Always Encrypted.
 
+1. SQL Database secures customer data by encrypting data in motion with Transport Layer Security.
+
+   Sql Server enforces encryption (SSL/TLS) at all times for all connections. This ensures all data is encrypted "in transit" between the client and server irrespective of the setting of Encrypt or TrustServerCertificate in the connection string.
+
+   As a best practice, recommend that in your application's connection string you specify an encrypted connection and not trust the server certificate. This forces your application to verify the server certificate and thus prevents your application from being vulnerable to man in the middle type attacks.
+
+   For example when using the ADO.NET driver this is accomplished via Encrypt=True and TrustServerCertificate=False. If you obtain your connection string from the Azure portal, it will have the correct settings and should look like this:
+
+   ```Server=tcp:[Name of your SQL Server].database.windows.net,1433;Initial Catalog=[Name of your DB];Persist Security Info=False;User ID=[Name of your Admin];Password=[Your Admin Password];MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;```
+   
+2. Transparent Data Encryption (TDE) for Azure SQL Database adds a layer of security to help protect data at rest from unauthorized or offline access to raw files or backups. Common scenarios include datacenter theft or unsecured disposal of hardware or media such as disk drives and backup tapes. TDE encrypts the entire database using an AES encryption algorithm, which doesn’t require application developers to make any changes to existing applications.
+
+   In Azure, all newly created SQL databases are encrypted by default and the database encryption key is protected by a built-in server certificate. Certificate maintenance and rotation are managed by the service and requires no input from the user. Customers who prefer to take control of the encryption keys can manage the keys in Azure Key Vault.
+   
+   ```az sql db tde set --status Enabled --database MicrosoftEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
 
 1. SQL Database backup/Configure retention policies
 
