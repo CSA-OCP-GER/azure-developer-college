@@ -58,6 +58,8 @@ Create it and when the Function App has been deployed, go to the Configuration s
 | COSMOSKEY | Primary Key of your Cosmos DB |
 | TA_SUBSCRIPTION_KEY | the Azure Cognitive Services **subscription key**. Obtain it from the *Keys and Endpoint* view under *Resource Management* of your Cognitive Services account |
 | TA_SUBSCRIPTIONENDPOINT | the Azure Cognitive Services **endpoint URL**. Obtain it from the *Keys and Endpoint* view under *Resource Management* of your Cognitive Services account |
+<hr>
+<br>
 
 Save the settings. We can now start deploying the code that will call the Azure Cognitive services.
 

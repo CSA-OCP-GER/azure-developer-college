@@ -174,6 +174,8 @@ Open the Application settings under **Configuration** and add a new application 
 | Name | Value |
 | --- | --- |
 | \<storageaccountname>_STORAGE | enter the connection string to the storage account (you can copy that from your *local.settings.json* file) |
+<hr>
+<br>
 
 Afterwards, it should like that:
 
