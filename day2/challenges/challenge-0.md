@@ -170,3 +170,10 @@ We will also work with Azure SQL Databases. You can, of course, use SQL Server M
 Go to <https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio>, download and install the tool. 
 
 ![Azure Data Studio](./img/azure_data_studio.png "Azure Data Studio")
+
+## jq
+
+jq is a lightweight and flexible command-line JSON processor. In some challenges we use jq to process the JSON documents that we get back from Azure CLI.
+To install jq got to <https://stedolan.github.io/jq/download/> and follow the instructions.
+
+![jq](./images/../img/jq.png)

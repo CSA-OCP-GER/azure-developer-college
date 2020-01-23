@@ -21,7 +21,7 @@ When you reached the "Create Web App" wizard, follow the steps below:
 - Create a new resource group, name it "myFirstWebApps-rg"
 - Under instance details, enter a name for your Web App (be careful: this must be a global unique name!)
 - Publish: Code
-- Runtime: .NET Core 3.1 LTS
+- Runtime: .NET Core 3.0 Current
 - Operation System: Windows
 - Region: West Europe
 - SKU and Size: S1
@@ -48,9 +48,11 @@ Open the web app in your browser.
 
 ### Option 2: Azure CLI ###
 
-If you have created the web application already with option 1, go to the portal and delete the resource group - including all the newly created resources. We will be creating the exact same resources now with the Azure CLI.
+If you have created the web application already with option 1, go to the portal and delete the resource group - including all the newly created resources (you have to wait until it has finished, before proceeding). We will be creating the exact same resources now with the Azure CLI.
 
 First, let's create the resource group.
+
+> BTW: You can check the results of each command in the Portal.
 
 ```shell
 $ az group create --name myFirstWebApps-rg --location westeurope
@@ -194,7 +196,7 @@ $ az webapp create -g myFirstWebApps-rg -p myFirstWebAppsPlan -n myFirstWebAppDe
 }
 ```
 
-The last step we need to be have the same environment like when we created everything via the portal, is to add Application Insights.
+The last step we need to have the same environment like when we created everything via the portal, is to add Application Insights.
 
 The Azure CLI Application Insights component is still in preview. To access it, you first need to run:
 
@@ -308,6 +310,8 @@ If you haven't done so far, add the Azure App Service Extension (see: [Challenge
 
 Find your webapp in the extension and right-click --> Deploy to Web App...
 
+> If you can't find your subscription, press **F1** and choose the Task *Azure: Sign In*.
+
 ![vscode-deploy](./img/vscode_deploy.png "vscode-deploy")
 
 ![vscode-deploying](./img/vscode_deploying.png "vscode-deploying")
@@ -334,7 +338,7 @@ Check that your local development environment works as expected.
 
 ![browser-staging](./img/browser_staging.png "browser-staging")
 
-To deploy the application to the **Staging** slot, find your webapp in the **Azure AppService extension**, drill down to **slots** and right-click --> Deploy to Slot...
+To deploy the application to the **Staging** slot, find your webapp in the **Azure AppService extension**, drill down to **Deployment Slots** and right-click --> Deploy to Slot...
 
 Your current application will now be deployed to your "Staging" slot.
 
@@ -359,6 +363,8 @@ With this command, we are swapping the current "poduction" slot with our "Stagin
 ![portal-swap](./img/portal_swap.png "portal-swap")
 
 Now check, that the production slot serves the new version of the website.
+
+> **Optional**: Split traffic 50:50 to staging and production a see what happens when you reload your page in the browser pointing to the *production* slot. What do you think, why does this happen??
 
 ## House Keeping ##
 
