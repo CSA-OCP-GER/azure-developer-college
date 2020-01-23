@@ -58,8 +58,7 @@ Use the Azure Cloud Shell
    ```az sql server list --resource-group [Name of your RG]```
    ```az sql db list --resource-group [Name of your RG] --server [Name of your Server]```
   
-If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query
-
+   If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query:
    ```az sql db list --resource-group [Name of your RG] --query '[].{Name:name}'```
   
    ```az sql db show --resource-group [Name of your RG] --name MSFTEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
