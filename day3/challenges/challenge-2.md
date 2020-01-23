@@ -134,7 +134,7 @@ Note: The Azure Active Directory authentication is a far more suitable and conte
 
 Authorization refers to the permissions assigned to a user. Permissions are controlled by adding user accounts to database roles and assigning database-level permissions to those roles or by granting the user certain object-level permissions. As always there is more than one way to implement this.
 
-1. There are also database roles for SQL Server and database. You will find fixed roles as well as custom roles. Let's have a look at the fixed roles. To add and remove users to or from a database role, use the ADD MEMBER and DROP MEMBER options of the ALTER ROLE statement.
+3. There are also database roles for SQL Server and database. You will find fixed roles as well as custom roles. Let's have a look at the fixed roles. To add and remove users to or from a database role, use the ADD MEMBER and DROP MEMBER options of the ALTER ROLE statement.
 
     ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
 
@@ -146,7 +146,7 @@ Authorization refers to the permissions assigned to a user. Permissions are cont
       }  
       [;]  ```
 
-2. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
+4. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
 
    ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
    
@@ -160,6 +160,11 @@ Now try to access the variable.
 As Admin you can grant access again like this:
 
    ```GRANT SELECT ON OBJECT::CEOs.EmployerID TO Marvin; GO```
+
+5. While we are not setting up the AD authentication, here you can see the syntax of creating a user:
+   
+   ```CREATE USER [Azure AD principal name] FROM EXTERNAL PROVIDERS; GO```
+   
 
 ### Threat protection ###
 
@@ -210,34 +215,110 @@ Helping meet data privacy standards and regulatory compliance requirements.
    
 ## SQL Databace backup and retention policies ##
 
+You make the choice between configuring your server for either locally redundant backups or geographically redundant backups at server creation.
+After a server is created, the kind of redundancy it has, geographically redundant vs locally redundant, can't be switched.
+While creating a server via the ```az sql server create``` command, the ```--geo-redundant-backup``` parameter decides your Backup Redundancy Option. If ```Enabled```, geo redundant backups are taken. Or if ```Disabled``` locally redundant backups are taken.
+In our current database geo redundant backups therefore are not possible.
 
-
-1. SQL Database backup/Configure retention policies
-
-  
-2. Restore a Database
-
-    
-1. High-availability
-  - Zone-redundancy configuration - change tier, Accelerated Database Recovery
-
-
-AD authentication:
-```CREATE USER [Azure AD principal name] FROM EXTERNAL PROVIDERS;```
-
-3. Encrypt Data
-  - Mask data
-  
-  ```Set-AzSqlDatabaseTransparentDataEncryption -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
-  ```Get-AzSqlDatabaseTransparentDataEncryptionActivity -ServerName [Name of your SQL Server] -DatabaseName MicrosoftEmployees -ResourceGroupName [Name of your RG]```
+1. Go to the Azure portal and navigate to your SQL server. Under Manage Backups you will find the retention policies. Change the retention policy for MicrosoftEmployees to Monthly Backups that should be kept for 8 weeks.
+   On the Available backups tab, you will find backups from which you can restore a specific database.
   
 ## Connect the Azure SQL DB to a Web Application ##
 
-1. Get Web App basics
+This tutorial shows how to create a .NET Core app and connect it to a SQL Database. When you're done, you'll have a .NET Core MVC app running in App Service.
 
-2. Create Web App
+1. Clone the sample application
 
-3. Modify Web App?
+  ```git clone https://github.com/azure-samples/dotnetcore-sqldb-tutorial```
+  ```cd dotnetcore-sqldb-tutorial```
+
+2. Install the required packages, run database migrations, and start the application.
+
+   ```dotnet tool install --global dotnet-ef 
+      dotnet restore
+      dotnet ef database update
+      dotnet run```
+      
+  Navigate to ```http://localhost:5000``` in a browser. Select the Create New link and create a couple to-do items.
+
+   To stop .NET Core at any time, press ```Ctrl+C``` in the terminal.
+
+3. Create a new database in the previously created SQL Server.
+
+   ```az sql db create --resource-group [Name of your RG] --server [Name of your SQL Server] --name coreDB```
+   
+4. Create the connection string
+
+   ```az sql db show-connection-string --name coreDB --server [Name of your Server] --client sqlcmd```
+   
+   The result should look something like this:
+   
+   ```Server=tcp:[Name of your Server].database.windows.net,1433;Database=coreDB;User ID=[Name of your Admin User];Password=[Your Admin Password];Encrypt=true;Connection Timeout=30;```
+   
+5. Configure a local git deployment. FTP and local Git can deploy to an Azure web app by using a deployment user. Once you configure your deployment user, you can use it for all your Azure deployments.
+
+   ```az webapp deployment user set --user-name [Name your App User] --password [Your App User Password]```
+
+6. Create an App Service plan. An App Service plan defines a set of compute resources for a web app to run. These compute resources are analogous to the server farm in conventional web hosting. One or more apps can be configured to run on the same computing resources (or in the same App Service plan).
+
+   ```az appservice plan create --name [Name of your ASP] --resource-group [Name of your RG] --sku FREE``
+
+7. Create a web app in the recently created App Service plan.
+   
+   ```az webapp create --resource-group [Name of your RG] --plan [Name of your ASP] --name [Name of your App] --deployment-local-git```
+   
+8. Configure the connection string. To set connection strings for your Azure app, use the az webapp config appsettings set command in the Cloud Shell. In the following command replace the [Your Connection String] parameter with the connection string you created earlier.
+
+   ```az webapp config connection-string set --resource-group [Name of your RG] --name [Name of your App] --settings MyDbConnection="[Your Connection String]" --connection-string-type SQLServer```
+   
+   In ASP.NET Core, you can use this named connection string (```MyDbConnection```) using the standard pattern, like any connection string specified in appsettings.json. In this case, ```MyDbConnection``` is also defined in your appsettings.json. When running in App Service, the connection string defined in App Service takes precedence over the connection string defined in your appsettings.json. The code uses the appsettings.json value during local development, and the same code uses the App Service value when deployed.
+
+9. Configure environment variable. Next, set ASPNETCORE_ENVIRONMENT app setting to Production. This setting lets you know whether you're running in Azure, because you use SQLite for your local development environment and SQL Database for your Azure environment.
+
+   ```az webapp config appsettings set --name [Name of your App] --resource-group [Name of your RG] --settings ASPNETCORE_ENVIRONMENT="Production"```
+
+10. Connect to SQL Database in production by opening the Startup.cs and finding the following code in your local repository:
+
+   ```services.AddDbContext<MyDatabaseContext>(options =>```
+        ```options.UseSqlite("Data Source=localdatabase.db"));```
+
+   Replace it with the following code, which uses the environment variables that you configured earlier.
+   
+   ```// Use SQL Database if in Azure, otherwise, use SQLite
+      if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+        services.AddDbContext<MyDatabaseContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+      else
+        services.AddDbContext<MyDatabaseContext>(options =>
+            options.UseSqlite("Data Source=localdatabase.db"));
+
+      // Automatically perform database migration
+      services.BuildServiceProvider().GetService<MyDatabaseContext>().Database.Migrate(); 
+   ```
+
+   If this code detects that it's running in production (which indicates the Azure environment), then it uses the connection string you configured to connect to the SQL Database.
+
+   The Database.Migrate() call helps you when it's run in Azure, because it automatically creates the databases that your .NET Core app needs, based on its migration configuration.  
+
+   Save your changes, then commit it into your Git repository.
+   
+   ```git add .```
+   ```git commit -m "connect to SQL DB in Azure"```
+   
+11. Push to Azure from Git. Add an Azure remote to your local Git repository. Replace [Local Git URL] with the URL of the Git remote from step 7, when ypu did create the web app.
+
+   ```git remote add azure [Local Git URL]```
+
+   Push to the Azure remote to deploy your app with the following command. When Git Credential Manager prompts you for credentials, make sure you enter the credentials you created in Configure a deployment user, not the credentials you use to sign in to the Azure portal. This might take some time.
+   
+   ```git push azure master```
+   
+12. Browse to the deployed app using your web browser.
+
+   ```http://[Name of your App].azurewebsites.net```
+
+### Congratulations! ###
+You're running a data-driven .NET Core app in App Service.
 
 ## Azure SQL DB elastic pools ##
 
@@ -261,4 +342,4 @@ https://docs.microsoft.com/de-de/azure/sql-database/sql-database-resource-manage
 
 Delete Resource Group
 
-```az group delete -name [Name of your RG]```
+```az group delete --name [Name of your RG]```
