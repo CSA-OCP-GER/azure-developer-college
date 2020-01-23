@@ -31,7 +31,7 @@ We are going to use the Azure CLI as well as the Azure Portal for this exercise.
 
 3. Create an Azure SQL DB
 
-```az sql db create --name MicrosoftEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
+```az sql db create --name MSFTEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false```
 
 ![Create an Azure SQL DB](./img/Create_SQL_DB_CLI.png)
 
@@ -43,8 +43,8 @@ We are going to use the Azure CLI as well as the Azure Portal for this exercise.
 
 4. Optional: Add scalability options
 
-```az sql db list-usage --name MicrosoftEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
-```az sql db create --name MicrosoftEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 2 --zone-redundant false```
+```az sql db list-usage --name MSFTEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
+```az sql db create --name MSFTEmployees --resource-group [Name of your RG] --location westeurope --edition GeneralPurpose --family Gen4 --capacity 2 --zone-redundant false```
   
 
 ## Add Data to SQL DB ##
@@ -62,15 +62,15 @@ If you run the command like this you are getting a lot of information to make se
 
   ```az sql db list --resource-group [Name of your RG] --query '[].{Name:name}'```
   
-  ```az sql db show --resource-group [Name of your RG] --name MicrosoftEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
+  ```az sql db show --resource-group [Name of your RG] --name MSFTEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'```
   
 2. Connect to the DB
 
-  ```az sql db show-connection-string --name MicrosoftEmployees --server [Name of your Server] --client sqlcmd```
+  ```az sql db show-connection-string --name MSFTEmployees --server [Name of your Server] --client sqlcmd```
 
 Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
   
-  ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+  ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
   
 After running this you should see a ```1>```. Now you can run SQL Queries. If you are unfamiliar with their Syntax feel free to take some time getting used to it.
 
@@ -98,6 +98,53 @@ After running this you should see a ```1>```. Now you can run SQL Queries. If yo
   
 7. Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To ```exit``` enter exit.
 
+## Use the Azure Data Studio ##
+
+Azure Data Studio is a cross-platform database tool for data professionals using the Microsoft family of on-premises and cloud data platforms on Windows, MacOS, and Linux.
+
+Azure Data Studio offers a modern editor experience with IntelliSense, code snippets, source control integration, and an integrated terminal. It's engineered with the data platform user in mind, with built-in charting of query result sets and customizable dashboards.
+
+The source code for Azure Data Studio and its data providers is available on GitHub under a source code EULA that provides rights to modify and use the software, but not to redistribute it or host it in a cloud service. For more information, see Azure Data Studio FAQ.
+
+1. Connect to your SQL Server by using the SQL Server Name you created earlier and the SQL Login.
+
+![ADS](./img/ADS1.png)
+
+2. Create a new Query and with it a new Table
+
+   ```IF OBJECT_ID('dbo.PrtnrEmployees', 'U') IS NOT NULL
+        DROP TABLE dbo.PrtnrEmployees;
+      GO
+      CREATE TABLE dbo.PrtnrEmployees
+      (
+        EmployerId int NOT NULL PRIMARY KEY,
+        LastName nvarchar(255) NOT NULL,
+        FirstName nvarchar(255) NOT NULL,
+        PartnerCompany nvarchar(255) NOT NULL,
+        StartYear int
+       );
+       GO```
+       
+![ADS](./img/ADS2.png)
+
+3. Insert at least four data rows into your new table creating a new Query in the Azure Data Studio
+
+   ```INSERT INTO dbo.PrtnrEmployees
+        (EmployerId, LastName, FirstName, PartnerCompany, StartYear)
+      VALUES
+        ( ... ),
+        ( ... )
+      GO```
+
+![ADS](./img/ADS3.png)
+
+4. View the data returned by a query
+
+   ```SELECT * FROM dbo.PrtnrEmployees;```
+   
+   ```SELECT * FROM dbo.CEOs;```
+
+![ADS](./img/ADS4.png)
 
 ## Secure the Azure SQL DB ##
 
@@ -133,7 +180,7 @@ Azure SQL Database supports two types of authentication: SQL authentication, as 
 
 1. Let's have a look at the SQL authentication. As server admin you can create additional SQL logins and users - which enables other users to connect to the SQL Database. For this one open the Azure portal.
 
-```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
 
 ```CREATE USER Marvin WITH PASSWORD = '42_as_ANSWER!'; GO```
 
@@ -141,9 +188,9 @@ Azure SQL Database supports two types of authentication: SQL authentication, as 
 
 ```exit```
 
-```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
+```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
 
-```CREATE TABLE Bees (EmployerID int, LastName varchar(255), FirstName varchar(255), Role varchar (255), StartYear int); GO```
+```CREATE TABLE Bees (EmployerID int, LastName varchar(255), FirstName varchar(255), RoleName varchar (255), StartYear int); GO```
 
 Add some Data to the table and query them.
 
@@ -155,7 +202,7 @@ Authorization refers to the permissions assigned to a user. Permissions are cont
 
 3. There are also database roles for SQL Server and database. You will find fixed roles as well as custom roles. Let's have a look at the fixed roles. To add and remove users to or from a database role, use the ADD MEMBER and DROP MEMBER options of the ALTER ROLE statement.
 
-    ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+    ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
 
    ```ALTER ROLE  db_backupoperator  
       {  
@@ -169,13 +216,13 @@ Authorization refers to the permissions assigned to a user. Permissions are cont
 
 4. Custom roles can be created by granting access to specific Objects and Users. In this example, we will block access from a specific value for the previously added user Marvin.
 
-   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U [Name of your Server Admin] -P [Your Admin Password] -N -l 30```
    
    ```REVOKE SELECT ON OBJECT::CEOs.EmployerID TO Marvin; GO```
    
    ```exit```
    
-   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MicrosoftEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
+   ```sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U Marvin -P 42_as_ANSWER! -N -l 30```
    
 Now try to access the variable. 
 As Admin you can grant access again like this:
@@ -195,7 +242,7 @@ SQL Database secures data by providing auditing and threat detection capabilitie
 
    ```az storage account create --name [Name of your storage account] --resource-group [Name of your RG] --location westeurope```
 
-   ```az sql db threat-policy update --resource-group [Name of your RG] --server [Name of your Server] --name MicrosoftEmployees --email-account-admins Enabled --email-addresses [any E-Mail Address] --state Enabled --storage-account [Name of your storage account]```
+   ```az sql db threat-policy update --resource-group [Name of your RG] --server [Name of your Server] --name MSFTEmployees --email-account-admins Enabled --email-addresses [any E-Mail Address] --state Enabled --storage-account [Name of your storage account]```
 
 2. SQL Database auditing tracks database activities and helps to maintain compliance with security standards by recording database events to an audit log in a customer-owned Azure storage account. Auditing allows users to monitor ongoing database activities, as well as analyze and investigate historical activity to identify potential threats or suspected abuse and security violations.
 
@@ -215,13 +262,13 @@ There are different Methods to secure the information stored in a SQL Database. 
 
    For example when using the ADO.NET driver this is accomplished via Encrypt=True and TrustServerCertificate=False. If you obtain your connection string from the Azure portal, it will have the correct settings and should look like this:
 
-   ```Server=tcp:[Name of your SQL Server].database.windows.net,1433;Initial Catalog=[Name of your DB];Persist Security Info=False;User ID=[Name of your Admin];Password=[Your Admin Password];MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;```
+   ```Server=tcp:[Name of your SQL Server].database.windows.net,1433;Initial Catalog=MSFTEmployees;Persist Security Info=False;User ID=[Name of your Admin];Password=[Your Admin Password];MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;```
    
 2. Transparent Data Encryption (TDE) for Azure SQL Database adds a layer of security to help protect data at rest from unauthorized or offline access to raw files or backups. Common scenarios include datacenter theft or unsecured disposal of hardware or media such as disk drives and backup tapes. TDE encrypts the entire database using an AES encryption algorithm, which doesn’t require application developers to make any changes to existing applications.
 
    In Azure, all newly created SQL databases are encrypted by default and the database encryption key is protected by a built-in server certificate. Certificate maintenance and rotation are managed by the service and requires no input from the user. Customers who prefer to take control of the encryption keys can manage the keys in Azure Key Vault.
    
-   ```az sql db tde set --status Enabled --database MicrosoftEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
+   ```az sql db tde set --status Enabled --database MSFTEmployees --resource-group [Name of your RG] --server [Name of your SQL Server]```
 
 ### Data Security Management ###
 
@@ -245,6 +292,31 @@ In our current database geo redundant backups therefore are not possible.
 
 1. Go to the Azure portal and navigate to your SQL server. Under Manage Backups you will find the retention policies. Change the retention policy for MicrosoftEmployees to Monthly Backups that should be kept for 8 weeks.
    On the Available backups tab, you will find backups from which you can restore a specific database.
+   
+As a declarative abstraction on top of the existing active geo-replication feature, Auto-failover groups are a SQL Database feature that allows you to manage replication and failover of a group of databases on a SQL Database server or all databases in a managed instance to another region.
+They are designed to simplify deployment and management of geo-replicated databases at scale.
+
+When you are using auto-failover groups with automatic failover policy, any outage that impacts one or several of the databases in the group results in automatic failover. Typically these are incidents that cannot be self-mitigated by the built-in automatic high availability operations. The examples of failover triggers include an incident caused by a SQL tenant ring or control ring being down due to an OS kernel memory leak on several compute nodes, or an incident caused by one or more tenant rings being down because a wrong network cable was cut during routine hardware decommissioning. For more information, see SQL Database High Availability.
+
+1. Create another Azure SQL Server
+
+   ```az sql server create --name [Name of your second SQL Server] --resource-group [Name of your RG] --location northeurope --admin-user [Name of your Server Admin] --admin-password [Your Admin Password]```
+   
+2. Create a failover group between the servers and add the database
+
+   ```az sql failover-group create --name [Name of your Failover Group] --partner-server [Name of your second SQL Server] --resource-group [Name of your RG] --server [Name of your SQL Server] --add-db MSFTEmployees --failover-policy Automatic```
+   
+3. Verify which server is secondary 
+
+   ```az sql failover-group list --server [Name of your SQL Server] --resource-group [Name of your RG]```
+   
+4. Failover to the secondary server
+
+   ```az sql failover-group set-primary --name [Name of your Failover Group] --resource-group [Name of your RG] --name [Name of your second SQL Server]```
+
+5. Revert failover group back to the primary server
+
+   ```az sql failover-group set-primary --name [Name of your Failover Group] --resource-group [Name of your RG] --name [Name of your SQL Server]```
   
 ## Connect the Azure SQL DB to a Web Application ##
 
@@ -351,7 +423,7 @@ You're running a data-driven .NET Core app in App Service.
 
 2. Move the Azure SQL DB to the elastic pool
 
-  ```az sql db update --name MicrosoftEmployees --resource-group [Name of your RG] --server [Name of your SQL Server] --elastic-pool [Name of you SQL EP]```
+  ```az sql db update --name MSFTEmployees --resource-group [Name of your RG] --server [Name of your SQL Server] --elastic-pool [Name of you SQL EP]```
 
 
 ## Use ARM Template for automated deployment ##
