@@ -185,12 +185,16 @@ Application Settings:
 | Name | Value / Hint |
 | --- | --- |
 | EventServiceOptions__ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Topic scmtopic**) for sending messages - **scmtopicsend** |
+<hr>
+<br>
 
 Connection Strings:
 
 | Name | Value / Hint |
 | --- | --- |
 | DefaultConnectionString | go to the Azure SQL DB you created and use the ADO.NET connection string (under "**Settings**" / "**Connection strings**") |
+<hr>
+<br>
 
 Azure Web App for **Resources Service**:
 
@@ -204,7 +208,8 @@ Application Settings:
 | ServiceBusQueueOptions__ImageContainer | *rawimages* |
 | ServiceBusQueueOptions__ThumbnailContainer | *thumbnails* |
 | ServiceBusQueueOptions__ThumbnailQueueConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailssend** |
-
+<hr>
+<br>
 
 Azure Function for **Image Manipulation / Resizer Service**:
 
@@ -215,7 +220,8 @@ Configuration / Application Settings:
 | ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailslisten** |
 | ImageProcessorOptions__ImageWidth | *100* |
 | ImageProcessorOptions__StorageAccountConnectionString | use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same) |
-
+<hr>
+<br>
 
 ### Redeploy your services for Contacts, Resources and Image Manipulation ###
 
@@ -238,7 +244,8 @@ When finished, apply these settings to the Web App Configuration settings:
 | ContactSearchOptions__AdminApiKey | use the Primary Admin Key from Azure Search (under **Settings / Keys**) |
 | ContactSearchOptions__IndexName | *scmcontacts* |
 | ContactSearchOptions__ServiceName | the nanme of your previously created Azure Search (just the subdomain! So from <https://adcd3search-dev.search.windows.net>, only **adcd3search-dev**) |
-
+<hr>
+<br>
 
 **Last but not least**, deploy the Contacts Search (folder *day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api*) service from VS Code the the newly created Web App.
 
@@ -271,6 +278,7 @@ Create the Linux Web App in West Europe with the following parameters.
 | Runtime Stack | *Node 12 LTS* |
 | App Service Plan | Create a new one: OS - *Linux*, SKU - *Basic*, Size - *Small*  |
 
+
 When the Web App has been created, go to the Configuration section and add the following settings (App settings + Connection strings!).
 
 ![day3_bo_tux_vr](./img/day3_bo_tux_vr.png "day3_bo_tux_vr")
@@ -289,6 +297,8 @@ Azure Web App / Configuration / Connection Strings
 | COSMOSKEY | Primary Key of your Cosmos DB | Custom
 | SBCONTACTSTOPIC_CONNSTR | Primary Connection String of the Service Bus **Contacts** Topic (**scmtopic** / *scmtopiclisten*) | Custom
 | SBVRTOPIC_CONNSTR | Primary Connection String of the Service Bus **Visit Reports** Topic (**scmvrtopic** / *scmvrtopicsend*) | Custom
+<hr>
+<br>
 
 Now, from an infrastructure point of view, we are ready to deploy the NodeJS app. If you haven't run the app on your local machine, open a terminal and got to folder: *day3/apps/nodejs/visitreport*. Execute the following command:
 
@@ -324,6 +334,7 @@ Open the settings.js file in folder *day3/apps/frontend/scmfe/public/settings* a
 | reportsEndpoint | URL of the visit reports API endpoint, e.g. https://adcday3scmvr-dev.azurewebsites.net |
 | enableStats | false (we will be adding statistics when we introduced Cognitive Services in the next challenge) |
 | aiKey | "" (just leave it empty) |
+
 
 **Sample:**
 

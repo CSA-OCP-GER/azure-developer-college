@@ -53,8 +53,8 @@ Create one ARM template (plus parameters file) that contains all resources we ne
 ## References / Links ##
 
 - You can access/see the current template/JSON of running resources via <https://resources.azure.com>. (That is a good starting point, when you want to know what UI setting influences which JSON parameter.)
-- Azure Resouce Manager Template Reference: <https://docs.microsoft.com/en-us/azure/templates/>
-  - find documentation for all available properties of a service
+- Azure Resource Manager Template Reference: <https://docs.microsoft.com/en-us/azure/templates/>
+  - find documentation for all available properties of a service/resource
 - Azure Quickstart Templates: <https://github.com/Azure/azure-quickstart-templates>
   - Azure Function App (Consumption Plan): <https://github.com/Azure/azure-quickstart-templates/tree/master/101-function-app-create-dynamic>
   - Basic Web App: <https://github.com/Azure/azure-quickstart-templates/tree/master/101-webapp-basic-windows>
@@ -62,4 +62,4 @@ Create one ARM template (plus parameters file) that contains all resources we ne
 
 # Wrap-Up #
 
-***Congratulations***! You have just automated the deployment of an Azure infrastructure. The next step would be to also automatically deploy the Web Apps / SPA to your infrastructure. We will learn about that on Day 4, when we are talking about **Continuous Integration and Continuous Deployment (CI/CD)**. On **Day 3**, we will learn about some additional Azure services that we can add to our application, to be able to store data, search for it and to show you how to do service-to-service communication in a *microsoervice approach*.
+***Congratulations***! You have just automated the deployment of an Azure infrastructure. The next step would be to also automatically deploy the Web Apps / SPA to your infrastructure. We will learn about that on **Day 4**, when we are talking about **Continuous Integration and Continuous Deployment (CI/CD)**. On **Day 3**, we will learn about some additional Azure services that we can add to our application, to be able to store data, search for it and to show you how to do service-to-service communication with a *microsoervice approach*.
