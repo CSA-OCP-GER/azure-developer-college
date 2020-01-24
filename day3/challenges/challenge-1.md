@@ -183,7 +183,7 @@ These are the basic commands to interact with Azure Cosmos DB.
 
 ![Cosmos DB Client](./img/CosmosAppView2.png)
 
-A little bit further down, you can see how to query against CosmosDB. (The query returns all the children of a family). You first create a query sepcification which in turn in handed over to the Cosmos client, that executes the query against the database.
+A little bit further down, you can see how to query against CosmosDB. (The query returns all the children of a family). You first create a query sepcification which in turn is handed over to the Cosmos client, that executes the query against the database.
     
 ```javascript
     const querySpec = {
@@ -230,6 +230,8 @@ config.endpoint = "https://<URI>.documents.azure.com:443"
 config.key = "<PRIMARY KEY>"
 ```
 
+![Cosmos DB Connection String](./img/CosmosConnectionString.png)
+
 You've now updated your app with all the info it needs to communicate with Azure Cosmos DB.
 
 Now you are all set to run the sample. In the terminal, we first need to install all the dependencies of the Node app. So please run:
@@ -244,11 +246,10 @@ After it has finished downloading the depndencies, run:
 $ npm start
 ```
 
-![Cosmos DB Connection String](./img/CosmosConnectionString.png)
 
 ## Add Data using Azure Data Factory ##
 
-Now we want to add a little bit more data to our Cosmos DB. So please follow the instructions below as we add data via **Azure Data Factory**. Azure Data Factory is a managed cloud service that's built complex hybrid extract-transform-load (ETL), extract-load-transform (ELT), and data integration projects. It solves the problem of consolidating and loading data from various sources - either in the cloud or on-premises. If you want to know more about that service, please got to <https://docs.microsoft.com/en-us/azure/data-factory/introduction>.
+Now we want to add a little bit more data to our Cosmos DB. So please follow the instructions below as we add data via **Azure Data Factory**. Azure Data Factory is a managed cloud service that's built to handle complex hybrid extract-transform-load (ETL), extract-load-transform (ELT), and data integration projects. It solves the problem of consolidating and loading data from various sources - either in the cloud or on-premises. If you want to know more about that service, please go to <https://docs.microsoft.com/en-us/azure/data-factory/introduction>.
 
 First and foremost, we will be creating an new database plus a new container. Go to your Cosmos DB account, you created previously and click on **Add Container** (database will be created *on-the-fly*).
 
