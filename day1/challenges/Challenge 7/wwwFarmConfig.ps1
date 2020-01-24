@@ -1,7 +1,14 @@
 ﻿configuration wwwFarmConfig
 {
+    param
+    (
+        [Parameter(mandatory = $true)]
+        [string]$webZipURI
+    )
     # One can evaluate expressions to get the node list
     # E.g: $AllNodes.Where("Role -eq Web").NodeName
+    Import-DSCResource -Module PSDesiredStateConfiguration
+
     node ("localhost")
     {
         # Call Resource Provider
@@ -46,22 +53,32 @@
             Ensure = "Present"
         }
 
-        File DownloadPackage {            	
-            Ensure          = "Present"              	
-            Type            = "File"             	
-            SourcePath      = "https://github.com/CSA-OCP-GER/azure-developer-college/raw/features/day1handson/day1/challenges/Challenge%207/web.zip"            	
-            DestinationPath = "C:\temp"   
-  
+        Script DownloadPackage {
+            GetScript  = {
+                return @{'Result' = '' }
+            }
+        
+            SetScript  = 
+            {
+                $URI = $using:webZipURI
+                if ((Test-Path 'c:\temp') -eq $false) { mkdir 'c:\temp' }
+                Invoke-WebRequest -Uri "$URI" -OutFile "c:\temp\$(Split-Path "$URI" -Leaf)"
+            }
+        
+            TestScript = 
+            {
+                $URI = $using:webZipURI
+                Write-Verbose -Message "Testing DownloadPackage: $URI"
+                Write-Verbose "$(Split-Path $URI -Leaf)"
+                Test-Path "c:\temp\$(Split-Path "$URI" -Leaf)"
+            }
         }
+    
         Archive WebArchive {
             Destination = "c:\inetpub\wwwroot"
-            Path        = "c:\temp\web.zip"
-            DependsOn   = @("[File]DownloadPackage", "[WindowsFeature]WWW")
+            Path        = "c:\temp\$(Split-Path -Path "$webZipURI" -Leaf)"
+            DependsOn   = @("[Script]DownloadPackage", "[WindowsFeature]WWW")
          
-        }
+        } 
     }
 }
-
-
-
-

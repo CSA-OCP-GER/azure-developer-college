@@ -285,10 +285,10 @@
             "apiVersion": "2018-10-01",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmNames')[copyIndex()],'/','dscextension')]",
-            "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces/', variables('vmNames')[copyIndex()] )]"
+                "[resourceId('Microsoft.Compute/virtualMachines/',variables('vmNames')[copyIndex()])]"
             ],
+            "location": "[resourceGroup().location]",
             "copy": {
                 "name": "dsccopy",
                 "count": "[length(variables('vmNames'))]"
@@ -299,21 +299,13 @@
                 "typeHandlerVersion": "2.73",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
-                    "modulesUrl": "[uri(parameters('_artifactsLocation'), concat('DSC/Configuration.zip', parameters('_artifactsLocationSasToken')))]",
-                    "configurationFunction": "Configuration.ps1\\AdditionalSessionHosts",
+                    "modulesUrl": "https://github.com/CSA-OCP-GER/azure-developer-college/raw/features/day1handson/day1/challenges/Challenge%207/wwwFarmConfig.zip",
+                    "configurationFunction": "wwwFarmConfig.ps1\\wwwFarmConfig",
                     "properties": {
-                        "TenantAdminCredentials": {
-                            "userName": "[parameters('tenantAdminUpnOrApplicationId')]",
-                            "password": "PrivateSettingsRef:tenantAdminPassword"
-                        },
-                        "RDBrokerURL": "[parameters('rdBrokerURL')]",
-                        "DefinedTenantGroupName": "[parameters('existingTenantGroupName')]",
-                        "TenantName": "[variables('existingTenantName')]",
-                        "HostPoolName": "[variables('hostPoolName')]",
-                        "Hours": "[variables('registrationExpirationHours')]",
-                        "isServicePrincipal": "[parameters('isServicePrincipal')]",
-                        "AadTenantId": "[parameters('aadTenantId')]"
+                        "webZipURI": "https://github.com/CSA-OCP-GER/azure-developer-college/raw/features/day1handson/day1/challenges/Challenge%207/web.zip"
                     }
+                },
+                "protectedSettings": {
                 }
             }
         }
