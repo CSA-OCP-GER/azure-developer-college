@@ -78,7 +78,15 @@
             Destination = "c:\inetpub\wwwroot"
             Path        = "c:\temp\$(Split-Path -Path "$webZipURI" -Leaf)"
             DependsOn   = @("[Script]DownloadPackage", "[WindowsFeature]WWW")
-         
         } 
+        
+        File RemoveWebZip {
+            SourcePath      = "c:\temp\$(Split-Path -Path "$webZipURI" -Leaf)"
+            DestinationPath = ""
+            DependsOn       = "[Archive]WebArchive"
+            Ensure          = Absent 
+            Force           = $true
+            Type            = "File" 
+        }
     }
 }
