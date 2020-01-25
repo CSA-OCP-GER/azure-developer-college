@@ -13,44 +13,46 @@
     {
         # Call Resource Provider
         # E.g: WindowsFeature
-        WindowsFeature WWW {
-            Name   = "Web-Server"
-            Ensure = "Present"
-        }
-
-        WindowsFeature ASPNet45 {
-            Name   = "Web-Asp-Net45"
-            Ensure = "Present"
-        }
-
-        WindowsFeature HTTPRedirection {
-            Name   = "Web-Http-Redirect"
-            Ensure = "Present"
-        }
-
-        WindowsFeature LogginTools {
-            Name   = "Web-Log-Libraries"
-            Ensure = "Present"
-        }
-
-        WindowsFeature RequestMonitor {
-            Name   = "Web-Request-Monitor"
-            Ensure = "Present"
-        }
-
-        WindowsFeature Tracing {
-            Name   = "Web-Http-Tracing"
-            Ensure = "Present"
-        }
-
-        WindowsFeature BasicAuthentication {
-            Name   = "Web-Basic-Auth"
-            Ensure = "Present"
-        }
-
-        WindowsFeature WindowsAuthentication {
-            Name   = "Web-Windows-Auth"
-            Ensure = "Present"
+        
+        WindowsFeatureSet IIS {
+            Name                 = @("Web-Server",
+                "Web-WebServer",
+                "Web-Common-Http",
+                "Web-Default-Doc",
+                "Web-Dir-Browsing",
+                "Web-Http-Errors",
+                "Web-Static-Content",
+                "Web-Http-Redirect",
+                "Web-Health",
+                "Web-Http-Logging",
+                "Web-Custom-Logging",
+                "Web-Log-Libraries",
+                "Web-Request-Monitor",
+                "Web-Http-Tracing",
+                "Web-Performance",
+                "Web-Stat-Compression",
+                "Web-Dyn-Compression",
+                "Web-Security",
+                "Web-Filtering",
+                "Web-Basic-Auth",
+                "Web-IP-Security",
+                "Web-Url-Auth",
+                "Web-Windows-Auth",
+                "Web-App-Dev",
+                "Web-Net-Ext45",
+                "Web-Asp-Net45",
+                "Web-ISAPI-Ext",
+                "Web-ISAPI-Filter",
+                "Web-Mgmt-Tools",
+                "Web-Mgmt-Console",
+                "Web-Scripting-Tools",
+                "NET-Framework-45-Features",
+                "NET-Framework-45-Core",
+                "NET-Framework-45-ASPNET",
+                "NET-WCF-Services45",
+                "NET-WCF-TCP-PortSharing45")
+            Ensure               = "Present"
+            IncludeAllSubFeature = $true
         }
 
         Script DownloadPackage {
@@ -77,14 +79,13 @@
         Archive WebArchive {
             Destination = "c:\inetpub\wwwroot"
             Path        = "c:\temp\$(Split-Path -Path "$webZipURI" -Leaf)"
-            DependsOn   = @("[Script]DownloadPackage", "[WindowsFeature]WWW")
+            DependsOn   = @("[Script]DownloadPackage", "[WindowsFeatureSet]IIS")
         } 
-        
+
         File RemoveWebZip {
-            SourcePath      = "c:\temp\$(Split-Path -Path "$webZipURI" -Leaf)"
-            DestinationPath = ""
+            DestinationPath = "c:\temp\$(Split-Path -Path "$webZipURI" -Leaf)"
             DependsOn       = "[Archive]WebArchive"
-            Ensure          = Absent 
+            Ensure          = "Absent" 
             Force           = $true
             Type            = "File" 
         }
