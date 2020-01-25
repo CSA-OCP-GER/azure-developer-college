@@ -11,7 +11,7 @@
 ## Create a storage account and a container using the azure portal
 
 1. Login to your azure subscription **and search the marketplace for 'Storage Account'**  
-![Storage Account Marketplace Item](sa01.png)  
+![Storage Account Marketplace Item](sa01.PNG)  
 Create the sa with the following values:
 
 | Name | Value |
@@ -37,10 +37,10 @@ Create the sa with the following values:
 | Public access level  |  Private (no anonymous access) |
 
 Now **upload a small file**.  
-![Upload a txt file to a storage account](sa02.png)  
+![Upload a txt file to a storage account](sa02.PNG)  
 
 **Can you download the file** using its URI in another browser session? [No]  
-![Download URI](sa03.png)
+![Download URI](sa03.PNG)
   
 
 3. Create a Shared Access Signature [via the portal] to enable blob access. 
@@ -48,7 +48,7 @@ Now **upload a small file**.
 [Azure Portal] -> %Your Storage Account% -> Shared access signature -> "Generate SAS and connection string"
 ```
 **Copy the Blob Service SAS URL to the clipboard**
-![SAS URL](sas01.png)  
+![SAS URL](sas01.PNG)  
 
 **Edit the SAS URI**: You need to add the path to uploaded file - it should look similar to:  
 
