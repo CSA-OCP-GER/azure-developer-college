@@ -176,4 +176,6 @@ In your VM paste the code into a PowerShell window and execute it. Once successf
 > - What is the default quota of an azure file share? 
 > - Which user account is used for establishing the connection? 
 > - Is the 'drive' available to other users that logon to the VM? [No]
-> - Is the 'drive' mounted 'automatically' after a reboot? [No]
+> - Is the 'drive' mounted 'automatically' after a reboot? [Yes]  
+
+[back](../../readme.md)  
