@@ -101,8 +101,8 @@ Why? Because the SAS key was generated using the previous key1 -> which is no lo
 > So stored access policies can help to modify permissions to a container after the SAS has been issued to users / apps.
 
 ## [optional] Authorize access to blobs using AAD ##  
-You can also authorize access to storage accounts using Azure Active Directory (AAD) credentials. [See](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad?toc=%2fazure%2fstorage%2fblobs%2ftoc.json)  
-And in fact this is the recommended way.  
+**You can** also **authorize access to storage accounts using Azure Active Directory (AAD) credentials**. [See](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad?toc=%2fazure%2fstorage%2fblobs%2ftoc.json)  
+And in fact this **is the recommended way**.  
 Apps however might want to use 'service accounts' aka Service Principals in Azure.  
 The following PowerShell code creates a Service Principal in AAD. You can give this 'user' permissions to your storage account -> container
 
@@ -154,25 +154,26 @@ Remove-AzADApplication -DisplayName $servicePrincipalName -Force
 ```
 
 ## Add an azure file share to a server. ##
+1. **Add the file share** via the portal:  
+```
 [Azure Portal] -> Storage Account -> File Shares -> "+" File Share
+```
+| Name | Value |
+|---|---|
+| Name  |  **myfiles** |
+| Quota  |  _empty_ |   
+  
+2. **In your Azure VM mount the share** as drive by executing the command taken from:  
+```
+[Azure Portal] -> Storage Account -> File Shares -> 'myfiles' -> Connect -> copy the code into the clipboard
+```  
+![Azure Files](azfiles01.PNG))  
+  
+In your VM paste the code into a PowerShell window and execute it. Once successful your 'drive' has been mounted.  
+![Mounted Azure File Share](azfiles02.PNG)
 
-Name: myfiles
-Quota: ''
-
-Within your Windows Server VM mount the share as drive by executing the command taken from:
-[Azure Portal] -> Storage Account -> File Shares -> 'myfiles' -> Connect.
-
-$connectTestResult = Test-NetConnection -ComputerName bfrank0815sa.file.core.windows.net -Port 445
-if ($connectTestResult.TcpTestSucceeded) {
-    # Save the password so the drive will persist on reboot
-    cmd.exe /C "cmdkey /add:`"bfrank0815sa.file.core.windows.net`" /user:`"Azure\bfrank0815sa`" /pass:`"/NtE9t4AtDDGPPFI4dymneQ0b+aIrElOdjLJ5wUjXqSPeH3/MQYK6CTPU3lOGaZnEkWb8LNdyvpY8Lp9ZWqbWQ==`""
-    # Mount the drive
-    New-PSDrive -Name Z -PSProvider FileSystem -Root "\\bfrank0815sa.file.core.windows.net\myfiles"-Persist
-} else {
-    Write-Error -Message "Unable to reach the Azure storage account via port 445. Check to make sure your organization or ISP is not blocking port 445, or use Azure P2S VPN, Azure S2S VPN, or Express Route to tunnel SMB traffic over a different port."
-}
-
-
-What is the default quota of an azure file share?
-Which user account is used for establishing the connection?
-Is the 'drive' available to other users that logon to the VM? 
+> Questions:
+> - What is the default quota of an azure file share? 
+> - Which user account is used for establishing the connection? 
+> - Is the 'drive' available to other users that logon to the VM? [No]
+> - Is the 'drive' mounted 'automatically' after a reboot? [No]
