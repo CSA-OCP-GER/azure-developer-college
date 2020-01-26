@@ -273,7 +273,7 @@ Revert failover group back to the primary server
    az sql failover-group set-primary --name <name of your fg> --resource-group <your rg name> --name <name of your server>
    ```
   
-## Connect the Azure SQL DB to a Web Application ##
+## OPTIONAL: Connect the Azure SQL DB to a Web Application ##
 
 This tutorial shows how to create a .NET Core app and connect it to a SQL Database. When you're done, you'll have a .NET Core MVC app running in App Service.
 
