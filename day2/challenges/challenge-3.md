@@ -36,7 +36,9 @@ const string ServiceBusConnectionString = "<your_connection_string>";
 const string TopicName = "<your_topic_name>";
 ```
 
-Now, open a terminal in the folder *day2/challenges/sbtester* and execute:
+Make yourself familiar with the code and examine, how messages are created and sent to Azure Service Bus. If you are done with that, run the sample application.
+
+Open a terminal in the folder *day2/challenges/sbtester* and execute:
 
 ```shell
 $ dotnet build && dotnet run
