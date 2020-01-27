@@ -10,9 +10,9 @@ The services interact via the Azure Service Bus (Producer/Consumer pattern) and 
 
 The advantage is, that the services aren't tied together via REST calls and can work and be scaled independently. If we would introduce another service in the future that needs information from a contact, we would simply introduce another consumer for the *Contacts* topic.
 
-In addition, we will also be migrating the the Storage Queue services (for image resizing) to Azure Service Bus Queues so that we only have one messaging component in our architecture.
+In addition, we will also be migrating the Storage Queue services (for image resizing) to Azure Service Bus Queues so that we only have one messaging component in our architecture.
 
-The Frontend will also change, as we introduce a new service:
+The frontend will also change, as we introduce a new service:
 
 ![scm_day3](./img/scm_day3.png "scm_day3")
 ![scm_day3_vr](./img/scm_day3_vr.png "scm_day3_vr")
@@ -32,6 +32,7 @@ Database Properties:
 - SKU: Basic
 - Location: *West Europe*
 - Create a new server in *West Europe*
+- Networking Tab: make sure **Allow Azure services and resources to access this server** is set to **true*
 
 Leave all other settings as proposed by Azure.
 
@@ -39,7 +40,7 @@ Leave all other settings as proposed by Azure.
 
 ### Cosmos DB / SQL API ###
 
-Create a new Azure Cosmos Account either via the Azure Portal or Azure CLI.
+Create a new Azure Cosmos Account either via the Azure Portal or Azure CLI. BTW: You can do this while Azure SQL DB is created.
 
 Account Properties:
 
@@ -56,14 +57,13 @@ When the deployment has finished, create a new *Database* and *Container* for th
 Database Properties:
 
 - Database ID: *scmvisitreports*
-- Provision Throughput: *true*
+- Provision Database Throughput: *true*
 - RU/s: *Manual / 400*
 
 Container Properties:
 
 - Database ID: *scmvisitreports*
 - Container ID: *visitreports*
-- Provision Throughput: *true*
 - Partition: */type*
 
 ### Azure Search ###
@@ -94,18 +94,20 @@ Leave all other settings as proposed by Azure.
 
 ### Service Bus Queue ###
 
-When the deployment of the new Service Bus has finished, we need to add a Service Bus **Queue**. The queue will replace the Storage Account Queue we used to notify an Azure Function that creates thumbnails of contact images we uploaded.
+When the deployment of the new Service Bus has finished, we need to add a Service Bus **Queue**. The queue will replace the Storage Account Queue we used to notify an Azure Function that creates thumbnails of contact images.
 
 Service Bus Queue Properties:
 
 - Name: *thumbnails*
 
-When successfully added, go to **Shared Access Policies** of the Service Bus Queue and add two policies:
+When successfully added, go to **Shared Access Policies** of the **Service Bus Queue (!)** and add two policies:
 
 - Name: *thumbnailslisten* (enable checkbox **Listen**)
   - will be used by clients that only need to listen to the Service Bus Queue
 - Name: *thumbnailssend* (enable checkbox **Send**)
   - will be used by clients that also need to be able to send messages to the Service Bus Queue
+
+Our produucers/consumers will use these Access Policies to be able to send and listen to/on that specific queue.
 
 ### Service Bus Topic for Contacts ###
 
@@ -120,12 +122,13 @@ Leave all other settings as is and click **Create**. When finished, open the top
 Subscription for Search Service / indexing of contacts:
 
 - Name: *scmcontactsearch*
+- **Enable Sessions**: *true* (in this sample, we will be using Service Bus sessions!)
 
 Subscription for Visit Reports Service
 
 - Name: *scmcontactvisitreport*
 
-When successfully added, go back to **Shared Access Policies** of the Service Bus Topic **scmtopic** and add two policies:
+When you have successfully added the two subscriptions, go back to **Shared Access Policies** of the Service Bus Topic **scmtopic** and add two policies:
 
 - Name: *scmtopiclisten* (enable checkbox **Listen**)
   - will be used by clients that only need to listen to the Service Bus Topic
@@ -156,7 +159,7 @@ We don't add a subscription for the *visit report* topic at the moment. It will 
 You should have created the following Azure Services by now:
 
 - Azure SQL DB
-- Azure Cosmos DB
+- Azure Cosmos DB (database + container)
 - Azure Search
 - Azure Service Bus
   - Queue for thumbnail generation
@@ -168,15 +171,17 @@ You should have created the following Azure Services by now:
   - Topic for Visit Reports
     - Shared Access Policies for *listen* and *send*
 
-If you missed to create of of these services, please go back to the corresponding section.
+If you missed to create one of these services, please go back to the corresponding section.
 
 ## Deploy new Contacts/Resources Service and Image Resizer Function ##
 
-Because we refactored the Contacts and Resources APIs to use Azure Service Bus for inter-service communication, we need to deploy new versions of the services and change some of the App Settings we added yesterday.
+Because we refactored the Contacts and Resources APIs to use Azure Service Bus for inter-service communication, we need to deploy new versions of these services and change some of the App Settings we added yesterday.
 
 ### Alter App Settings ###
 
-We will reuse the Web Apps for Contacts and Resources as well as the Azure Function for image manipulation we created yesterday. So, first we will adjust the App Configuration for each of the services.
+We will **reuse the Web Apps for Contacts and Resource**s as well as the Azure Function for image manipulation we created yesterday. So, first we will adjust the App Configuration for each of the services.
+
+> Use a second window to be able to switch back and forth.
 
 Azure Web App for **Contacts Service**:
 
@@ -190,11 +195,13 @@ Application Settings:
 
 Connection Strings:
 
-| Name | Value / Hint |
-| --- | --- |
-| DefaultConnectionString | go to the Azure SQL DB you created and use the ADO.NET connection string (under "**Settings**" / "**Connection strings**") |
+| Name | Value / Hint | Type |
+| --- | --- | --- |
+| DefaultConnectionString | go to the Azure SQL DB you created and use the ADO.NET connection string (under "**Settings**" / "**Connection strings**"). Don't forget to add your password to the connection string! | *SqlAzure*
 <hr>
 <br>
+
+![portal_bo_adjust_contactsapi](./img/portal_bo_adjust_contactsapi.png "portal_bo_adjust_contactsapi")
 
 Azure Web App for **Resources Service**:
 
@@ -208,8 +215,12 @@ Application Settings:
 | ServiceBusQueueOptions__ImageContainer | *rawimages* |
 | ServiceBusQueueOptions__ThumbnailContainer | *thumbnails* |
 | ServiceBusQueueOptions__ThumbnailQueueConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailssend** |
+
+> You can delete all **StorageQueueOptions__** app settings!
 <hr>
 <br>
+
+![portal_bo_adjust_imgmanipulation](./img/portal_bo_adjust_resapi.png "portal_bo_adjust_resapi")
 
 Azure Function for **Image Manipulation / Resizer Service**:
 
@@ -217,25 +228,30 @@ Configuration / Application Settings:
 
 | Name | Value / Hint |
 | --- | --- |
-| ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for sending messages - **thumbnailslisten** |
+| ServiceBusConnectionString | use the Connection String from the Shared Access Policy (**Queue**) for listening for messages - **thumbnailslisten** |
 | ImageProcessorOptions__ImageWidth | *100* |
 | ImageProcessorOptions__StorageAccountConnectionString | use the **Connection String** from your Storage Account created in the Break Out session yesterday (should be the same) |
+
+> You can delete the **QueueName** app settings!
+
+![portal_bo_adjust_imgmanipulation](./img/portal_bo_adjust_imgmanipulation.png "portal_bo_adjust_imgmanipulation")
+
 <hr>
 <br>
 
 ### Redeploy your services for Contacts, Resources and Image Manipulation ###
 
-First of all: as seen in the Break Out session yesterday, everything is pre-created for you...this time in the folder *day3/apps*.
+First of all: as seen in the Break Out session yesterday, everything is pre-created for you...this time in the folder ***day3/apps***.
 
-You have deployed web apps and functions several times yesterday, so you should familiar, how to update the forementioned services. 
+You have deployed web apps and functions several times yesterday, so you should be familiar, how to update the forementioned services. 
 
-So please redeploy the Web Apps from folder *day3/apps/dotnetcore/Scm/Adc.Scm.Api* and *day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api*. 
+So please redeploy the Web Apps from folder *day3/apps/dotnetcore/Scm/Adc.Scm.Api* and *day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.Api*. (Tasks to publish the applications to a local folder are available. **F1 --> Tasks: Run Task --> day3publish***).
 
 Do the same with the Image Manipulation Function in folder *day3/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer* (**Reminder**: open the functions app source folder as a separate Window when deploying from VS Code!)
 
 ### Deploy the Contacts Search Service ###
 
-To be able to run the Contacts Search service (where we leverage the core functionality of Azure Search), we first need an Azure Web App to host it. So, please go to the Portal (or use Azure CLI) and create a basic Azure Web App (with a new Azure AppService Plan) - use SKU / Size **B1**. 
+To be able to run the Contacts Search service (where we leverage the core functionality of Azure Search), we first need an Azure Web App to host it. So, please go to the Portal (or use Azure CLI) and create a basic Azure Web App (with a new Azure AppService Plan on Windows, Runtime **.NET Core 3.0**) - use SKU / Size **B1**. 
 
 When finished, apply these settings to the Web App Configuration settings:
 
@@ -243,17 +259,50 @@ When finished, apply these settings to the Web App Configuration settings:
 | --- | --- |
 | ContactSearchOptions__AdminApiKey | use the Primary Admin Key from Azure Search (under **Settings / Keys**) |
 | ContactSearchOptions__IndexName | *scmcontacts* |
-| ContactSearchOptions__ServiceName | the nanme of your previously created Azure Search (just the subdomain! So from <https://adcd3search-dev.search.windows.net>, only **adcd3search-dev**) |
+| ContactSearchOptions__ServiceName | the name of your previously created Azure Search (just the subdomain! So from <https://adcd3search-dev.search.windows.net>, only **adcd3search-dev**) |
 <hr>
 <br>
 
-**Last but not least**, deploy the Contacts Search (folder *day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api*) service from VS Code the the newly created Web App.
+![portal_bo_add_search](./img/portal_bo_add_search.png "portal_bo_add_search")
+
+Time to deploy the Contacts Search (folder *day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api*) service from VS Code the the newly created Web App. Again, there is a predefined task to publish to a local folder (**day3publishScmSearch**).
+
+### Create and deploy the Contacts Search Indexer Function ###
+
+Now we have deployed an Azure Search Service and an API that is able to query the search index. But how will contacts be pushed to the Azure Search index? Therefore, we will be using another Azure Function that listens to created and changed contacts via an Azure Service Bus Topic (**scmtopic**, you already created it - as well as the corresponding subscription **scmcontactsearch**)!
+
+Create the Azure function in the **scm-breakout-rg** resource group with the follwing parameters:
+
+| Name | Value / Hint |
+| --- | --- |
+| Region | *West Europe* |
+| Publish | *Code* |
+| Runtime | *.NET Core* |
+| OS | *Windows* |
+| Storage Account | Use the storage account you created in the breakout resource group |
+| Plan Type | *Consumption* |
+
+When finished, apply these settings to the App Configuration settings:
+
+| Name | Value / Hint |
+| --- | --- |
+| ContactIndexerOptions__AdminApiKey | use the Primary Admin Key from Azure Search (under **Settings / Keys**) |
+| ContactIndexerOptions__IndexName | *scmcontacts* |
+| ContactIndexerOptions__ServiceName | the name of your previously created Azure Search (just the subdomain! So from <https://adcd3search-dev.search.windows.net>, only **adcd3search-dev**) |
+| ServiceBusConnectionString | use the Service Bus Connection String from the Shared Access Policy (**Topics** / **scmtopic**) for listening for messages - **scmtopiclisten**. <br><br>**Important**: Please remove the entitypath variable (incl. the value) at the end of the connection string! |
+| FUNCTIONS_EXTENSION_VERSION | ~2 |
+<hr>
+<br>
+
+![portal_bo_add_searchindexer](./img/portal_bo_add_searchindexer.png "portal_bo_add_searchindexer")
+
+**Last but not least**, deploy the Contacts Search (folder *day3/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api*) service from VS Code the the newly created Web App. Again, there is a predefined task to publish to a local folder (**day3publishScmSearch**)
 
 ## Let's press "Pause" for a moment - What have we done so far? ##
 
 The was a lot of manual typing so far, so let's hold on for a moment. We have just migrated our initial services (Contacts and Resources, Image Manipulation) to Azure Service Bus Queues and Topics. We redeployed new versions of these services to make use of Azure Service Bus. We also added Storage Services to our application. The Contacts Service now uses Azure SQL DB.
 
-In addition, we added an Azure Search service plus an API that is able to talk to Azure Search and query for contacts. The contacts will be added / updated in the search index "on-the-fly" whenever a Contact is changed - notification is done via Service Bus Topics.
+In addition, we added an Azure Search service (incl. indexer function) plus an API that is able to talk to Azure Search and query for contacts. The contacts will be added / updated in the search index "on-the-fly" whenever a Contact is changed - notification is done via Service Bus Topics.
 
 Regarding our architecture, we are at this stage:
 
@@ -276,12 +325,11 @@ Create the Linux Web App in West Europe with the following parameters.
 | Resource Group | Create a new resource group, e.g. **scm-breakout-tux-rg** |
 | Publish | *Code* |
 | Runtime Stack | *Node 12 LTS* |
-| App Service Plan | Create a new one: OS - *Linux*, SKU - *Basic*, Size - *Small*  |
-
-
-When the Web App has been created, go to the Configuration section and add the following settings (App settings + Connection strings!).
+| App Service Plan | Create a new one: OS - *Linux*, SKU - *B1*  |
 
 ![day3_bo_tux_vr](./img/day3_bo_tux_vr.png "day3_bo_tux_vr")
+
+When the Web App has been created, go to the Configuration section and add the following settings (App settings + Connection strings!).
 
 **Azure Web App / Configuration / Application Settings**
 
@@ -300,17 +348,19 @@ Azure Web App / Configuration / Connection Strings
 <hr>
 <br>
 
+![portal_bo_add_vr](./img/portal_bo_add_vr.png "portal_bo_add_vr")
+
 Now, from an infrastructure point of view, we are ready to deploy the NodeJS app. If you haven't run the app on your local machine, open a terminal and got to folder: *day3/apps/nodejs/visitreport*. Execute the following command:
 
 ```shell
 $ npm install
 ```
 
-This will install all the neccessary dependencies of the NodeJS Visit Reports service. When that has finished, you can deploy the serviec to the previously created Web App. 
+This will install all the neccessary dependencies of the NodeJS Visit Reports service. When that has finished, you can deploy the service to the previously created Linux Web App. 
 
 Therefore, go to the Azure Tools Extension in Visual Studio Code (*App Service* section), find your Linux Web App and *right-click-deploy*, choosing the folder *day3/apps/nodejs/visitreport* as a deployment source.
 
-In the output window, watch how the NodeJS app is copied to the Web App and is bein started by Azure.
+In the output window, watch how the NodeJS app is copied to the Web App and is being started by Azure.
 
 You can check, if it's running correctly by opening a browser window and point it to the following URL:
 
@@ -322,7 +372,7 @@ You will see the Swagger UI of the service (in the **Explore** textbox, replace 
 
 ## Deploy new Frontend ##
 
-Now that we have introduced a few new services (and maybe some of the former URLs have changed), we also need to redeploy the VueJS frontend. Of course, we also added a few changes in the UI itself (please see the intro section). So we definetly want that new version running now in Azure.
+Now that we have introduced a few new services, we also need to redeploy the VueJS frontend. Of course, we also added a few changes in the UI itself (please see the intro section). So we definetly want that new version running now in Azure.
 
 Open the settings.js file in folder *day3/apps/frontend/scmfe/public/settings* and adjust the settings to fit the URLs of your Web Apps. You will need:
 
@@ -359,7 +409,7 @@ The VueJS app is built into folder *dist* of the same directory. Please copy tha
 
 When everything is set up correctly and the services work as expected, you should be able to open the SPA and test the Contacts and Visit Reports services, as well as the Search service. 
 
-Add and edit a few new contacts and create some visit reports for them.
+Add and edit a few new contacts (search for them via the top navigation bar) and create some visit reports for them.
 
 ![scm_day3](./img/scm_day3.png "scm_day3")
 ![scm_day3_vr](./img/scm_day3_vr.png "scm_day3_vr")
