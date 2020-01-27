@@ -80,6 +80,61 @@ $ vue --version
 3.8.4
 ```
 
+## Azure CLI ##
+
+We will also be using the Azure command line interface to create and interact with reosurces running in Azure. To install it, go to <https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest> and choose your platform.
+
+When finished, login to your Azure account from the command line:
+
+```shell
+$ az login
+You have logged in. Now let us find all the subscriptions to which you have access...
+```
+
+A browser window ill open, login to Azure and go back to the command prompt. Your active subscription will be shown as JSON, e.g.:
+
+```json
+{
+  "cloudName": "AzureCloud",
+  "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "isDefault": false,
+  "name": "Your Subscription Name",
+  "state": "Enabled",
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "user": {
+    "name": "xxx@example.com",
+    "type": "user"
+  }
+}
+```
+
+If you have multiple subscriptions, make sure your are working with the correct one!
+
+```shell
+$ az account show
+{
+  "cloudName": "AzureCloud",
+  "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "isDefault": false,
+  "name": "Your Subscription Name",
+  "state": "Enabled",
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "user": {
+    "name": "xxx@example.com",
+    "type": "user"
+  }
+}
+```
+
+If that is not the correct one, follow the steps below:
+
+```shell
+$ az account list -o table
+[the list of available subscriptions is printed]
+
+$ az account set -s <SUBSCRIPTIONID_YOU_WANT_TO_USE>
+```
+
 ## Visual Studio Code ##
 
 To work with all the smaples provided in this workshop, you will need an IDE. To target a wide range of developers/architects, we will be using Visual Stduio Code as it runs cross-platform. 
@@ -95,7 +150,30 @@ After the setup is complete. Open Visual Studio an open the "Extensions" sidebar
 Search and install the following extensions:
 
 - Azure Tools <https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack>
-- Azure Functions <https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions>
-- Azure Resource Manager (ARM) Tools <https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools>
 - C# <https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp>
 - Debugger for Chrome <https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome>
+
+## Azure Storage Explorer ##
+
+In order to work with Azure Storage Accounts, we will use the Azure Storage Explorer.
+
+Go to <https://azure.microsoft.com/en-us/features/storage-explorer/>, download and install the tool. 
+
+![Azure Storage Explorer](./img/storage_explorer.png "Azure Storage Explorer")
+
+![Azure Storage Explorer](./img/storage_explorer_view.png "Azure Storage Explorer")
+
+## Azure Data Studio ##
+
+We will also work with Azure SQL Databases. You can, of course, use SQL Server Management Studio if you are on a Windows machine. If you want to work "cross-platform", use Azure Data Studio.
+
+Go to <https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio>, download and install the tool. 
+
+![Azure Data Studio](./img/azure_data_studio.png "Azure Data Studio")
+
+## jq
+
+jq is a lightweight and flexible command-line JSON processor. In some challenges we use jq to process the JSON documents that we get back from Azure CLI.
+To install jq got to <https://stedolan.github.io/jq/download/> and follow the instructions.
+
+![jq](./images/../img/jq.png)

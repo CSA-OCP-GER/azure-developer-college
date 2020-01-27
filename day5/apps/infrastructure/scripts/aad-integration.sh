@@ -11,11 +11,13 @@ API_APP=$(az ad app create --display-name $API_APP_NAME --identifier-uris $API_A
 sleep 3
 # get the app id
 API_APP_ID=$(echo $API_APP | jq -r '.appId')
-# diable default exposed scope
+# disable default exposed scope
 DEFAULT_SCOPE=$(az ad app show --id $API_APP_ID | jq '.oauth2Permissions[0].isEnabled = false' | jq -r '.oauth2Permissions')
 az ad app update --id $API_APP_ID --set oauth2Permissions="$DEFAULT_SCOPE"
 # set needed scopes from file 'oath2-permissions'
 az ad app update --id $API_APP_ID --set oauth2Permissions=@oauth2-permissions.json
+# create a ServicePrincipal for the API
+az ad sp create --id $API_APP_ID
 
 # create the UI App
 UI_APP=$(az ad app create --display-name $UI_APP_NAME --oauth2-allow-implicit-flow true --reply-urls $UI_APP_REPLYURL)
