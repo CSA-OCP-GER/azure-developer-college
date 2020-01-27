@@ -82,6 +82,7 @@
             DependsOn   = @("[Script]DownloadPackage", "[WindowsFeatureSet]IIS")
         } 
 
+        <# To avoid error message "The process cannot access the file because it is being used by another process"
         File RemoveWebZip {
             DestinationPath = "c:\temp\$(Split-Path -Path "$webZipURI" -Leaf)"
             DependsOn       = "[Archive]WebArchive"
@@ -89,5 +90,6 @@
             Force           = $true
             Type            = "File" 
         }
+        #>
     }
 }
