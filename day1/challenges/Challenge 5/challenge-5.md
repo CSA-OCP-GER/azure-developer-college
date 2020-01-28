@@ -83,7 +83,7 @@ Why? Because the SAS key was generated using the previous key1 -> which is no lo
 ![Access policy](saaccpol01.PNG)
 
 2. **Create a SAS URL that is using this access policy** using Azure Storage Explorer  
-**Open** [Microsoft Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/)  
+**Open** [Microsoft Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) and  [See Also Day 2: Challenge 0 - Setup your System](/day2/challenges/challenge-0.md)
 **Navigate to your storage account** and container.  
 **Right click** and do 'Get Shared Access Signature' based on our policy.  
 ![Storage Explorer generate SAS URI](saaccpol02.PNG)  
