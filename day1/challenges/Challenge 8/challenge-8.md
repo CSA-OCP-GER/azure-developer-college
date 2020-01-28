@@ -1,5 +1,5 @@
 # Challenge 8: Networking - VPN: Enabling Hybrid Networking with a Site-2-Site (Onprem to Azure) VPN Connection
-[back](../../readme.md)  
+[back](../../README.md)  
 
 ## Here is what you will learn ##
 - What it takes to implement a VPN tunnel between your onprem firewall <---VPN S2S---> Azure 
@@ -111,3 +111,5 @@ Select the **following algorithms / suites for the connection**:
 Do you receive a response?  
 You might need to allow ping first  
 ![Enable ping in azure vm](EnablePingInAzureVM.PNG) )
+
+[back](../../README.md) 

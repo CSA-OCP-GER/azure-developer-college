@@ -1,7 +1,7 @@
 # Challenge 6: VM - Custom Script Extensions: Post deployment automation
 ## or - configure / setup / install something within an empty vm ##  
 
-[back](../../readme.md)  
+[back](../../README.md)  
 
 ## Here is what you will learn ##
 - How to automate the further configuration / setup of an '_empty_' VM after it has been deployed.
@@ -147,4 +147,4 @@ At the end **the result should look like this**
 ![CSE via ARM successful deployment](ModifyARMSuccessfulDeployment.png)  
 Now you have a web server in your VM.  
 
-[back](../../readme.md)
+[back](../../README.md) 

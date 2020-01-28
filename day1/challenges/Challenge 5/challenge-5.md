@@ -1,5 +1,5 @@
 # Challenge 5: Storage Account: Creating a Data Storage for VMs and Applications
-[back](../../readme.md)  
+[back](../../README.md)  
 
 ## Here is what you will learn ##
 - how to create an azure storage account using the portal
@@ -178,4 +178,4 @@ In your VM paste the code into a PowerShell window and execute it. Once successf
 > - Is the 'drive' available to other users that logon to the VM? [No]
 > - Is the 'drive' mounted 'automatically' after a reboot? [Yes]  
 
-[back](../../readme.md)  
+[back](../../README.md)  

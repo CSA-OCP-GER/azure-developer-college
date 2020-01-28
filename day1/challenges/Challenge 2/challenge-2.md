@@ -1,5 +1,5 @@
 # Challenge 2: ARM: Create a VM and other Azure Resources using an ARM Template 
-[back](../../readme.md)  
+[back](../../README.md)  
 
 In this module you will **not learn** how to build an ARM template yourself. We'll do this at a later point in time.  
 **What you need** to know / understand is that an **ARM template is a txt file** (in a **machine readable json format**) that **describes** which **azure resources** you want.  
@@ -39,4 +39,4 @@ and hit **Purchase** to trigger the deployment.
 
 **Is this deployment fast? Redeployable? Replayable in another subscription?**
 
-[back](../../readme.md)
+[back](../../README.md) 

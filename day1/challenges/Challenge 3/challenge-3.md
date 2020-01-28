@@ -1,5 +1,5 @@
 # Challenge 3: VM - Azure Backup: Save your VM state
-[back](../../readme.md)  
+[back](../../README.md)  
 
 ## Here is what you will learn ##
 
@@ -58,4 +58,4 @@ Azure Portal -> Virtual Machines -> vmadds01 -> Operations -> Backup -> File Rec
 ![File Restore](enableBackupFileRestore.PNG)
 
 
-[back](../../readme.md)
+[back](../../README.md) 

@@ -1,5 +1,5 @@
 # Challenge 4: VM - Managed Disks: Attach a Data Disk to a VM - Extend and Retype it.
-[back](../../readme.md)  
+[back](../../README.md)  
 
 ## Here is what you will learn ##
 
@@ -61,4 +61,4 @@ And don't forget the **SAVE** button!
 > - Can a disk be resized without losing its data? 
 > - Can I easily downsize a disk? 
 
-[back](../../readme.md)  
+[back](../../README.md)  
