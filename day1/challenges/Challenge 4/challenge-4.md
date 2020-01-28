@@ -59,6 +59,6 @@ And don't forget the **SAVE** button!
 > **Questions**:  
 > - How much is a E10 / month? (fix price, variable costs, region differences)
 > - Can a disk be resized without losing its data? 
-> - Can I downsize a disk? 
+> - Can I easily downsize a disk? 
 
 [back](../../readme.md)  
