@@ -22,7 +22,7 @@ Azure Cosmos DB:
 
 ## Create a Cosmos DB via Azure Portal ##
 
-First of all, create a resource group called "**adc-cosmos-db-rg**" and use location "West Europe" for it.
+First of all, create a resource group called "**adc-cosmos-db-rg**" and use location "**West Europe**" for it.
 
 Now add a Cosmos DB account:
 - choose an unique *Account Name*
@@ -71,7 +71,7 @@ Select **New Document** again, and create and save another document with a uniqu
 
 At the top of the **Items** tab in Data Explorer, review the default query ```SELECT * FROM c```. This query retrieves and displays all documents in the collection.
 
-To change the query, select **Edit Filter**, replace the default query with <TODO_MARTHA>, and then select **Apply Filter**.
+To change the query, select **Edit Filter**, replace the default query with ```SELECT * FROM c WHERE (c.id = "1" AND c.todoId = "abc-123")```, and then select **Apply Filter**.
 
 ![Cosmos Data: Create Item](./img/CosmosItemPartition.png)
 
@@ -126,7 +126,7 @@ The following Azure Resource Manager template creates an Azure Cosmos account wi
 We will be using Azure CLI to deploy the ARM template, so please use the commands below (if you chose a different name for your resource group, please adjust the command):
 
 ```shell 
-$ az group deployment create --resource-group adc-cosmos-db-rg \
+az group deployment create --resource-group adc-cosmos-db-rg \
 --template-uri https://raw.githubusercontent.com/azure/azure-quickstart-templates/master/101-cosmosdb-sql/azuredeploy.json \
 --parameters accountName=<YOUR_NEW_ACCOUNT_NAME> \
 primaryRegion=westeurope \
@@ -138,7 +138,7 @@ sharedContainer2Name=SecondToDo \
 dedicatedContainer1Name=FirstToDo1 \
 dedicatedThroughput=400
 
-$ az cosmosdb show --resource-group adc-cosmos-db-rg  --name <YOUR_NEW_ACCOUNT_NAME> --output tsv
+az cosmosdb show --resource-group adc-cosmos-db-rg  --name <YOUR_NEW_ACCOUNT_NAME> --output tsv
 ```
 ![Bash Cloud Shell command](./img/ARMDeployCosmos.png)
 
@@ -154,7 +154,7 @@ There is already a predefined sample you can clone to your machine. So, please o
 $ git clone https://github.com/Azure-Samples/azure-cosmos-db-sql-api-nodejs-getting-started.git
 ```
 
-Open the folder the repo has been cloned to in Visual Stduio Code.
+Open the folder the repo has been cloned to in Visual Studio Code.
 
 ![Cosmos DB integrated in an App (Visual Studio Code View)](./img/CosmosApp.png)
 
@@ -183,7 +183,7 @@ These are the basic commands to interact with Azure Cosmos DB.
 
 ![Cosmos DB Client](./img/CosmosAppView2.png)
 
-A little bit further down, you can see how to query against CosmosDB. (The query returns all the children of a family). You first create a query sepcification which in turn is handed over to the Cosmos client, that executes the query against the database.
+A little bit further down, you can see how to query against CosmosDB. (The query returns all the children of a family). You first create a query specification which in turn is handed over to the Cosmos client, that executes the query against the database.
     
 ```javascript
     const querySpec = {
@@ -240,7 +240,7 @@ Now you are all set to run the sample. In the terminal, we first need to install
 $ npm install
 ```
 
-After it has finished downloading the depndencies, run:
+After it has finished downloading the dependencies, run:
 
 ```shell
 $ npm start
@@ -253,11 +253,11 @@ Now we want to add a little bit more data to our Cosmos DB. So please follow the
 
 First and foremost, we will be creating an new database plus a new container. Go to your Cosmos DB account, you created previously and click on **Add Container** (database will be created *on-the-fly*).
 
-1. In the **Database id** field, select the **Create new** option and enter the value **ImportDatabase**.
+1. In the **Database id** field, select the **Create new** option and enter the value "**ImportDatabase**".
 
 1. Uncheck the **Provision database throughput** option (RUs will be provisioned on the collection level).
 
-1. In the **Container Id** field, enter the value **FoodCollection**.
+1. In the **Container Id** field, enter the value "**FoodCollection**".
 
 1. In the **Partition key** field, enter the value ```/foodGroup```.
 
@@ -281,36 +281,42 @@ You will use **Azure Data Factory (ADF)** to import the JSON array stored in the
 1. Click **Add** to add a new resource. Search for **Data Factory** and select it.
 ![Azure Data Factory](./img/DataFactoryCosmos.png)
 
-1. Create a new **Data Factory**. You should name this data factory **ImportNutritionDataAppdevCollege(yourname)** with a unique number appended and select the relevant Azure subscription. You should ensure that Version **V2** is selected. Select **West Europe** as the region. Do **not** select **Enable GIT** (this may be checked by default). Click **create**.
+1. Create a new **Data Factory**. You should name this data factory "**ImportNutritionDataAppdevCollege(yourname)**" (optionally you can append a unique number) and select the relevant Azure subscription. You should ensure that Version "**V2**" is selected. Select "**West Europe**" as the region. Do **not** select **Enable GIT** (this may be checked by default). Click **create**.
+
 ![Data Factory Details](./img/DataFactoryDetails.png)
 
 1. After creation, open your newly created Data Factory. Select **Author & Monitor** and you will launch ADF. You should see a screen similar to the screenshot below. 
 (We will be using ADF for a one-time copy of data from a source JSON file on Azure Blob Storage to a database in Cosmos DB’s SQL API. ADF can also be used for more frequent data transfers from Cosmos DB to other data stores.)
+
 ![Data Factory Copy Data](./img/CopyDataFactory.png)
 
-1. Select **Copy Data**. Edit basic properties for this data copy. You should name the task **ImportNutrition** and select to **Run once now**. Click **Next**.
+1. Select "**Copy Data**". Edit basic properties for this data copy. You should name the task "**ImportNutrition**" and select to "**Run once now**". Click **Next**.
 
 1. **Create a new connection** and select **Azure Blob Storage**. We will import data from a json file on Azure Blob Storage. In addition to Blob Storage, you can use ADF to migrate from a wide variety of sources. We will not cover migration from these sources in this tutorial.
 
-1. Name the source **NutritionJson** and select **SAS URI** as the Authentication method. Please use the following SAS URI for read-only access to this Blob Storage container: 
+1. Name the source "**NutritionJson**" and select **SAS URI** as the Authentication method. Please use the following SAS URI for read-only access to this Blob Storage container: 
     `https://cosmosdblabsv3.blob.core.windows.net/?sv=2018-03-28&ss=bfqt&srt=sco&sp=rlp&se=2022-01-01T04:55:28Z&st=2019-08-05T20:02:28Z&spr=https&sig=%2FVbismlTQ7INplqo6WfU8o266le72o2bFdZt1Y51PZo%3D`
+
 ![Data Source Factory](./img/DataSourceFactory.png)
 
-1. Click **Create** and in the wizard view **Next** then **Browse** to select the **nutritiondata** folder. Then select **NutritionData.json**.
+1. Click **Create** and in the wizard view **Next** then **Browse** to select the **nutritiondata** folder. Then select "**NutritionData.json**".
 ![Nutrition JSON](./img/FactoryJSON.png)
 
 1. Uncheck **Copy file recursively** and **Binary Copy**. Also ensure that other fields are empty. Select **Next**.
 
 1. Select the file format as **JSON format**. Then select **Next**.
+
 ![JSON Format](./img/DestinationJSON.png)
 You have now successfully connected the Blob Storage container with the *nutrition.json* file as the source.
 
 1. For the **Destination data store** add the Cosmos DB target data store by selecting **Create new connection** and selecting **Azure Cosmos DB (SQL API)**.
 
-11. Name the linked service **targetcosmosdb** and select your Azure subscription and Cosmos DB account. You should also select the Cosmos DB **ImportDatabase** that you created earlier. Click **Create**.
+11. Name the linked service "**targetcosmosdb**" and select your Azure subscription and Cosmos DB account. You should also select the Cosmos DB **ImportDatabase** that you created earlier. Click **Create**.
+
+![Target Cosmos DB](./img/TargetCosmosDB.png)
 
 11. Select your newly created **targetcosmosdb** connection as the Destination date store.
-![Target Cosmos DB](./img/TargetCosmosDB.png)
+
 ![Target Cosmos DB](./img/TargetCosmosDB2.png)
 
 1. Select your **FoodCollection** container from the drop-down menu. You will map your Blob storage file to the correct Cosmos DB container. Click **Next** to continue.
@@ -382,7 +388,7 @@ WHERE food.foodGroup = "Snacks" and food.id = "19015"
 ```
 ![Food Query](./img/FoodQuery2.png)
 
-Though less common, you can also access properties using the quoted property operator [""]. For example, SELECT food.id and SELECT food["id"] are equivalent. This syntax is useful to escape a property that contains spaces, special characters, or has the same name as a SQL keyword or reserved word.
+Though less common, you can also access properties using the quoted property operator [""]. For example, ```SELECT food.id``` and ```SELECT food["id"]``` are equivalent. This syntax is useful to escape a property that contains spaces, special characters, or has the same name as a SQL keyword or reserved word.
 
 ```sql
 SELECT food["id"]
@@ -636,7 +642,7 @@ Let's compare the Request Unit Statistics:
 
 You should observe a lower Request Unit charge.
 
-### **Optional**: Indexing in Azure Cosmos DB ###
+# Optional: Indexing in Azure Cosmos DB ###
 
 In this lab, you will modify the indexing policy of an Azure Cosmos DB container. You will explore how you can optimize indexing policy for write or read heavy workloads as well as understand the indexing requirements for different SQL API query features.
 
