@@ -126,7 +126,7 @@ The following Azure Resource Manager template creates an Azure Cosmos account wi
 We will be using Azure CLI to deploy the ARM template, so please use the commands below (if you chose a different name for your resource group, please adjust the command):
 
 ```shell 
-az group deployment create --resource-group adc-cosmos-db-rg \
+$ az group deployment create --resource-group adc-cosmos-db-rg \
 --template-uri https://raw.githubusercontent.com/azure/azure-quickstart-templates/master/101-cosmosdb-sql/azuredeploy.json \
 --parameters accountName=<YOUR_NEW_ACCOUNT_NAME> \
 primaryRegion=westeurope \
@@ -138,7 +138,7 @@ sharedContainer2Name=SecondToDo \
 dedicatedContainer1Name=FirstToDo1 \
 dedicatedThroughput=400
 
-az cosmosdb show --resource-group adc-cosmos-db-rg  --name <YOUR_NEW_ACCOUNT_NAME> --output tsv
+$ az cosmosdb show --resource-group adc-cosmos-db-rg  --name <YOUR_NEW_ACCOUNT_NAME> --output tsv
 ```
 ![Bash Cloud Shell command](./img/ARMDeployCosmos.png)
 

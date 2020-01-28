@@ -241,18 +241,18 @@ Begin by opening the Cloud Shell in the Browser, a Bash console, Powershell cons
     cd azure-search-javascript-samples/quickstart
     code .
     ```
-    Open Terminal in VS Code and run "**npm init**"
+    Open Terminal in VS Code and run "**npm init**"     
 
 1. Insert your search service data in the file **azure_search_config.json**:
     ```json
     {
-        "serviceName" : "[SEARCH_SERVICE_NAME]",
-        "adminKey" : "[SEARCH_SERVICE_ADMIN_KEY]",
-        "queryKey" : "[SEARCH_SERVICE_QUERY_KEY]",
+        "serviceName" : "<SEARCH_SERVICE_NAME>",
+        "adminKey" : "<SEARCH_SERVICE_ADMIN_KEY>",
+        "queryKey" : "<SEARCH_SERVICE_QUERY_KEY>",
         "indexName" : "hotels-quickstart"
     }
     ```
-    Replace the `[SEARCH_SERVICE_NAME]` value with the name of your search service. Replace `[SEARCH_SERVICE_ADMIN_KEY]` and `[SEARCH_SERVICE_QUERY_KEY]` with the key values you recorded earlier.  
+    Replace the `<SEARCH_SERVICE_NAME>` value with the name of your search service. Replace `<SEARCH_SERVICE_ADMIN_KEY>` and `<SEARCH_SERVICE_QUERY_KEY>` with the key values you recorded earlier.  
     If your endpoint URL were https://mydemo.search.windows.net, your service name would be **mydemo**. 
     ![Search URL](./img/SearchUrl.png)
     In **Settings > Keys**, get the primary admin key for full rights on the service. 
