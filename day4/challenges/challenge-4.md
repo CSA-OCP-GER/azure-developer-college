@@ -35,35 +35,40 @@ Go to Azure Boards and set the UserStory S4 and S5 to active. We create a new bu
 
 4. Add the following yaml snippet to define the needed build steps:
    ```yaml
-   steps:
-     - task: DotNetCoreCLI@2
-      displayName: Restore
-      inputs:
-        command: restore
-        projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
-    - task: DotNetCoreCLI@2
-      displayName: Build
-      inputs:
-        projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
-        arguments: --configuration Release
-    - task: DotNetCoreCLI@2
-      displayName: Publish
-      inputs:
-        command: publish
-        publishWebProjects: false
-        projects: day4/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj
-        arguments: --configuration Release --output $(build.artifactstagingdirectory)
-        zipAfterPublish: True
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: day4/apps/infrastructure/templates
-        contents: |
-          scm-api-dotnetcore.json
-        targetFolder: $(Build.ArtifactStagingDirectory)
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: $(Build.ArtifactStagingDirectory)
-        artifactName: drop
+   jobs:
+     - job: Build
+       displayName: Build Scm Contacts
+       pool:
+         vmImage: ubuntu-latest
+       steps:
+       - task: DotNetCoreCLI@2
+         displayName: Restore
+         inputs:
+           command: restore
+           projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
+       - task: DotNetCoreCLI@2
+         displayName: Build
+         inputs:
+           projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
+           arguments: --configuration Release
+       - task: DotNetCoreCLI@2
+         displayName: Publish
+         inputs:
+           command: publish
+           publishWebProjects: false
+           projects: day4/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj
+           arguments: --configuration Release --output $(build.artifactstagingdirectory)
+           zipAfterPublish: True
+       - task: CopyFiles@2
+         inputs:
+           sourceFolder: day4/apps/infrastructure/templates
+           contents: |
+             scm-api-dotnetcore.json
+           targetFolder: $(Build.ArtifactStagingDirectory)
+       - task: PublishPipelineArtifact@1
+         inputs:
+           targetPath: $(Build.ArtifactStagingDirectory)
+           artifactName: drop
    ```
 5. Commit your changes and push the branch to your remote repository.
 6. Navigate to your Azure DevOps project
@@ -84,26 +89,31 @@ With Azure Pipelines you can define a build that is executed whenever a PullRequ
 1. Add a file named scm-contacts-pr.yaml under *day4/apps/pipelines*
 2. Add the following yaml snippet:
    ```yaml
-    trigger: none
-    steps:
-      - task: DotNetCoreCLI@2
-        displayName: Restore
-        inputs:
-          command: restore
-          projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
-      - task: DotNetCoreCLI@2
-        displayName: Build
-        inputs:
-          projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
-          arguments: --configuration Release
-      - task: DotNetCoreCLI@2
-        displayName: Publish
-        inputs:
-          command: publish
-          publishWebProjects: false
-          projects: day4/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj
-          arguments: --configuration Release --output $(build.artifactstagingdirectory)
-          zipAfterPublish: True
+   trigger: none
+   jobs:
+     - job: Build
+       displayName: Build Scm Contacts
+       pool:
+         vmImage: ubuntu-latest
+       steps:
+       - task: DotNetCoreCLI@2
+         displayName: Restore
+         inputs:
+           command: restore
+           projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
+       - task: DotNetCoreCLI@2
+         displayName: Build
+         inputs:
+           projects: "day4/apps/dotnetcore/Scm/**/*.csproj"
+           arguments: --configuration Release
+       - task: DotNetCoreCLI@2
+         displayName: Publish
+         inputs:
+           command: publish
+           publishWebProjects: false
+           projects: day4/apps/dotnetcore/Scm/Adc.Scm.Api/Adc.Scm.Api.csproj
+           arguments: --configuration Release --output $(build.artifactstagingdirectory)
+           zipAfterPublish: True
    ```   
 3. Commit your changes and push the branch to your remote repository.
 4. Navigate to your Azure DevOps project
@@ -147,12 +157,13 @@ Now we have created the deployment artifacts with the build *SCM-Contacts-CI*. I
     ```shell
     -sku $(AppServicePlanSKU) -webAppName $(ApiAppName) -use32bitworker $(Use32BitWorker) -alwaysOn $(AlwaysOn) -applicationInsightsName $(ApplicationInsightsName) -sqlServerName $(SqlServerName) -sqlUserName $(SqlAdminUserName) -sqlPassword $(SqlAdminPassword) -sqlDatabaseName $(SqlDatabaseName) -serviceBusNamespaceName $(ServiceBusNamespaceName)
     ```
-    Make sure that you cope the whole line.
+    Make sure that you copy the whole line.
 11. Add *Azure App Service deploy* task
 12. Select your Azure Subscription
 13. Choose *API App* as AppService type
-14. Add your dotnet core deployment zip file from your artifact location
-15. Save the release definition and create a release to check if everything works
+14. Use the variable *$(ApiAppName)* to set the App Service name
+15. Add your dotnet core deployment zip file from your artifact location
+16. Save the release definition and create a release to check if everything works
 
 ### Create the *Testing* stage.
 
