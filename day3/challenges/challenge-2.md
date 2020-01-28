@@ -53,7 +53,7 @@ Open a shell, we use Azure CLI to create the nneded Azure resources:
    ```
 4. Create the SQL Database with vCore-based purchasing Gen4, 1 vCore and max 32GB in size. [Here](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-vcore) you will find a good overview of the vCore model.
    ```Shell
-   az sql db create --name ContactsDb --resource-group <your rg name> --server <name of your server> --edition GeneralPurpose --family Gen4 --capacity 1 --max-size 32GB --zone-redundant false
+   az sql db create --name MSFTEmployees --resource-group <your rg name> --server <name of your server> --edition GeneralPurpose --family Gen4 --capacity 1 --max-size 32GB --zone-redundant false
    ```
 
 ## Add Data to SQL DB ##
@@ -98,16 +98,12 @@ Add a table.
    ```Sql
    CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO
    ```
-  
-   ![Create an Azure SQL Table](./img/Create_SQL_Table_CLI.png)
 
 Add Data to your table
 
    ```Sql
    INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO
    ```
-  
-   ![Add data](./img/Add_SQL_data_CLI.png)
 
 Update the Age of Satya Nadella in the Table
 
@@ -120,8 +116,7 @@ Query the data
     ```Sql
     SELECT * FROM CEOs; GO
     ```
-   
-    ![Query SQL DB](./img/Query_SQL_DB_CLI.png)
+
   
 Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To exit the sqlcmd utility program enter ```exit```.
 
