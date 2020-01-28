@@ -65,16 +65,9 @@ Login as the previously generated Admin user -> change the password. Make sure y
 Wait a while and then fill in some information about you:  
 ![Wait for the promocode](msazurepass4.png)
   
-Once successful you will be redirected to the azure portal and should see a subscription  
+**Once successful** you will be redirected to the azure portal and **should see** a subscription: 
 ![Admin user with subscription](msazurepass5.png)
 
 
-
-
 [back](../../README.md) 
-
-Grupppe Nr.
-User: userXXX@acdmy.onmicrosoft.com
-Pass:
-->incognito browser to aad.portal.azure.com
 
