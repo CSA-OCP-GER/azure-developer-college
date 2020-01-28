@@ -16,9 +16,16 @@ The Agile process provides several work item types, user stories, bugs, features
 ## Define iteration paths and configure team iterations
 Before we start to plan and track our work we need to define iteration paths. To keep it simple we will define three iterations for the next six weeks. Each iteration will run for two weeks.
 
+Go to Project settings --> Project configuration to define the iterations:
+
 ![iterations](./images/iterations.png)
 
 To get started defining iteration paths take a look at the [documentation](https://docs.microsoft.com/en-gb/azure/devops/organizations/settings/set-iteration-paths-sprints?view=azure-devops)
+
+Now we have to select the iterations for the College Team.
+Go to Project settings --> Team configurations select the College Team and add the iterations:
+
+![Team Iterations](./images/team-iterations.png)
 
 ## Create your first Feature
 
@@ -35,6 +42,8 @@ If you need help, take alook at the [documentation](https://docs.microsoft.com/e
 
 ### Break the Feature down to UserStories
 Create the following UserStories as child items of the Feature, select a person who is responsible for a story and assign all stories to the Iteration 1. If you need help, take a look at the [documentation](https://docs.microsoft.com/en-gb/azure/devops/boards/backlogs/define-features-epics?view=azure-devops#add-child-items).
+
+**Hint:** To create a hierarchical structure of workitems the view `Backlogs` for your College Team is the best one.
 
 1. Create a UserStory with the title: *"S1: As a developer I want to import the ADC's repository to my Azure DevOps Repo and clone the imported repository to my local machine"*.
 2. Create a UserStory with the title: *"S2: As a developer I want to change the title of the ADC's sample application"*.
