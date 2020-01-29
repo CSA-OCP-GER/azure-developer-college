@@ -1,6 +1,6 @@
 # Day 1 Azure Fundamentals & Infrastructure
 
-[back](../readme.md)  
+[back](../README.md)  
 
 - [Challenge 0: Networking: Create a Virtual Network (IPv4) for your first VM.](challenges/Challenge%200/challenge-0.md)
 - [Challenge 1: PowerShell: Configure PowerShell for Azure Administration & Create a VM Using PowerShell.](challenges/Challenge%201/challenge-1.md)
