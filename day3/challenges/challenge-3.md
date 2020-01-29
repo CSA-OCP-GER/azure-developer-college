@@ -251,7 +251,7 @@ Begin by opening the Cloud Shell in the Browser, a Bash console, Powershell cons
         "indexName" : "hotels-quickstart"
     }
     ```
-    Replace the `<SEARCH_SERVICE_NAME>` value with the name of your search service. Replace `<SEARCH_SERVICE_ADMIN_KEY>` and `<SEARCH_SERVICE_QUERY_KEY>` with the key values you recorded earlier.  
+    Replace the `[SEARCH_SERVICE_NAME]` value with the name of your search service. Replace `[SEARCH_SERVICE_ADMIN_KEY]` and `[SEARCH_SERVICE_QUERY_KEY]` with the key values you recorded earlier.  
     If your endpoint URL were https://mydemo.search.windows.net, your service name would be **mydemo**. 
     ![Search URL](./img/SearchUrl.png)
     In **Settings > Keys**, get the primary admin key for full rights on the service. 
