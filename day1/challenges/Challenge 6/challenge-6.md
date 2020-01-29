@@ -103,7 +103,8 @@ If you don't have a storage account yet (from a previous lab). Let's create one:
 | Replication  |  **Locally-redundant storage (LRS)** |
 | Access tier  | Hot |
   
-Once the storage account has been created - navigate to it **and create a container**:
+Once the storage account has been created - navigate to it **and create a container**:  
+
 | Parameter Name | Value  |
 |---|---|
 | Container Name  |  **cse** |
