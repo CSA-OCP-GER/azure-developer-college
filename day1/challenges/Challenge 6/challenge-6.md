@@ -72,7 +72,7 @@ The CSE is software that runs within the VM. The script that will be executed is
 This is the place where the **CSE logs its actions locally** - a good place to start troubleshooting.  
 ![CSE Logs Folder](AddCSE-HelloWorldToVM6LogsFolder.PNG)
 
-## Attaching a CSE to a VM in an ARM Template ##
+## [optional] Attaching a CSE to a VM in an ARM Template ##
 The goal of this action is to learn how to avoid the portal, i.e. so that the CSE can be attached to a VM during deployment time e.g. using an ARM template. With the whole setup Azure + VM Settings can be done in a '_0 touch way_'.
 
 1. In order to **run the next CSE** - you **need to unload the previous one**
@@ -92,7 +92,7 @@ In this lab **we use a storage account for this**.
 If you don't have a storage account yet (from a previous lab). Let's create one:  
 ```
 [Azure Portal] -> Resource Groups -> 'rg-contosomortgage-www' -> '+' -> Storage Account 
-```
+```  
 | Parameter Name | Value  |
 |---|---|
 | Resource Group  |  **rg-contosomortgage-www** |
@@ -119,10 +119,10 @@ And **upload the CSE_Install-IIS.ps1 script into the container**:
 Once uploaded you can copy the blobs URL from the azure portal  
 ![Copy the URL of the IIS install script](saUploadCSE2.PNG)
 
-**Can you download the file in your browser using the URL**? If not have you set the correct access level at the container?
+**Can you download the file in your browser using the URL**? [Yes] If not have you set the correct access level at the container?
 
 **Edit this** [CSE ARM template](ARMCSE.json) **template** to use the scripts location: 
-![Edit following ARM section](ModifyARM.png)  
+![Edit following ARM section](ModifyARM.PNG)  
 
 **with your value**
 ```
@@ -140,11 +140,11 @@ Once uploaded you can copy the blobs URL from the azure portal
 ```
 Select the right resource group and VM and deploy:
 
-![CSE deployment via ARM](ModifyARMDeployment.png)  
+![CSE deployment via ARM](ModifyARMDeployment.PNG)  
 
 Deployment will take some minutes: A role is installed and an IIS feature is downloaded and installed.  
 At the end **the result should look like this**  
-![CSE via ARM successful deployment](ModifyARMSuccessfulDeployment.png)  
+![CSE via ARM successful deployment](ModifyARMSuccessfulDeployment.PNG)  
 Now you have a web server in your VM.  
 
 [back](../../README.md) 
