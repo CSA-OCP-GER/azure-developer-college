@@ -240,15 +240,14 @@ Begin by opening the Cloud Shell in the Browser, a Bash console, Powershell cons
     git clone https://github.com/Azure-Samples/azure-search-javascript-samples.git
     cd azure-search-javascript-samples/quickstart
     code .
-    ```
-    Open Terminal in VS Code and run "**npm init**"     
+    ```   
 
 1. Insert your search service data in the file **azure_search_config.json**:
     ```json
     {
-        "serviceName" : "<SEARCH_SERVICE_NAME>",
-        "adminKey" : "<SEARCH_SERVICE_ADMIN_KEY>",
-        "queryKey" : "<SEARCH_SERVICE_QUERY_KEY>",
+        "serviceName" : "[SEARCH_SERVICE_NAME]",
+        "adminKey" : "[SEARCH_SERVICE_ADMIN_KEY]",
+        "queryKey" : "[SEARCH_SERVICE_QUERY_KEY]",
         "indexName" : "hotels-quickstart"
     }
     ```
