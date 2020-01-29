@@ -73,7 +73,7 @@ Go to your Azure AD and have a look at the registered application. The permissio
 
 ## Run the Token Echo Server
 
-Open another shell and run the `Token Echo Server` from [`apps/token-echo-server`](apps/token-echo-server) in this repository. This helper ASP.NET Core tool is used to echo the token issued by your AAD. The tool is listening on port 5001 on your local machine. Tokens are accepted on the route `http://localhost:5001/api/tokenechofragment`. That's the reason why we initially registered an AAD application with a reply url pointing to `http://localhost:5001/api/tokenechofragment`.
+Open another shell and run the `Token Echo Server` from [`day5/apps/token-echo-server`](../apps/token-echo-server) in this repository. This helper ASP.NET Core tool is used to echo the token issued by your AAD. The tool is listening on port 5001 on your local machine. Tokens are accepted on the route `http://localhost:5001/api/tokenechofragment`. That's the reason why we initially registered an AAD application with a reply url pointing to `http://localhost:5001/api/tokenechofragment`.
 
 Run the application via:
 
@@ -106,7 +106,7 @@ http://localhost:5001/api/tokenechofragment#access_token=eyJ0eX...&token_type=Be
 
 Make sure to only copy the `access_token`, not the full remainder of the string!
 
-Go to [https://jwt.ms](http://jwt.ms), paste the token and have a look at the decoded token.
+Go to [https://jwt.ms](http://jwt.ms), paste the token and have a look at the decoded token. You will see that there is issued an additional claim `scp`. This claim contains all OAuth2Permissions the user gave consent to.
 
 More details on how the OAuth2 Implicit Grant Flow request can be used is documented [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow#send-the-sign-in-request).
 

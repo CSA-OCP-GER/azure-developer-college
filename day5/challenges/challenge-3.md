@@ -29,7 +29,7 @@ Please use the following parameters to run the script for the `Development` stag
 |API-APP-NAME|scmapi-dev|
 |API-APP-URI|http://scmapi-dev|
 |UI-APP-NAME|scmfe-dev|
-|UI-APP-REPLY-URL|the url of your SCM Frontend deployment of stage `Development`|
+|UI-APP-REPLY-URL|the url of your SCM Frontend deployment of stage `Development` (This is the Url to the static website e.g. `https://scmfedev.z20.web.core.windows.net`)|
 
 Use the following parameter for the *Testing* stage:
 
@@ -38,7 +38,7 @@ Use the following parameter for the *Testing* stage:
 |API-APP-NAME|scmapi-test|
 |API-APP-URI|http://scmapi-test|
 |UI-APP-NAME|scmfe-test|
-|UI-APP-REPLY-URL|the url of your SCM Frontend deployment of stage *Testing*|
+|UI-APP-REPLY-URL|the url of your SCM Frontend deployment of stage `Testing`(This is the Url to the static website e.g. `https://scmfetest.z20.web.core.windows.net`))|
 
 Navigate to the directory that contains the oauth2-permissions.json file and run the script twice.
 
@@ -103,7 +103,7 @@ We use the `Token Echo Server` again to request an access token from Azure AD fo
 
 ![TokenEchoServer Reply Url](./images/tokenechoserver-redirecturl.png)
 
-Open a shell and run the Token Echo Server from [`day4/apps/token-echo-server`](../apps/token-echo-server)
+Open a shell and run the Token Echo Server from [`day5/apps/token-echo-server`](../apps/token-echo-server)
 
 ```Shell
 dotnet run
@@ -149,6 +149,10 @@ Bearer <your access_token>
 ```
 
 Authorize the Swagger UI and retry a the GET request. If you want you can now add contacts for the signed in user.
+
+## PullRequest
+
+Create al PullRequest and merge your changes into the master branch.
 
 ## Wrap up
 
