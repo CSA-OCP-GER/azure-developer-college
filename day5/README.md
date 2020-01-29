@@ -36,7 +36,7 @@ On Day5 you will learn how you can protect your APIs (microservices) with Azure 
 
   |OAuth2 permission|Description|
   |-----------------|-----------|
-  |Contacts.Create|Allows the client app to create contacts of the signe-in user|
+  |Contacts.Create|Allows the client app to create contacts for the signed-in user|
   |Contacts.Read|Allows the client app to read contacts of the signed-in user|
   |Contacts.Update|Allows the client app to update contacts of the signed-in user|
   |Contacts.Delete|Allows the client app to delete contacts of the signed-in user|
@@ -48,7 +48,7 @@ On Day5 you will learn how you can protect your APIs (microservices) with Azure 
 
 ## Sign in users
 
-You will see how the sample application's Single Page Application (SPA) uses MSAL to sign in users and how to acquire an access token to access the APIs in the name of the signed-in user. When an access token was acquired it is forwarded with each request to the APIs and the APIs can use the token to get needed information about the signed-in user.
+You will see how the sample application's Single Page Application (SPA) uses MSAL to sign in users and how to acquire an access token to access the APIs in the name of the signed-in user. Once an access token is acquired it is forwarded with each request to the APIs and the APIs can use the token to get needed information about the signed-in user.
 
 ## Microsoft Authentication Library
 
