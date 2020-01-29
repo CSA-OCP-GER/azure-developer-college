@@ -42,7 +42,7 @@ Note down the `appId` value in the response - this is the id under which your AA
 
 ## Run the Token Echo Server
 
-Open another shell and run the Token Echo Server from [`day4/apps/token-echo-server`](../apps/token-echo-server) in this repository. This helper ASP.NET Core tool is used to echo the token issued by your AAD and "simulates" our website or server backend that would receive the `id_token`.
+Open another shell and run the Token Echo Server from [`day5/apps/token-echo-server`](../apps/token-echo-server) in this repository. This helper ASP.NET Core tool is used to echo the token issued by your AAD and "simulates" our website or server backend that would receive the `id_token`.
 
 The tool is listening on port 5001 on your local machine. Tokens are accepted on the route `http://localhost:5001/api/tokenecho`. This is why we initially registered an AAD application with a reply url pointing to `http://localhost:5001/api/tokenecho`.
 
