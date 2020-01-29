@@ -1,6 +1,6 @@
 # Challenge 0: Networking: Create a Virtual Network (IPv4) for your first VM.
 
-[back](../../readme.md)
+[back](../../README.md)
 
 ## Here is what you will learn ##
 
@@ -22,4 +22,4 @@ especially if your are working on a domain joined device.
 | Subnet  | snet-firstvm  |  _addressPrefix_: 10.1.0.0/24 |
 | Public IP  |  pip-firstvm | <ul><li>IPv4</li><li>dynamic</li><li>_SKU_ : Basic</li><li>_DNS name label_ : _%Try unique value%_</li><li>_resource group_  : rg-firstvm</li><li>_location_  : North Europe</li></ul> |
 
-[back](../../readme.md)
+[back](../../README.md)

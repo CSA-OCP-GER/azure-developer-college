@@ -19,7 +19,7 @@ Choose backup policy -> '(new) DailyPolicy'
   ->Enable Backup
 ```  
 **Note:** You might want to **pack all of your vm backups in a separate Resource Group** as backups of vms might live longer than the actual vm.  
-![EnableBackup](enableBackup1.png)
+![EnableBackup](enableBackup1.PNG)
 
 ## Trigger a manual vm backup ##
 

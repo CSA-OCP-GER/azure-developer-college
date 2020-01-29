@@ -1,6 +1,6 @@
 # Challenge 1: PowerShell: Configure PowerShell for Azure Administration & Create a VM Using PowerShell.
 
-[back](../../readme.md)
+[back](../../README.md)
 
 ## Here is what you will learn ##
 
@@ -149,4 +149,4 @@ Please **choose example 3** and remove the rest:
 
 After a successful run. **Cleanup** e.g. by deleting the resource group with the vm using the portal
 
-[back](../../readme.md)
+[back](../../README.md)

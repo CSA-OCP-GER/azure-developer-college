@@ -24,8 +24,7 @@
 | Replication  |  **Locally-redundand storage (LRS)** |
 | Access tier  |  Hot |
 
-
-![SAS use cases](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview#when-to-use-a-shared-access-signature)
+See some use cases for SAS / [SAS use cases](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview#when-to-use-a-shared-access-signature)
 
 2. Once the sa is created - **generate a new "container"** within the storage account:  
 ```

@@ -1,6 +1,6 @@
 # Challenge 7: Networking: Loadbalancing your WWW Server Farm
 
-[back](../../readme.md)
+[back](../../README.md)
 
 ## Here is what you will learn ##
 
@@ -15,10 +15,10 @@ At **first** you will deploy the _start environment_ and in the **second** step 
 ## 1. Deploy the 'starting point' ##
 In this directory there is an ARM-template which includes 2 web server vms and its requirements (networking, disks,...).:  
 
-!['Starting Point' Architecture](startingpoint01.PNG)  
+!['Starting Point' Architecture](startingpoint01.png)  
 
 **Deploy this scenario** into your subscription by clicking on the 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCSA-OCP-GER%2Fazure-developer-college%2Ffeatures%2Fday1handson%2Fday1%2Fchallenges%2FChallenge%207%2FChallenge7Start.json"><img src="deploytoazure.png"/></a>
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FCSA-OCP-GER%2Fazure-developer-college%2Fmaster%2Fday1%2Fchallenges%2FChallenge%207%2FChallenge7Start.json"><img src="deploytoazure.png"/></a>
 button.  
 
 | Name | Value |
@@ -67,4 +67,4 @@ Restart the vm and check if the lb notices it and rebalances load.
 ## Cleanup ##
 **Delete the resource group** _rg-lbwww_
 
-[back](../../readme.md)
+[back](../../README.md)
