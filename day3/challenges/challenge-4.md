@@ -50,7 +50,7 @@ The Language Detection API detects the language of a text document, using the [D
 
 So, let's create a sample application:
 
-- Create a new folder **adc-congitive** on you machine and start a new Node.JS project.
+- Create a new folder **adc-cognitive** on you machine and start a new Node.JS project.
   - run ```npm init``` on the command line and accept all options the wizard proposes
 - open Visual Studio Code by typing ```code .```
 - Add the code provided below to a new `detect.js` file.
@@ -107,7 +107,7 @@ let documents = {
 get_language(documents);
 ```
 
-- Copy your Azure Cognitive Services Account **key and endpoint** into the code. You can find both on the *Overview* or *Quickstart* view in the Congitive Services Account
+- Copy your Azure Cognitive Services Account **key and endpoint** into the code. You can find both on the *Overview* or *Quickstart* view in the Cognitive Services Account
 
 You are all set. Now run the program from a terminal, change into the directory where the code is and run `node detect.js`.
 
@@ -405,7 +405,7 @@ let documents = [{
 translate_text(documents);
 ```
 
-Copy your Text Translator Account key into the code - as done before. *Endpoint is already predefined. No need to change it.*
+Copy your Text Translator Account **key** into the code - as done before. *Endpoint is already predefined. ***No*** need to change it.*
 
 You are all set. Now run the program from a terminal, change into the directory where the code is and run `node translate-text.js`.
 
@@ -434,7 +434,7 @@ A successful response is returned in JSON, as shown in the following example:
 
 ## Create and use the Computer Vision Service using Node.js App ##
 
-There is also a Congitive Service that let's you analyze images with just a simple request to an API - same as for the Text Translator service used previously.
+There is also a Cognitive Service that let's you analyze images with just a simple request to an API - same as for the Text Translator service used previously.
 
 To use that service, you need to create a "Computer Vision" resource in Azure. Please go back to the Portal, click on "Create a resource" and search for "Computer Vision". Create such a service in the ```West Europe``` region, giving it a globally unique name and by choosing the lowest "Pricing Tier" available.
 
@@ -519,7 +519,7 @@ A successful response is returned in JSON, as shown in the following example:
 
 ## Create and run the Face Cognitive Services using Node.js ##
 
-There is also a Congitive Service that let's you detect and analyze face with just a simple request to an API - same as for the Computer Vision service used previously.
+There is also a Cognitive Service that let's you detect and analyze face with just a simple request to an API - same as for the Computer Vision service used previously.
 
 To use that service, you need to create a "Face" service in Azure. Please go back to the Portal, click on "Create a resource" and search for "Face". Create such a service in the ```West Europe``` region, giving it a globally unique name and by choosing the lowest "Pricing Tier" available.
 

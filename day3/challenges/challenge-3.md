@@ -84,7 +84,7 @@ In our case, we'll choose a sample dataset called **hotel-sample**
 
 1. Open your Azure Search instance and go to `Import Data`
 
-2. Next, we need to define the `Data Source` and choose Samples and select `hotels-sample` dataset
+2. Next, we need to define the `Data Source` and choose **Samples** and select `hotels-sample` dataset
 
  ![Choose hotels sample](./img/hotels_sample_dataset.png)
 
@@ -103,13 +103,13 @@ Storage requirements do not vary as a result of your selection. For example, if 
 
 By default, the wizard scans the data source for unique identifiers as the basis for the key field. *Strings* are attributed as **Retrievable** and **Searchable**. *Integers* are attributed as **Retrievable**, **Filterable**, **Sortable**, and **Facetable**.
 
-1. Accept the defaults. 
+1. **Accept** the *defaults*. 
 
    If you rerun the wizard a second time using an existing hotels data source, the index won't be configured with default attributes. You'll have to manually select attributes on future imports. 
 
    ![Generated hotels index](./img/hotels_index.png)
 
-2. Continue to the next page.
+2. **Continue** to the next page.
 
 Still in the **Import data** wizard, click **Indexer** > **Name**, and type a name for the indexer.
 
@@ -203,11 +203,11 @@ So, we need to define the skillset. In our case, we'll enable all features under
 
 ![Defining the skillset](./img/EnrichCognitiveSkills.png)
 
-Once we have finished the next two tabs, Azure Cognitive Search will start indexing our data (this will take a bit longer, as it needs to run image recognition, OCR, etc. on the files).
+**Accept** the *defaults* of the Index. Once we have finished the next two tabs (Hit **Submit** to run the indexer), Azure Cognitive Search will start indexing our data (this will take a bit longer, as it needs to run image recognition, OCR, etc. on the files).
 
 ![Index Realestate](./img/IndexRealestate.png)
 
-In the following JSON we can see that the cognitive skills are enabled and that the Translate Skill has a result:
+When you select the Indexes Tab on the Overview Page (in the Azure Portal) and select the Realestate Index, you can use the default query and will see (as shown in the following JSON) that the cognitive skills are enabled and that the Translate Skill has a result:
 
 ![Realestate Cognitive Search](./img/RealestateQuery.png)
 
@@ -240,8 +240,7 @@ Begin by opening the Cloud Shell in the Browser, a Bash console, Powershell cons
     git clone https://github.com/Azure-Samples/azure-search-javascript-samples.git
     cd azure-search-javascript-samples/quickstart
     code .
-    ```
-    Open Terminal in VS Code and run npm init
+    ```   
 
 1. Insert your search service data in the file **azure_search_config.json**:
     ```json

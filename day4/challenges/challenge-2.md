@@ -16,7 +16,7 @@ https url.
 
 ![Clone GitHub](./images/clone-adc-github.png)
 
-Go to your Azure DevOps project and import the repository:
+Go to your Azure DevOps project import the repository and name it *azuredevcollege*:
 
 ![Import](./images/import-adc-repo.png)
 
@@ -66,7 +66,7 @@ Open VS Code and have a look at the left bottom corner:
 ```Shell
 code .
 ```
-Here VS Codes provides you with the information on which branch you are working on.
+In the status bar of VS Codes you can see the information on which branch you are working on.
 
 #### Change the title of the sample application.
 

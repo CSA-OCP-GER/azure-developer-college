@@ -3,7 +3,7 @@
 ## Here is what you will learn
 
 - How to register an application in Azure AD
-- How to use the OpenIDConnect protocol to authenticate an user
+- How to use the OpenIDConnect protocol to authenticate users
 - How to receive an __id_token__ with basic profile information of the authenticated user
 
 Here is an high-level overview of the authentication process:
@@ -19,14 +19,14 @@ In short:
 
 ## Create an Azure AD application
 
-Before we can authenticate an user we have to register an application in our Azure AD tenant.
+Before we can authenticate a user we have to register an application in our Azure AD tenant.
 
 ### Azure CLI
 
 ```shell
 az ad app create --display-name challengeidtokencli --reply-urls http://localhost:5001/api/tokenecho --identifier-uris https://challengeidtoken
 ```
-**Note:** The `IdentifierUris` needs to be unique within an instance of AAD.
+**Note:** The `IdentifierUri` needs to be unique within an instance of AAD.
 
 Retrieve the ID of your current Azure AD tenant via:
 
@@ -36,7 +36,7 @@ az account show
 
 ### Viewing your ApplicationId
 
-Note the `appId` value in the response - this is the id under which your AAD application has been registered. In the Azure Portal, we can see your new app registration under `AAD --> App Registrations --> Owned applications`:
+Note down the `appId` value in the response - this is the id under which your AAD application has been registered. In the Azure Portal, we can see your new app registration under `AAD --> App Registrations --> Owned applications`:
 
 ![alt-text](images/aad_app_registration.png)
 
