@@ -1,8 +1,9 @@
 <div align="center">
   <h1>Welcome to the Azure Developer College!</h1>
   The Azure Developer College is a five days training for developers.
-
+<br>
 ![ADC](./images/ADC_Back.png)
+
   <p>
     <sub>Built with ❤︎ by the
       <a href="https://github.com/CSA-OCP-GER">Microsoft Cloud Solution Architects from Germany</a>
