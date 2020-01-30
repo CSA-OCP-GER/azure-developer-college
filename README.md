@@ -9,21 +9,18 @@
     </sub>
   </p>
 
----
-
 ## Training Days
 
 This workshop consists of multiple challenges, you have to complete. Your trainers will guide you through workshop by giving you introduction talks to each of the topics/challenges you have to complete.  
 
 Here's the overview of the training week. Happy hacking!
   
-- [Day 1 Azure Fundamentals](day1/README.md)
-- [Day 2 Application Development ](day2/README.md)
-- [Day 3 Data and AI](day3/README.md)
-- [Day 4 DevOps and Monitoring](day4/README.md)
-- [Day 5 Identity and Architectures](day5/README.md)
+<br> [Day 1 Azure Fundamentals](day1/README.md)
+<br> [Day 2 Application Development ](day2/README.md)
+<br> [Day 3 Data and AI](day3/README.md)
+<br> [Day 4 DevOps and Monitoring](day4/README.md)
+<br> [Day 5 Identity and Architectures](day5/README.md)
 
----
 ## Azure Boards
 
 
