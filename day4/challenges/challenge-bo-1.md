@@ -382,9 +382,9 @@ trigger:
       - master
   paths:
     include:
-      - day4/apps/nodejs/visitreport/*
-      - day4/apps/infrastructure/templates/scm-visitreport-nodejs-db.json
-      - day4/apps/infrastructure/templates/scm-visitreport-nodejs-infra.json
+      - day4/apps/nodejs/textanalytics/*
+      - day4/apps/infrastructure/templates/scm-textanalytics-nodejs-common.json
+      - day4/apps/infrastructure/templates/scm-textanalytics-nodejs-infra.json
 steps:
   - task: NodeTool@0
     inputs:
@@ -392,24 +392,24 @@ steps:
     displayName: "Install Node.js"
   - task: Bash@3
     inputs:
-      workingDirectory: "$(Build.SourcesDirectory)/day4/apps/nodejs/visitreport"
+      workingDirectory: "$(Build.SourcesDirectory)/day4/apps/nodejs/textanalytics"
       targetType: "inline"
       displayName: "npm install"
       script: npm install
   - task: ArchiveFiles@2
     displayName: "Archive build files"
     inputs:
-      rootFolderOrFile: "$(Build.SourcesDirectory)/day4/apps/nodejs/visitreport"
+      rootFolderOrFile: "$(Build.SourcesDirectory)/day4/apps/nodejs/textanalytics"
       includeRootFolder: false
       archiveType: zip
-      archiveFile: $(Build.ArtifactStagingDirectory)/Adc.Scm.VisitReports.zip
+      archiveFile: $(Build.ArtifactStagingDirectory)/Adc.Scm.Textanalytics.zip
       replaceExistingArchive: true
   - task: CopyFiles@2
     inputs:
       sourceFolder: day4/apps/infrastructure/templates
       contents: |
-        scm-visitreport-nodejs-db.json
-        scm-visitreport-nodejs-infra.json
+        scm-textanalytics-nodejs-common.json
+        scm-textanalytics-nodejs-infra.json
       targetFolder: $(Build.ArtifactStagingDirectory)
   - task: PublishPipelineArtifact@1
     inputs:
