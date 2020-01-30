@@ -2,6 +2,7 @@
   <h1>Welcome to the Azure Developer College!</h1>
   The Azure Developer College is a five days training for developers.
 <br>
+  
 ![ADC](./images/ADC_Back.png)
 
   <p>
