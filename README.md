@@ -16,7 +16,7 @@
 
 ## Training Days
 
-This workshop consists of multiple challenges, you have to complete. Your trainers will guide you through workshop by giving you introduction talks to each of the topics/challenges you have to complete.  
+This workshop consists of multiple challenges, you have to complete. Your trainers will guide you through the workshop by giving you introduction talks to each of the topics/challenges you have to complete.  
 
 Here's the overview of the training week. Happy hacking!
   
