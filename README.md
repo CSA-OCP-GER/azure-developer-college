@@ -1,16 +1,39 @@
-# Azure Developer College
-
-The Azure Developer College is a five days training for developers.
+<div align="center">
+  <h1>Welcome to the Azure Developer College!</h1>
+  The Azure Developer College is a five days training for developers.
 
 ![ADC](./images/ADC_Back.png)
+  <p>
+    <sub>Built with ❤︎ by the
+      <a href="https://github.com/CSA-OCP-GER">Microsoft Cloud Solution Architects from Germany</a>
+    </sub>
+  </p>
 
+---
+
+## Training Days
+
+This workshop consists of multiple challenges, you have to complete. Your trainers will guide you through workshop by giving you introduction talks to each of the topics/challenges you have to complete.  
+
+Here's the overview of the training week. Happy hacking!
+  
+- [Day 1 Azure Fundamentals](day1/README.md)
+- [Day 2 Application Development ](day2/README.md)
+- [Day 3 Data and AI](day3/README.md)
+- [Day 4 DevOps and Monitoring](day4/README.md)
+- [Day 5 Identity and Architectures](day5/README.md)
+
+---
 ## Azure Boards
+
+
 
 ![Azure Boards](./images/Azure&#32;Boards.svg)
 
 The Trainer-Team uses Azure Boards to plan and track work.
 
 [![Board Status](https://dev.azure.com/azuredevelopercollege/44837ab7-f1d6-4ea5-89fe-916ac85b622e/e338150a-37a4-406c-8200-3e7e0cb23fb1/_apis/work/boardbadge/a6f33584-09a9-442b-8e61-835a9f55f470?columnOptions=1)](https://dev.azure.com/azuredevelopercollege/44837ab7-f1d6-4ea5-89fe-916ac85b622e/_boards/board/t/e338150a-37a4-406c-8200-3e7e0cb23fb1/Microsoft.RequirementCategory/)
+
 
 ## Azure Pipelines
 
@@ -51,10 +74,4 @@ All building blocks of the Azure Developer College are constantly and consistent
 |SCM-VisitReports API|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Visitreports?branchName=master&stageName=Build)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=33&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Visitreports?branchName=master&stageName=Development)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=33&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Visitreports?branchName=master&stageName=Test)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=33&branchName=master)|
 |SCM-Textanalytics|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Textanalytics?branchName=master&stageName=Build)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=32&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Textanalytics?branchName=master&stageName=Development)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=32&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Textanalytics?branchName=master&stageName=Test)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=32&branchName=master)|
 
-## Training Days
-
-- [Day 1 Azure Fundamentals](day1/README.md)
-- [Day 2 AppDev ](day2/README.md)
-- [Day 3 Data and AI](day3/README.md)
-- [Day 4 DevOps](day4/README.md)
-- [Day 5 Identity and Architectures](day5/README.md)
+</div>
