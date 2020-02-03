@@ -48,7 +48,7 @@ The purpose of this task is to tell azure how to contact the onpremise firewall:
 | Parameter Name | Values  |
 |---|---|
 | Name  |  **l-gw-ipfire** |  
-| IP address| **_%IP of your Firewall - ask instructor%_**|
+| IP address| **_%external IP of your Firewall - ask instructor%_**|
 | Address Space | **192.168.0.0/24** |
 | Resource Group | **rg-contosomortgage-www** |
 | Location | **North Europe** |
