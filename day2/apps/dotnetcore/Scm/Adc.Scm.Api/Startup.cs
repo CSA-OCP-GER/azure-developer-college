@@ -23,7 +23,7 @@ namespace Adc.Scm.Api
 
         public IConfiguration Configuration { get; }
 
-        // HACK: Keep Sqlite connection open !!!
+        // HACK: Keep SQLite connection open !!!
         private static SqliteConnection _sqlite;
 
         // This method gets called by the runtime. Use this method to add services to the container.

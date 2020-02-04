@@ -1,6 +1,5 @@
 ﻿using Adc.Scm.DomainObjects;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Adc.Scm.Repository.EntityFrameworkCore
 {

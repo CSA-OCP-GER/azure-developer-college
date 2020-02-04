@@ -53,7 +53,8 @@ namespace Adc.Scm.Api.Controllers
         {
             var userId = _claimsProvider.GetUserId(this.HttpContext);
             var domainContact = await _repository.Add(userId, _mapper.Map<Contact, DomainObjects.Contact>(contact));
-            return CreatedAtAction(nameof(GetById), new { id = domainContact.Id }, _mapper.Map<DomainObjects.Contact, Contact>(domainContact));
+            return CreatedAtAction(nameof(GetById), new {id = domainContact.Id},
+                _mapper.Map<DomainObjects.Contact, Contact>(domainContact));
         }
 
         [HttpPut("{id}")]

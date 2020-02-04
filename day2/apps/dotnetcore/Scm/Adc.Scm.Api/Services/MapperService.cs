@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Adc.Scm.Api.Services
 {
     public class MapperService
     {
-        private static readonly Lazy<IMapper> _mapper = new Lazy<IMapper>(CreateMapper);
+        private static readonly Lazy<IMapper>  Mapper = new Lazy<IMapper>(CreateMapper);
 
         private static IMapper CreateMapper()
         {
@@ -23,17 +22,13 @@ namespace Adc.Scm.Api.Services
 
         public TDestination Map<TSource, TDestination>(TSource source)
         {
-            return _mapper.Value.Map<TSource, TDestination>(source);
+            return Mapper.Value.Map<TSource, TDestination>(source);
         }
 
         public List<TDestination> Map<TSource, TDestination>(List<TSource> source)
         {
-            var result = new List<TDestination>();
-
-            foreach (var s in source)
-                result.Add(_mapper.Value.Map<TDestination>(s));
-
-            return result;
+            // LINQ looks more sexy
+            return source.Select(s => Mapper.Value.Map<TDestination>(s)).ToList();
         }
     }
 }
