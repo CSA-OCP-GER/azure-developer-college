@@ -91,7 +91,7 @@ $ az login
 You have logged in. Now let us find all the subscriptions to which you have access...
 ```
 
-A browser window ill open, login to Azure and go back to the command prompt. Your active subscription will be shown as JSON, e.g.:
+A browser window will open, login to Azure and go back to the command prompt. Your active subscription will be shown as JSON, e.g.:
 
 ```json
 {
