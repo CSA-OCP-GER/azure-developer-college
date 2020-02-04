@@ -20,7 +20,7 @@ Receiving objects: 100% (2473/2473), 22.78 MiB | 16.39 MiB/s, done.
 Resolving deltas: 100% (1392/1392), done.
 ```
 
-> Please check, that all the [Prerequisites](challenges/challenge-0.md) are present on your machine.
+> Please check, that all the [Prerequisites](challenge-0.md) are present on your machine.
 
 Switch to the *azure-developer-college* folder and open VS Code:
 
