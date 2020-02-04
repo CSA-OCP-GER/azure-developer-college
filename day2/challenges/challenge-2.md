@@ -177,11 +177,13 @@ Open the Application settings under **Configuration** and add a new application 
 <hr>
 <br>
 
+**Make sure to click on _Save_ afterwards.**
+
 Afterwards, it should like that:
 
 ![azure_function_settings](./img/azure_function_settings.png "azure_function_settings")
 
-Now, test again (upload images) and check, if the Function App is running correctly Azure. 
+Now, test again (upload images) and check, if the Function App is running correctly in Azure (_it might be necessary to restart your function app_).
 
 ## House Keeping ##
 
