@@ -152,6 +152,9 @@ Search and install the following extensions:
 - Azure Tools <https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack>
 - C# <https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp>
 - Debugger for Chrome <https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome>
+- Azure Functions <https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions>
+
+The _Azure Functions_ extension should have already been installed as part of the _Azure Tools_ extension, but you additionally need to make sure to follow the OS-specific instructions.
 
 ## Azure Storage Explorer ##
 
