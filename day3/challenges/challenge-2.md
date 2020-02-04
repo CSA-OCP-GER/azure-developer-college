@@ -1,398 +1,431 @@
-# Azure SQL DB #
-
+# Azure (Cognitive) Search #
 
 ## Here is what you will learn ##
 
-- Create an Azure SQL DB (Single Database)
-- Add Data to the Azure SQL DB
-- Setup Dynamic Data Masking
+- Create an Azure Search Service in the Portal
+- Add Cognitive Skills to Azure Search
+- Integrate Azure Search in an Node JS application
+- Optional: Create an Azure Cognitive Search index in Python using Jupyter notebooks
 
-Azure SQL Database is a general-purpose relational database, provided as a managed service. It's based on the latest stable version of [Microsoft SQL Server database engine](https://docs.microsoft.com/sql/sql-server/sql-server-technical-documentation?toc=/azure/sql-database/toc.json). In fact, the newest capabilities of SQL Server are released first to SQL Database, and then to SQL Server itself. You get the newest SQL Server capabilities with no overhead for patching or upgrading, tested across millions of databases.
+## What is Azure Cognitive Search? ##
 
-To get startet with SQL Database the documentation [here](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-technical-overview) is a good starting point.
+Azure Cognitive Search is a search-as-a-service cloud solution that gives developers APIs and tools for adding a rich search experience over private, heterogeneous content in web, mobile and enterprise applications. Your code or a tool invokes data ingestion (indexing) to create and load an index. Optionally, you can add cognitive skills to apply Artificial Intelligence processes during indexing. Doing so, you can add new information and structures useful for search and other scenarios.
 
-## Deployment models
+Regarding your application, your code issues query requests and handles responses from Azure Search. The search experience is defined in your client using functionality from Azure Cognitive Search, with query execution over a persisted index that you create, own, and store in your service.
 
-Let us have a look at the different deployment models of SQL Database first:
+![Azure Cognitive Search Architecture](./img/AzureSearchArchitecture.png)
 
-![SQL database Deployment options](./img/sql-database-deployment-options.png)
+## What are the Features of Azure Cognitive Search? ##
 
-- Single database represents a fully managed, isolated database. You might use this option if you have modern cloud applications and microservices that need a single reliable data source. A single database is similar to a contained database in Microsoft SQL Server Database Engine.
-- Managed instance is a fully managed instance of the Microsoft SQL Server Database Engine. It contains a set of databases that can be used together. Use this option for easy migration of on-premises SQL Server databases to the Azure cloud, and for applications that need to use the database features that SQL Server Database Engine provides.
-- Elastic pool is a collection of single databases with a shared set of resources, such as CPU or memory. Single databases can be moved into and out of an elastic pool.
+| Core Search  | Features |
+| --- | --- |
+|Free-form text search | [**Full-text search**](https://docs.microsoft.com/en-us/azure/search/search-lucene-query-architecture) is a primary use case for most search-based apps. Queries can be formulated using a supported syntax. <br/><br/>[**Simple query syntax**](https://docs.microsoft.com/en-us/rest/api/searchservice/simple-query-syntax-in-azure-search) provides logical operators, phrase search operators, suffix operators, precedence operators.<br/><br/>[**Lucene query syntax**](https://docs.microsoft.com/en-us/rest/api/searchservice/lucene-query-syntax-in-azure-search) includes all operations in simple syntax, with extensions for fuzzy search, proximity search, term boosting, and regular expressions.|
+| Filters and facets | [**Faceted navigation**](https://docs.microsoft.com/en-us/azure/search/search-faceted-navigation) is enabled through a single query parameter. Azure Cognitive Search returns a faceted navigation structure you can use as the code behind a categories list, for self-directed filtering (for example, to filter catalog items by price-range or brand). <br/><br/> [**Filters**](https://docs.microsoft.com/en-us/azure/search/search-filters-facets) can be used to incorporate faceted navigation into your application's UI, enhance query formulation, and filter based on user- or developer-specified criteria. Create filters using the OData syntax. 
 
-## Purchasing models
+### Facet Filters in a Search App ###
 
-SQL Database offers the following purchasing models:
+Faceted navigation is used for self-directed filtering on query results in a search app, where your application offers UI controls for scoping search to groups of documents (for example, categories or brands), and Azure Cognitive Search provides the data structure to back the experience. 
 
-- The vCore-based purchasing model lets you choose the number of vCores, the amount of memory, and the amount and speed of storage.
-- The DTU-based purchasing model offers a blend of compute, memory, and I/O resources in three service tiers, to support light to heavy database workloads. Compute sizes within each tier provide a different mix of these resources, to which you can add additional storage resources
-- The serverless model automatically scales compute based on workload demand, and bills for the amount of compute used per second. The serverless compute tier also automatically pauses databases during inactive periods when only storage is billed, and automatically resumes databases when activity returns.
+In code, a query that specifies all parts of a valid query, including search expressions, facets, filters, scoring profiles– anything used to formulate a request, can look like the following example: 
 
-You see that each purchasing model refers to compute, memory and I/O resources, because this are the most important and crtical resources a databse uses.
+```csharp
+var sp = new SearchParameters()
+{
+    ...
+    // Add facets
+    Facets = new[] { "businessTitle" }.ToList()
+};
+```
+
+This example builds a request that creates facet navigation based on the business title information.
+
+![Facet Filters](./img/FacetFilter.png)
+
+Facets are dynamic and returned on a query. Search responses bring with them the facet categories used to navigate the results.
+
+You can find more details here: [Search-Filters-Facets](https://docs.microsoft.com/en-us/azure/search/search-filters-facets)
+
+In the SCM Application, we are using the Lucene query syntax ([Lucene Query Syntax Examples](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples)).
+
+View the full Azure Cognitive Search Feature list here:
+[Azure Cognitive Search Feature list](https://docs.microsoft.com/en-us/azure/search/search-what-is-azure-search#feature-descriptions)
 
 
+## Create an Azure Search Service in the Portal ##
 
-## Create a single SQL Database
+1. Create a new resource group, e.g. **adc-azsearch-db-rg** and add a service of type **Azure Cognitive Search**
 
-The single database deployment option creates a database in Azure SQL Database with its own set of resources and is managed via a SQL Database server. With a single database, each database is isolated from each other and portbale, each with its own service tier within the DTU-based purchasing model or vCore-based purchasing model and a guaranteed compute size. 
+1. First, create a `Azure Search` instance in the Azure Portal
 
-Open a shell, we use Azure CLI to create the nneded Azure resources:
+1. For our purposes, the `Free Tier` is sufficient
 
-1. Create a resource group:
-   ```Shell
-   az group create --name <your rg name> --location <your Azure region>
-   ```
-2. Create the server instance and note down the __fullyQualifiedDomainName__ of your server from the output
-   ```Shell
-   az sql server create --name <name of the server> --resource-group <your rg name> --location <your Azure region> --admin-user <name of your admin> --admin-password <pwd>
-   ```
-3. Per default the access is not permitted via the Azure SQL Server. Configure the server's firewall to allow your IP
-   ```Shell
-   az sql server firewall-rule create --server <name of your server> --resource-group <your rg name> --name AllowYourIp --start-ip-address <your public ip> --end-ip-address <your public Ip> 
-   ```
-4. Create the SQL Database with vCore-based purchasing Gen4, 1 vCore and max 32GB in size. [Here](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-vcore) you will find a good overview of the vCore model.
-   ```Shell
-   az sql db create --name MSFTEmployees --resource-group <your rg name> --server <name of your server> --edition GeneralPurpose --family Gen4 --capacity 1 --max-size 32GB --zone-redundant false
-   ```
+However, the `Free Tier` does not support additional replicas, scaling and is only able to index documents with up to 32000 characters/document. If we want to index larger documents, we need to go to a bigger tier (64000 for `Basic`, 4m for `Standard` and above).
 
-## Add Data to SQL DB ##
+![Create Azure Search](./img/AzureSearchCreate.png)
 
-Now that your SQL Database is up and running it's time to add some data. First we will use the Azure CLI to do so
+View the Details of Creating an Azure Search Service in the Portal:
 
-Get to know your environment
+![Create Azure Search Details](./img/AzureSearchCreateDetails.png)
 
-   ```Shell
-   az sql server list --resource-group <your rg name>
-   ```
-   ```Shell
-   az sql db list --resource-group <your rg name> --server <name of your server>
-   ```
-  
-   If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query:
-   
-   ```Shell
-   az sql db list --resource-group <your rg name> --query '[].{Name:name}'
-   ```
-  
-   ```Shell
-   az sql db show --resource-group <your rg name> --name MSFTEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'
-   ```
-  
-Connect to your SQL DB
+Once provisioned, our service will be reachable via `https://xxxxxxx.search.windows.net`
 
-   ```Shell
-   az sql db show-connection-string --name MSFTEmployees --server <name of your server> --client sqlcmd
-   ```
+Azure Search [can index](https://docs.microsoft.com/en-us/azure/search/search-indexer-overview) data from a variety of sources:
 
-   Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
-  
-   ```Shell
-   sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U <name of your admin> -P <pwd> -N -l 30
-   ```
-  
-   After running this you should see a ```1>```. Now you can run SQL Queries. If you are unfamiliar with their Syntax feel free to take some time getting used to it.
+- Azure SQL Database or SQL Server on an Azure virtual machine
+- Azure Cosmos DB
+- Azure Blob Storage
+- Azure Table Storage
+- Indexing CSV blobs using the Azure Search Blob indexer
+- Indexing JSON blobs with Azure Search Blob indexer
 
-Add a table.
+In general, you can upload your data to one of the sources and let Azure Search index it from there. You can do this completely through the Azure Portal, use [Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) or use the API/CLI.
 
-   ```Sql
-   CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO
-   ```
+In our case, we'll choose a sample dataset called **hotel-sample**
 
-Add Data to your table
+1. Open your Azure Search instance and go to `Import Data`
 
-   ```Sql
-   INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO
-   ```
+2. Next, we need to define the `Data Source` and choose **Samples** and select `hotels-sample` dataset
 
-Update the Age of Satya Nadella in the Table
+ ![Choose hotels sample](./img/hotels_sample_dataset.png)
 
-   ```Sql
-   UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO
-   ```
-  
-Query the data
+3. We'll skip `Cognitive Search` for this example.
 
-    ```Sql
-    SELECT * FROM CEOs; GO
+4. Now let's proceed to creating an index. Minimally, an index requires a name and a fields collection; one of the fields should be marked as the **document key** to uniquely identify each document. Additionally, you can specify language analyzers or suggesters (*type-as-you-go* services), if you want autocomplete or suggested queries.
+
+Fields have data types and attributes. The check boxes above the list are **index attributes**, controlling how the field is used.
+
+* **Retrievable** means that it shows up in search results list. You can mark individual fields as off limits for search results by clearing this checkbox, for example for fields used only in filter expressions or **security-related** fields.
+* **Key** is the unique document identifier. It's always a string, and it is required.
+* **Filterable**, **Sortable**, and **Facetable** determine whether fields are used in a filter, sort, or faceted navigation structure.
+* **Searchable** means that a field is included in full text search. Strings are searchable. Numeric fields and Boolean fields are often marked as not searchable.
+
+Storage requirements do not vary as a result of your selection. For example, if you set the **Retrievable** attribute on multiple fields, storage requirements do not rise.
+
+By default, the wizard scans the data source for unique identifiers as the basis for the key field. *Strings* are attributed as **Retrievable** and **Searchable**. *Integers* are attributed as **Retrievable**, **Filterable**, **Sortable**, and **Facetable**.
+
+1. **Accept** the *defaults*. 
+
+   If you rerun the wizard a second time using an existing hotels data source, the index won't be configured with default attributes. You'll have to manually select attributes on future imports. 
+
+   ![Generated hotels index](./img/hotels_index.png)
+
+2. **Continue** to the next page.
+
+Still in the **Import data** wizard, click **Indexer** > **Name**, and type a name for the indexer.
+
+This object defines an executable process. You could put it on recurring schedule, but for now use the default option to run the indexer once, immediately.
+
+Click **Submit** to create and simultaneously run the indexer.
+
+  ![hotels indexer](./img/CreateIndexer.png)
+
+5. After a minute or two, our Indexer will have indexed the hotel dataset and we should be able to query them.
+
+## Querying Content
+
+Open the Search Explorer in the Azure Portal, copy the queries (see below) and get familiar with the results of the queries:
+
+### Simple query with top N results
+
+#### String Query: `search=spa`
+
+* The **search** parameter is used to input a keyword search for full text search, in this case, returning hotel data for those containing *spa* in any searchable field in the document.
+
+* **Search explorer** returns results. You see that results are returned in **OData** notation making them easily readable by any language/other service.
+
+* Documents are composed of all fields marked as "retrievable" in the index. To view index attributes in the portal, click *hotels-sample* in the **Indexes** list.
+
+![String Query](./img/SimpleQuery.png)
+
+#### Parameterized Query: `search=spa&$count=true&$top=10`
+
+* The **&** symbol is used to append search parameters, which can be specified in any order.
+
+* The **$count=true** parameter returns the total count of all documents **available/found** in the Azure Search index - not **returned**. You can verify filter queries by monitoring changes reported by **$count=true**. Smaller counts indicate your filter is working.
+
+* The **$top=10** returns the highest ranked 10 documents out of the total (**$count**). By default, Azure Cognitive Search returns the first 50 best matches. You can increase or decrease the amount via **$top** parameter.
+
+![Parameterized Query](./img/ParameterizedQuery.png)
+
+### <a name="filter-query"></a> Filter the query
+
+Filters are included in search requests when you append the **$filter** parameter. 
+
+#### Filtered Query: `search=beach&$filter=Rating gt 4`
+
+* The **$filter** parameter returns results matching the criteria you provided. In this case: *ratings greater than 4*.
+
+* Filter syntax is an OData expression. For more information, see [Filter OData syntax](https://docs.microsoft.com/rest/api/searchservice/odata-expression-syntax-for-azure-search).
+
+![Filtered Query](./img/FilteredQuery.png)
+
+#### Linguistic Analysis Query: `search=beaches&highlight=Description`
+
+* Full text search recognizes basic variations in word forms. In this case, search results contain highlighted text for "beach", for hotels that have that word in their searchable fields, in response to a keyword search on "beaches". Different forms of the same word can appear in results because of linguistic analysis. 
+
+> Highlighting works by inserting HTML tags ```<em></em>´´´. You have to add the corresponding CSS (or functionality), to handle the highlighting in your application.
+
+* Azure Cognitive Search supports 56 analyzers from both Lucene and Microsoft (including the same that are used in Office 365). The default used by Azure Cognitive Search is the standard Lucene analyzer.
+
+![Linguistic Analysis Query](./img/LinguisticAnalysisQuery.png)
+
+### Try fuzzy search
+
+By default, misspelled query terms, like *seatle* for "Seattle", fail to return matches in a typical search. The following example returns no results.
+
+#### Example (misspelled term, unhandled): `search=seatle`
+
+To handle misspellings, you can use fuzzy search. Fuzzy search is enabled when you use the full Lucene query syntax, which occurs when you do two things: set **queryType=full** on the query, and append the **~** to the search string.
+
+![Fuzzy Search Unhandeled](./img/FuzzySearchunhandeled.png)
+
+#### Example (misspelled term, handled): `search=seatle~&queryType=full`
+
+This example now returns documents that include matches on "Seattle".
+
+![Fuzzy Search Handeled](./img/FuzzySearchHandeled.png)
+
+When **queryType** is unspecified, the default **simple query parser** is used. The **simple query parser** is faster, but if you require fuzzy search, regular expressions, proximity search or other advanced query types, you will need the full syntax.
+
+# Add Cognitive Skills to Azure Search - to index unstructured content (e.g. images, audio, etc.)
+
+[Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) allows us to also index unstructured data. More precisely, it add capabilities for data extraction, natural language processing (NLP), and image processing to Azure Search indexing pipeline (for more see [here](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro#key-features-and-concepts)). In Azure Cognitive Search, a skillset is responsible for the pipeline of the data and consists of multiple skills. Some skills have been pre-included, but it is also possible for us to write our own skills.
+
+[Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-quickstart-blob)
+
+Let's see it in action. As before, let's choose a sample dataset and choose the SQL DB `realestate-us-sample`. Go to the Azure Search Service an click on **Import Data**.
+
+![Realestate Dataset](./img/RealestateDataset.png)
+
+Once we're done, we'll repeat the steps from before, `Import Dataset`, walk through the wizard, but this time, we'll configure the `Cognitive Search` part in the second tab.
+
+So, we need to define the skillset. In our case, we'll enable all features under **Add enrichments**):
+
+![Defining the skillset](./img/EnrichCognitiveSkills.png)
+
+**Accept** the *defaults* of the Index. Once we have finished the next two tabs (Hit **Submit** to run the indexer), Azure Cognitive Search will start indexing our data (this will take a bit longer, as it needs to run image recognition, OCR, etc. on the files).
+
+![Index Realestate](./img/IndexRealestate.png)
+
+When you select the Indexes Tab on the Overview Page (in the Azure Portal) and select the Realestate Index, you can use the default query and will see (as shown in the following JSON) that the cognitive skills are enabled and that the Translate Skill has a result:
+
+![Realestate Cognitive Search](./img/RealestateQuery.png)
+
+![Realestate Cogntitive Skils](./img/RealestateTranslate.png)
+
+* [Simple Query Syntax](https://docs.microsoft.com/en-us/rest/api/searchservice/simple-query-syntax-in-azure-search)
+* [Lucene Query Syntax](https://docs.microsoft.com/en-us/rest/api/searchservice/lucene-query-syntax-in-azure-search)
+
+## Using the API
+
+We've been lazy and did everything through the portal - obviously not the way we want to work in the real world. Especially data ingestion and search should (and most likely needs) to be performed through the API:
+
+* [Create an index](https://docs.microsoft.com/en-us/azure/search/search-create-index-rest-api)
+* [Import Data](https://docs.microsoft.com/en-us/azure/search/search-import-data-rest-api)
+* [Search](https://docs.microsoft.com/en-us/azure/search/search-query-rest-api)
+
+# Integrate Azure Search in an Node JS Application
+
+Now let's jump into code. We will create a Node.js application that that creates, loads, and queries an Azure Cognitive Search index. This article demonstrates how to create the application step-by-step. 
+
+## Set up your environment
+
+Begin by opening the Cloud Shell in the Browser, a Bash console, Powershell console or other environment in which you've installed Node.js.
+
+1. Create a development directory, giving it the name `adv-search` :
+
+    ```bash
+    md adv-search
+    cd adv-search
+    git clone https://github.com/Azure-Samples/azure-search-javascript-samples.git
+    cd azure-search-javascript-samples/quickstart
+    code .
+    ```   
+
+1. Insert your search service data in the file **azure_search_config.json**:
+    ```json
+    {
+        "serviceName" : "[SEARCH_SERVICE_NAME]",
+        "adminKey" : "[SEARCH_SERVICE_ADMIN_KEY]",
+        "queryKey" : "[SEARCH_SERVICE_QUERY_KEY]",
+        "indexName" : "hotels-quickstart"
+    }
     ```
-
-  
-Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To exit the sqlcmd utility program enter ```exit```.
-
-## Add Data to SQL DB using the Azure Data Studio ##
-
-Another, more simple approach is using the Azure Data Studio. Azure Data Studio is a cross-platform database tool for data professionals using the Microsoft family of on-premises and cloud data platforms on Windows, MacOS, and Linux.
-
-Azure Data Studio offers a modern editor experience with IntelliSense, code snippets, source control integration, and an integrated terminal. It's engineered with the data platform user in mind, with built-in charting of query result sets and customizable dashboards.
-
-Open the `Azure Data Studio` and connect to your server:
-
-![Azure Data Studio](./img/azure-data-studio-connect.png)
-
-After you have connected to your server `Azure Data Studio` wants you to add your Azure account. Follow the instructions and add your account.
-Next we want to create our first table in the ContactsDb. Navigate to the ContactDb, open the context menu and select `New Query`.
-
-![New Query](./img/azure-data-studio-new-query.png)
-
-Add and run the following query, creating a new Table:
-
-   ```Sql
-   CREATE TABLE PrtnrEmployees (EmployerID int, LastName varchar(255), FirstName varchar(255), PartnerCompany varchar(255), StartYear int)
-   ```
-
-Create a new query and insert a row:
-
-   ```Sql
-   INSERT INTO PrtnrEmployees (EmployerID, LastName, FirstName, PartnerCompany, StartYear) VALUES ( ... ), ( ... ), ( ... )
-   ```
-
-View the data returned by a query
-
-   ```Sql
-   SELECT * FROM PrtnrEmployees;
-   ```   
-   ```Sql
-   SELECT * FROM CEOs;
-   ```
-
-
-## Setup Dynamic Data Masking
-
-Dynamic data masking (DDM) limits sensitive data exposure by masking it to non-privileged users. It can be used to greatly simplify the design and coding of security in your application. Take a look at the documentation [here](https://docs.microsoft.com/en-us/sql/relational-databases/security/dynamic-data-masking?view=sql-server-ver15) to get more information about Dynamic Data Masking
-
-![Dynamic Data Masking](./img/dynamic-data-masking.png)
-
-To see Dynamic Data Masking in action we first add a column to the Contacts table with a Data Masking Rule.
-Back in Azure Data Studio create a new query and run a command as follows:
-
-   ```Sql
-   ALTER TABLE [dbo].[CEOs]
-   ADD Email varchar(256) MASKED WITH (FUNCTION = 'default()');
-   ```
-Run another query to add another row:
-
-   ```Sql
-   INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear, Email) VALUES (43, 'Nadella', 'Satya', 52, 2014, 'snad@microsoft.com')
-   ```
-When we select the top 1000 rows of the Contacts table we still see the email's actual value.
-
-![Not Masked](./img/not-masked-result.png)
-
-The reason behind this is that the account we have used has elevated privileges. To show you how Dynamic Data Masking works we create a user and grant select on Contacts. Create a new query in the Azure Data Studio and run the commands as follows:
-
-   ```Sql
-   CREATE USER TestUser WITHOUT LOGIN;  
-   GRANT SELECT ON CEOs TO TestUser;  
-     
-   EXECUTE AS USER = 'TestUser';  
-   SELECT * FROM Contacts; 
-   ```
-
-## Access Management for Azure SQL DB ##
-
-Under Access Management we are taking a look at authentication and authorization. Authentication is the process of proving the user is who they claim to be. Authorization refers to the permissions assigned to a user within an Azure SQL Database, and determines what the user is allowed to do.
-
-Azure SQL Database supports two types of authentication: SQL authentication, as we have used before in creating the TestUser. And Azure Active Directory authentication.
-
-Let's have a look at the SQL authentication. As server admin you can create additional SQL users - which enables other users to connect to the SQL Database. Create a new query.
-
-   ```Sql
-   CREATE USER Marvin WITH PASSWORD = '42_as_ANSWER!'
-   ```
-
-Now you can sign up as this user.
-
-Before we did grant the ```TestUser``` select access to the Table CEOs. Similarly you can create a custom role. There is also a set of fixed roles. They can be assigned as followes:
-
-   ```Sql
-   ALTER ROLE  db_backupoperator  
-       {  
-        ADD MEMBER database_principal  
-        |  DROP MEMBER database_principal  
-        |  WITH NAME = Marvin  
-       }  
-       [;]
-   ```
-
- ![Fixed Rules](./img/permissions-of-database-roles.png)
-
-## Clean up ##
-
-Delete Resource Group
-
-```az group delete -name <your rg name>```
-
-## OPTIONAL: SQL Databace backup and retention policies ##
-
-You make the choice between configuring your server for either locally redundant backups or geographically redundant backups at server creation.
-After a server is created, the kind of redundancy it has, geographically redundant vs locally redundant, can't be switched.
-While creating a server via the ```az sql server create``` command, the ```--geo-redundant-backup``` parameter decides your Backup Redundancy Option. If ```Enabled```, geo redundant backups are taken. Or if ```Disabled``` locally redundant backups are taken.
-In our current database geo redundant backups therefore are not possible.
-
-Go to the Azure portal and navigate to your SQL server. Under Manage Backups you will find the retention policies. Change the retention policy for MicrosoftEmployees to Monthly Backups that should be kept for 8 weeks.
-   On the Available backups tab, you will find backups from which you can restore a specific database.
-   
-   As a declarative abstraction on top of the existing active geo-replication feature, Auto-failover groups are a SQL Database feature that allows you to manage replication and failover of a group of databases on a SQL Database server or all databases in a managed instance to another region.
-   They are designed to simplify deployment and management of geo-replicated databases at scale.
-
-   When you are using auto-failover groups with automatic failover policy, any outage that impacts one or several of the databases in the group results in automatic failover. Typically these are incidents that cannot be self-mitigated by the built-in automatic high availability operations. The examples of failover triggers include an incident caused by a SQL tenant ring or control ring being down due to an OS kernel memory leak on several compute nodes, or an incident caused by one or more tenant rings being down because a wrong network cable was cut during routine hardware decommissioning. For more information, see SQL Database High Availability.
-
-Create another Azure SQL Server
-
-   ```Shell
-   az sql server create --name <name of your second server> --resource-group <your rg name> --location northeurope --admin-user <name of your admin> --admin-password <pwd>
-   ```
-   
-Create a failover group between the servers and add the database
-
-   ```Shell
-   az sql failover-group create --name <name of your fg> --partner-server <name of your second server> --resource-group <your rg name> --server <name of your server> --add-db MSFTEmployees --failover-policy Automatic
-   ```
-   
-Verify which server is secondary 
-
-   ```Shell
-   az sql failover-group list --server <name of your server> --resource-group <your rg name>
-   ```
-   
-Failover to the secondary server
-
-   ```Shell
-   az sql failover-group set-primary --name <name of your fg> --resource-group <your rg name> --name <name of your second server>
-   ```
-
-Revert failover group back to the primary server
-
-   ```Shell
-   az sql failover-group set-primary --name <name of your fg> --resource-group <your rg name> --name <name of your server>
-   ```
-  
-## OPTIONAL: Connect the Azure SQL DB to a Web Application ##
-
-This tutorial shows how to create a .NET Core app and connect it to a SQL Database. When you're done, you'll have a .NET Core MVC app running in App Service.
-
-Clone the sample application
-
-   ```Shell
-   git clone https://github.com/azure-samples/dotnetcore-sqldb-tutorial
-   ```
-   ```Shell
-   cd dotnetcore-sqldb-tutorial
-   ```
-
-Install the required packages, run database migrations, and start the application.
-
-   ```Shell
-      dotnet tool install --global dotnet-ef 
-      dotnet restore
-      dotnet ef database update
-      dotnet run
-   ```
-      
-  Navigate to ```http://localhost:5000``` in a browser. Select the Create New link and create a couple to-do items.
-
-   To stop .NET Core at any time, press ```Ctrl+C``` in the terminal.
-
-Create a new database in the previously created SQL Server.
-
-   ```Shell
-   az sql db create --resource-group <your rg name> --server <name of your server> --name coreDB
-   ```
-   
-Create the connection string
-
-   ```Shell
-   az sql db show-connection-string --name coreDB --server <name of your server> --client sqlcmd
-   ```
-   
-   The result should look something like this:
-   
-   ```Shell
-   Server=tcp:<name of your server>.database.windows.net,1433;Database=coreDB;User ID=<name of your admin>;Password=<pwd>;Encrypt=true;Connection Timeout=30;
-   ```
-   
-Configure a local git deployment. FTP and local Git can deploy to an Azure web app by using a deployment user. Once you configure your deployment user, you can use it for all your Azure deployments.
-
-   ```Shell
-   az webapp deployment user set --user-name <name of your app user> --password <pwd>
-   ```
-
-Create an App Service plan. An App Service plan defines a set of compute resources for a web app to run. These compute resources are analogous to the server farm in conventional web hosting. One or more apps can be configured to run on the same computing resources (or in the same App Service plan).
-
-   ```Shell
-   az appservice plan create --name <name of your asp> --resource-group <your rg name> --sku FREE
-   ```
-
-Create a web app in the recently created App Service plan.
-   
-   ```Shell
-   az webapp create --resource-group <your rg name> --plan <name of your asp> --name <your app name> --deployment-local-git
-   ```
-   
-Configure the connection string. To set connection strings for your Azure app, use the az webapp config appsettings set command in the Cloud Shell. In the following command replace the [Your Connection String] parameter with the connection string you created earlier.
-
-   ```Shell
-   az webapp config connection-string set --resource-group <your rg name> --name <name of your app> --settings MyDbConnection="<Your Connection String>" --connection-string-type SQLServer
-   ```
-   
-   In ASP.NET Core, you can use this named connection string (```MyDbConnection```) using the standard pattern, like any connection string specified in appsettings.json. In this case, ```MyDbConnection``` is also defined in your appsettings.json. When running in App Service, the connection string defined in App Service takes precedence over the connection string defined in your appsettings.json. The code uses the appsettings.json value during local development, and the same code uses the App Service value when deployed.
-
-Configure environment variable. Next, set ASPNETCORE_ENVIRONMENT app setting to Production. This setting lets you know whether you're running in Azure, because you use SQLite for your local development environment and SQL Database for your Azure environment.
-
-   ```Shell
-   az webapp config appsettings set --name <name of your app> --resource-group <your rg name> --settings ASPNETCORE_ENVIRONMENT="Production"
-   ```
-
-Connect to SQL Database in production by opening the Startup.cs and finding the following code in your local repository:
-
-   ```C#
-   services.AddDbContext<MyDatabaseContext>(options =>
-        options.UseSqlite("Data Source=localdatabase.db"));
-   ```
-
-   Replace it with the following code, which uses the environment variables that you configured earlier.
-   
-   ```C#
-   // Use SQL Database if in Azure, otherwise, use SQLite
-      if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-        services.AddDbContext<MyDatabaseContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
-      else
-        services.AddDbContext<MyDatabaseContext>(options =>
-            options.UseSqlite("Data Source=localdatabase.db"));
-
-      // Automatically perform database migration
-      services.BuildServiceProvider().GetService<MyDatabaseContext>().Database.Migrate(); 
-   ```
-
-   If this code detects that it's running in production (which indicates the Azure environment), then it uses the connection string you configured to connect to the SQL Database.
-
-   The Database.Migrate() call helps you when it's run in Azure, because it automatically creates the databases that your .NET Core app needs, based on its migration configuration.  
-
-   Save your changes, then commit it into your Git repository.
-   
-   ```Shell
-   git add .
-   ```
-   ```Shell
-   git commit -m "connect to SQL DB in Azure"
-   ```
-   
-Push to Azure from Git. Add an Azure remote to your local Git repository. Replace [Local Git URL] with the URL of the Git remote from step 7, when ypu did create the web app.
-
-   ```Shell
-   git remote add azure <Local Git URL>
-   ```
-
-   Push to the Azure remote to deploy your app with the following command. When Git Credential Manager prompts you for credentials, make sure you enter the credentials you created in Configure a deployment user, not the credentials you use to sign in to the Azure portal. This might take some time.
-   
-   ```Shell
-   git push azure master
-   ```
-   
-Browse to the deployed app using your web browser.
-
-   ```Shell
-   http://<name of your app>.azurewebsites.net
-   ```
+    Replace the `[SEARCH_SERVICE_NAME]` value with the name of your search service. Replace `[SEARCH_SERVICE_ADMIN_KEY]` and `[SEARCH_SERVICE_QUERY_KEY]` with the key values you recorded earlier.  
+    If your endpoint URL were https://mydemo.search.windows.net, your service name would be **mydemo**. 
+    ![Search URL](./img/SearchUrl.png)
+    In **Settings > Keys**, get the primary admin key for full rights on the service. 
+    
+    > There are two interchangeable admin keys, provided for business continuity in case you need to roll one over. You can use either the primary or secondary key on requests for adding, modifying, and deleting objects.
+    
+    ![Search Key](./img/SearchKey.png)
+
+    > Get the query key as well. It's a best practice to issue query requests with read-only access.
+
+## Important Parts of the Quickstart Application
+
+Find the file **hotels_quickstart_index.json**. This file defines how Azure Cognitive Search works with the documents you'll be loading in the next step. Each field will be identified by a `name` and has a specified `type`. Each field also has a series of index attributes that specify whether Azure Cognitive Search can *search*, *filter*, *sort*, and *facet* upon the field. 
+
+> Most of the fields are simple data types, but some, like `AddressType` are complex types that allow you to create rich data structures in your index. You can read more about [supported data types](https://docs.microsoft.com/rest/api/searchservice/supported-data-types) and [index attributes](https://docs.microsoft.com/azure/search/search-what-is-an-index#index-attributes). 
+
+Have a look at the **hotels_quickstart_index.json** and get familiar with its setup/content. 
+
+```json
+{
+    "name": "hotels-quickstart",
+    "fields": [
+        {
+            "name": "HotelId",
+            "type": "Edm.String",
+            "key": true,
+            "filterable": true
+        },
+        {
+            "name": "HotelName",
+            "type": "Edm.String",
+            "searchable": true,
+            "filterable": false,
+            "sortable": true,
+            "facetable": false
+        },
+        {
+            "name": "Description",
+            "type": "Edm.String",
+            "searchable": true,
+            "filterable": false,
+            "sortable": false,
+            "facetable": false,
+            "analyzer": "en.lucene"
+        },
+        {
+            "name": "Description_fr",
+            "type": "Edm.String",
+            "searchable": true,
+            "filterable": false,
+            "sortable": false,
+            "facetable": false,
+            "analyzer": "fr.lucene"
+        },
+        {
+            "name": "Category",
+            "type": "Edm.String",
+            "searchable": true,
+            "filterable": true,
+            "sortable": true,
+            "facetable": true
+        },
+        {
+            "name": "Tags",
+            "type": "Collection(Edm.String)",
+            "searchable": true,
+            "filterable": true,
+            "sortable": false,
+            "facetable": true
+        },
+        {
+            "name": "ParkingIncluded",
+            "type": "Edm.Boolean",
+            "filterable": true,
+            "sortable": true,
+            "facetable": true
+        },
+        {
+            "name": "LastRenovationDate",
+            "type": "Edm.DateTimeOffset",
+            "filterable": true,
+            "sortable": true,
+            "facetable": true
+        },
+        {
+            "name": "Rating",
+            "type": "Edm.Double",
+            "filterable": true,
+            "sortable": true,
+            "facetable": true
+        },
+        {
+            "name": "Address",
+            "type": "Edm.ComplexType",
+            "fields": [
+                {
+                    "name": "StreetAddress",
+                    "type": "Edm.String",
+                    "filterable": false,
+                    "sortable": false,
+                    "facetable": false,
+                    "searchable": true
+                },
+                {
+                    "name": "City",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": true,
+                    "sortable": true,
+                    "facetable": true
+                },
+                {
+                    "name": "StateProvince",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": true,
+                    "sortable": true,
+                    "facetable": true
+                },
+                {
+                    "name": "PostalCode",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": true,
+                    "sortable": true,
+                    "facetable": true
+                },
+                {
+                    "name": "Country",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": true,
+                    "sortable": true,
+                    "facetable": true
+                }
+            ]
+        }
+    ],
+    "suggesters": [
+        {
+            "name": "sg",
+            "searchMode": "analyzingInfixMatching",
+            "sourceFields": [
+                "HotelName"
+            ]
+        }
+    ]
+}
+```
+
+Now, have a look at the file **AzureSearchClient.js** and take your time to understand what happens here. You will find methods to check, if an index exists, to create and delete an index as well as methods to add data to the index (```postDataAsync```) and - of course - query data (```queryAsync```).
+
+> If you have any questions regarding the code, feel free to reach out to one of the proctors.
+
+## Prepare and run the sample
+
+Use a terminal window for the following commands.
+
+1. Navigate to the source code folder *azure-search-javascript-samples/quickstart*.
+1. Install the packages for the sample with `npm install`.  This command will download the packages upon which the code depends.
+
+
+Now back in Visual Studio Code, set a breakpoint in method ```doQueriesAsync``` (in **index.js** - the place where queries are sent to Azure Search and the corresponding response will be readable) and hit **F5** (if VS Code asks you, select *Node.JS App* as your environment).
+
+You should see a series of messages describing the actions being taken by the program and after some time, your breakpoint will be hit. Have a look at the ```body``` property in the method mentioned above...there you see the OData response from Azure Search. 
+
+If you want to see more detail of the requests, you can uncomment the [lines at the beginning of the `AzureSearchClient.request()` method](https://github.com/Azure-Samples/azure-search-javascript-samples/blob/master/quickstart/AzureSearchClient.js#L21-L27) in **AzureSearchClient.js**.
+
+![Run the node.js App with Azure Search](./img/resultappnodejsazuresearch.png)
+
+# House Keeping: Lab Cleanup
+
+Remove the sample resource group.
+
+```shell
+$ az group delete -n adc-azsearch-db-rg
+```

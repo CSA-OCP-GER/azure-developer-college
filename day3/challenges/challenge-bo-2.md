@@ -1,4 +1,4 @@
-# Break Out #2: Add Congitive Services #
+# Break Out #2: Add Cognitive Services #
 
 Now it's time to finish our sample application from a services perspective. We'll now add Azure Cognitive Services to enhance our application with Artificial Intelligence.
 
