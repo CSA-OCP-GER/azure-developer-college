@@ -37,7 +37,7 @@ You see that each purchasing model refers to compute, memory and I/O resources, 
 
 The single database deployment option creates a database in Azure SQL Database with its own set of resources and is managed via a SQL Database server. With a single database, each database is isolated from each other and portbale, each with its own service tier within the DTU-based purchasing model or vCore-based purchasing model and a guaranteed compute size. 
 
-Open a shell, we use Azure CLI to create the nneded Azure resources:
+Open the Cloud Shell in the Azure Portal, we use Azure CLI to create the needed Azure resources:
 
 1. Create a resource group:
    ```Shell
@@ -72,7 +72,7 @@ Get to know your environment
    If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query:
    
    ```Shell
-   az sql db list --resource-group <your rg name> --query '[].{Name:name}'
+   az sql db list --resource-group <your rg name> --server <name of your server> --query '[].{Name:name}'
    ```
   
    ```Shell
