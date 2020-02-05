@@ -72,3 +72,17 @@ All building blocks of the Azure Developer College are constantly and consistent
 |SCM-Search API|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Search?branchName=master&stageName=Build)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=30&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Search?branchName=master&stageName=Development)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=30&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Search?branchName=master&stageName=Test)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=30&branchName=master)|
 |SCM-VisitReports API|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Visitreports?branchName=master&stageName=Build)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=33&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Visitreports?branchName=master&stageName=Development)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=33&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Visitreports?branchName=master&stageName=Test)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=33&branchName=master)|
 |SCM-Textanalytics|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Textanalytics?branchName=master&stageName=Build)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=32&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Textanalytics?branchName=master&stageName=Development)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=32&branchName=master)|[![Build Status](https://dev.azure.com/azuredevelopercollege/College/_apis/build/status/Day5-SCM-Pipelines/Day5-CD-SCM-Textanalytics?branchName=master&stageName=Test)](https://dev.azure.com/azuredevelopercollege/College/_build/latest?definitionId=32&branchName=master)|
+
+## Contributing ##
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit <https://cla.microsoft.com.>
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
