@@ -76,7 +76,7 @@ Get to know your environment
    ```
   
    ```Shell
-   az sql db show --resource-group <your rg name> --name MSFTEmployees --query '{name: .name, maxSizeBytes: .maxSizeBytes, status: .status}'
+   az sql db show --resource-group <your rg name> --name MSFTEmployees --query '{name: name, maxSizeBytes: maxSizeBytes, status: status}'
    ```
   
 Connect to your SQL DB
