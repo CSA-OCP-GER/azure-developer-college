@@ -96,26 +96,30 @@ Connect to your SQL DB
 Add a table.
 
    ```Sql
-   CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int); GO
+   CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int)
+   GO
    ```
 
 Add Data to your table
 
    ```Sql
-   INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014); GO
+   INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014)
+   GO
    ```
 
 Update the Age of Satya Nadella in the Table
 
    ```Sql
-   UPDATE CEOs SET Age=52 WHERE EmployerID=42; GO
+   UPDATE CEOs SET Age=52 WHERE EmployerID=42
+   GO
    ```
   
 Query the data
 
-    ```Sql
-    SELECT * FROM CEOs; GO
-    ```
+   ```Sql
+   SELECT * FROM CEOs
+   GO
+   ```
 
   
 Add the other CEOs Microsoft has had to the list as well (the ID is fictional). To exit the sqlcmd utility program enter ```exit```.
