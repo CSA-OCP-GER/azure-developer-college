@@ -72,11 +72,11 @@ Get to know your environment
    If you run the command like this you are getting a lot of information to make sense of. You can restrict this by using a query:
    
    ```Shell
-   az sql db list --resource-group <your rg name> --query '[].{Name:name}'
+   az sql db list --resource-group <your rg name> --server <name of your server> --query '[].{Name:name}'
    ```
   
    ```Shell
-   az sql db show --resource-group <your rg name> --name MSFTEmployees --query '{name: name, maxSizeBytes: maxSizeBytes, status: status}'
+   az sql db show --resource-group <your rg name> --server <name of your server> --name MSFTEmployees --query '{name: name, maxSizeBytes: maxSizeBytes, status: status}'
    ```
   
 Connect to your SQL DB
@@ -85,7 +85,7 @@ Connect to your SQL DB
    az sql db show-connection-string --name MSFTEmployees --server <name of your server> --client sqlcmd
    ```
 
-   Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
+   For the next part to work you either have the sqlcmd extension or just use the Azure Shell. Copy the sqlcmd command and enter your admin name and password. The command should look something like this:
   
    ```Shell
    sqlcmd -S tcp:[Name of your Server].database.windows.net,1433 -d MSFTEmployees -U <name of your admin> -P <pwd> -N -l 30
@@ -96,21 +96,21 @@ Connect to your SQL DB
 Add a table.
 
    ```Sql
-   CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int)
+   CREATE TABLE CEOs (EmployerID int, LastName varchar(255), FirstName varchar(255), Age int, StartYear int);
    GO
    ```
 
 Add Data to your table
 
    ```Sql
-   INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014)
+   INSERT INTO CEOs (EmployerID, LastName, FirstName, Age, StartYear) VALUES (42, 'Nadella', 'Satya', 51, 2014);
    GO
    ```
 
 Update the Age of Satya Nadella in the Table
 
    ```Sql
-   UPDATE CEOs SET Age=52 WHERE EmployerID=42
+   UPDATE CEOs SET Age=52 WHERE EmployerID=42;
    GO
    ```
   
@@ -172,7 +172,7 @@ Back in Azure Data Studio create a new query and run a command as follows:
 
    ```Sql
    ALTER TABLE [dbo].[CEOs]
-   ADD Email varchar(256) MASKED WITH (FUNCTION = 'default()');
+   ADD Email varchar(256) MASKED WITH (FUNCTION = 'EMAIL()');
    ```
 Run another query to add another row:
 
@@ -190,7 +190,7 @@ The reason behind this is that the account we have used has elevated privileges.
    GRANT SELECT ON CEOs TO TestUser;  
      
    EXECUTE AS USER = 'TestUser';  
-   SELECT * FROM Contacts; 
+   SELECT * FROM CEOs; 
    ```
 
 ## Access Management for Azure SQL DB ##
@@ -210,13 +210,7 @@ Now you can sign up as this user.
 Before we did grant the ```TestUser``` select access to the Table CEOs. Similarly you can create a custom role. There is also a set of fixed roles. They can be assigned as followes:
 
    ```Sql
-   ALTER ROLE  db_backupoperator  
-       {  
-        ADD MEMBER database_principal  
-        |  DROP MEMBER database_principal  
-        |  WITH NAME = Marvin  
-       }  
-       [;]
+   ALTER ROLE  db_backupoperator ADD MEMBER Marvin;
    ```
 
  ![Fixed Rules](./img/permissions-of-database-roles.png)
