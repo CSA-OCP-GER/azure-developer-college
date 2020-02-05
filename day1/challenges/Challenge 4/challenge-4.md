@@ -17,7 +17,7 @@
 | Size  | **_Change size_** |
 | Account type | **Standard SSD** |
 | Size  |  **128GiB (E10)** | 
-| Host caching  |  **Read/write** | 
+| Host caching  |  **None** | 
 
 **Don't forget to press the save button!**
 
