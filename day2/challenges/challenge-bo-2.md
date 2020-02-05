@@ -76,7 +76,7 @@ Save your settings. The Functions app will now restart to apply your changes.
 
 It's time to deploy the Image Resizer Function App to Azure. 
 
-<span style="color:red">**Important**</span>: You need to open a new Visual Studio Code window and open folder **day2/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer**. The seployment steps have to be done in that new window!
+<span style="color:red">**Important**</span>: You need to open a new Visual Studio Code window and open folder **day2/apps/dotnetcore/Scm.Resources/Adc.Scm.Resources.ImageResizer**. The deployment steps have to be done in that new window!
 
 To deploy the function follow these steps:
 
