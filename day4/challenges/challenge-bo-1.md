@@ -211,6 +211,59 @@ CD Build variables stage *Testing*:
    |AzureSearchReplicaCount|1|Testing|azureSearchReplicaCount|
    |AzureSearchPartitionCount|1|Testing|azureSearchPartitionCount|
 
+```yaml
+pr: none
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - day4/apps/infrastructure/templates/scm-search-api-dotnetcore.json
+      - day4/apps/dotnetcore/Scm.Search/*
+jobs:
+  - job: Build
+    displayName: Build Scm Search
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: restore
+        projects: "day4/apps/dotnetcore/Scm.Search/**/*.csproj"
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        projects: "day4/apps/dotnetcore/Scm.Search/**/*.csproj"
+        arguments: --configuration Release
+    - task: DotNetCoreCLI@2
+      displayName: Publish
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: "day4/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Api/Adc.Scm.Search.Api.csproj"
+        arguments: --configuration Release --output $(build.artifactstagingdirectory)
+        zipAfterPublish: True
+    - task: DotNetCoreCLI@2
+      displayName: Publish
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: "day4/apps/dotnetcore/Scm.Search/Adc.Scm.Search.Indexer/Adc.Scm.Search.Indexer.csproj"
+        arguments: --configuration Release --output $(build.artifactstagingdirectory)
+        zipAfterPublish: True
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: day4/apps/infrastructure/templates
+        contents: |
+          scm-search-api-dotnetcore.json
+        targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: $(Build.ArtifactStagingDirectory)
+        artifactName: drop
+```
 
 ## SCM Visitreports API
 
