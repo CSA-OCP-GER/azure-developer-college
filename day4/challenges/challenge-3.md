@@ -99,7 +99,7 @@ Now that we have created the build artifact, we can create a Release build to de
 5. Click *"Add an artifact"* and select your *"SCM-Common-CI"* and always use the latest build.
 6. Click the *"Flash"* icon under artifacts and set the trigger to *"Continuous deployment trigger"*. This will trigger the Release pipeline whenever a new deployment artrifact of the build *"SCM-Common-CI"* is created.
 7. Go to the variable section and add the following variables:
-   - ResourceGroupName - ADC-DAY4-SCM-DEV
+   - ResourceGroup - ADC-DAY4-SCM-DEV
    - ApplicationInsightsName - appinsights-scm-dev
    - ServiceBusnamespaceName - |your prefix|-scm-dev (the namespace name must be globally unique)
    - ServiceBusSKU - Standard
