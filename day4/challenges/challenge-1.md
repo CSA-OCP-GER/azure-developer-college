@@ -57,7 +57,7 @@ Create the following UserStories as child items of the Feature, select a person 
 10. Create a UserStory with the title: *"S10: As a DevOps Engineer I want to build the SCM Visitreports API"*.
 11. Creata a UserStory with the title: *"S11: As a DevOps Engineer I want to deploy the SCM Visitreports API to Azure"*.
 12. Create a UserStory with the title: *"S12: As a DevOps Engineer I want to build SCM Textanalytics"*.
-13. Create a UserStory with the title: *"S13: As a DevOps Engineer I want to deploy SCM Textanalytics to Azure*.
+13. Create a UserStory with the title: *"S13: As a DevOps Engineer I want to deploy SCM Textanalytics to Azure"*.
 14. Create a UserStory with the title: *"S14: As a DevOps Engineer I want to build the SCM Frontend"*.
 15. Create a UserStory with the title: *"S15: As a DevOps Engineer I want to deploy the SCM Frontend to Azure"*.
 ### Break the UserStories down to Tasks
