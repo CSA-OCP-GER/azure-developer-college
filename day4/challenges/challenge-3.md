@@ -59,6 +59,11 @@ Go to Azure Boards and set the UserStory S3 to active. We create a new build def
        pool:
          vmImage: ubuntu-latest
        steps:
+         - task: UseDotNet@2
+           displayName: 'Acquire .NET Core Sdk 3.1.x'
+           inputs:
+             packageType: Sdk
+             version: 3.1.x
          - task: CopyFiles@2
            inputs:
              sourceFolder: day4/apps/infrastructure/templates

@@ -103,6 +103,11 @@ jobs:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - task: UseDotNet@2
+      displayName: 'Acquire .NET Core Sdk 3.1.x'
+      inputs:
+        packageType: Sdk
+        version: 3.1.x
     - task: DotNetCoreCLI@2
       displayName: Restore
       inputs:
@@ -227,6 +232,11 @@ jobs:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - task: UseDotNet@2
+      displayName: 'Acquire .NET Core Sdk 3.1.x'
+      inputs:
+        packageType: Sdk
+        version: 3.1.x
     - task: DotNetCoreCLI@2
       displayName: Restore
       inputs:

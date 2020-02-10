@@ -96,6 +96,11 @@ With Azure Pipelines you can define a build that is executed whenever a PullRequ
        pool:
          vmImage: ubuntu-latest
        steps:
+       - task: UseDotNet@2
+         displayName: 'Acquire .NET Core Sdk 3.1.x'
+           inputs:
+           packageType: Sdk
+           version: 3.1.x
        - task: DotNetCoreCLI@2
          displayName: Restore
          inputs:
