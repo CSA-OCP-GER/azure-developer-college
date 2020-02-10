@@ -35,7 +35,7 @@ namespace Adc.Scm.Search.Indexer
                     {
                         if (!client.Indexes.ExistsAsync(_options.IndexName).Result)
                         {
-                            var definition = new Index()
+                            var definition = new Microsoft.Azure.Search.Models.Index()
                             {
                                 Name = _options.IndexName,
                                 Fields = FieldBuilder.BuildForType<Contact>(new DefaultContractResolver() { NamingStrategy = new JsonLowercaseNamingStrategy() })
