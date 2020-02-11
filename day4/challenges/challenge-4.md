@@ -153,22 +153,23 @@ Now we have created the deployment artifacts with the build *SCM-Contacts-CI*. I
    |SqlAdminUserName|*your Sql Admin's username*|Development|
    |SqlAdminPassword|*your password*|Development|
    |ServiceBusNamespaceName|your ServiceBus namespace name of stage Development|Development|
-5. Go to the Tasks section of the *"Development"* stage and add the task *"Azure resource group deployment"*
-6. Select your Azure Subscription
-7. Set the name of the ResourceGroup, use the variable $(ResourceGroupName)
-8. Set the Location, use the variable $(Location)
-9.  Select the template from your drop location
-10. Override the template parameters as follow:
+5. Go to the Tasks section of the *"Development"* stage and use the latest Ubuntu version to run the agent on 
+6. Add the task *"Azure resource group deployment"*
+7. Select your Azure Subscription
+8. Set the name of the ResourceGroup, use the variable $(ResourceGroupName)
+9. Set the Location, use the variable $(Location)
+10. Select the template from your drop location
+11. Override the template parameters as follow:
     ```shell
     -sku $(AppServicePlanSKU) -webAppName $(ApiAppName) -use32bitworker $(Use32BitWorker) -alwaysOn $(AlwaysOn) -applicationInsightsName $(ApplicationInsightsName) -sqlServerName $(SqlServerName) -sqlUserName $(SqlAdminUserName) -sqlPassword $(SqlAdminPassword) -sqlDatabaseName $(SqlDatabaseName) -serviceBusNamespaceName $(ServiceBusNamespaceName)
     ```
     Make sure that you copy the whole line.
-11. Add *Azure App Service deploy* task
-12. Select your Azure Subscription
-13. Choose *API App* as AppService type
-14. Use the variable *$(ApiAppName)* to set the App Service name
-15. Add your dotnet core deployment zip file from your artifact location
-16. Save the release definition and create a release to check if everything works
+12. Add *Azure App Service deploy* task
+13. Select your Azure Subscription
+14. Choose *API App* as AppService type
+15. Use the variable *$(ApiAppName)* to set the App Service name
+16. Add your dotnet core deployment zip file from your artifact location
+17. Save the release definition and create a release to check if everything works
 
 ### Create the *Testing* stage.
 
