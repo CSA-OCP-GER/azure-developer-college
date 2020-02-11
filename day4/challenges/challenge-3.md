@@ -118,9 +118,11 @@ Now that we have created the build artifact, we can create a Release build to de
       ```
       -applicationInsightsName $(ApplicationInsightsName) -serviceBusNamespaceName $(ServiceBusNamespaceName) -serviceBusSKU $(ServiceBusSku) -cosmosDbAccountName $(CosmosDbAccountName)
       ```
-   - ![SCM Common CD tasks](./images/scm-common-cd-tasks.png)
+    ![SCM Common CD tasks](./images/scm-common-cd-tasks.png)
+9. Under Agent job set the Agent specification to the latest Ubuntu version
+    ![SCM Common Agent Spec](./images/agent-spec.png)
 
-9. Save the definition and run the pipeline by clicking *"Create release"*.
+10. Save the definition and run the pipeline by clicking *"Create release"*.
 
 ### Add a Testing stage to your CD Build
 

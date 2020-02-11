@@ -56,6 +56,8 @@ CD Build Tasks:
    - App Service type --> __Function App on Windows__
    - App Service name --> __$(ResizerFunctionName)__
 
+CD Build agent runs on: Latest Ubuntu version
+
 CD Build variables stage *Development*:
 
    | Variable | Value | Scope | ARM Template Parameter |
@@ -176,6 +178,8 @@ CD Build Tasks:
 3. Azure App Service Deploy --> __Adc.Scm.Search.Indexer.zip__
    - App Service type --> __Function App on Windows__
    - App Service name --> __$(IndexerFunctionName)__
+
+CD Build agent runs on: Latest Ubuntu version
 
 CD Build variables stage *Development*:
 
@@ -306,6 +310,8 @@ CD Build Tasks:
 3. Azure App Service deploy --> __Adc.Scm.VisitReports.zip__
    - App Service type --> __Web App on Linux__
    - App Service name --> __$(ApiAppName)__
+
+CD Build agent runs on: Latest Ubuntu version
 
 CD Build variables stage *Development*:
 
@@ -440,6 +446,8 @@ CD Build Tasks:
    - App Service type --> __Function App on Linux__
    - App Service name: --> __$(FunctionAppName)__
  
+CD Build agent runs on: Latest Ubuntu version
+
 CD Build variables stage *Development*:
 
    | Variable | Value | Scope |
@@ -558,6 +566,8 @@ CI Build name: __SCM-Frontend-CI__
 PR Build name: __SCM-Frontend-PR__
 
 CD Build name: __SCM-Frontend-CD__
+
+CD Build agent runs on: Latest Ubuntu version
 
 CD Build variables stage *Development*:
 
