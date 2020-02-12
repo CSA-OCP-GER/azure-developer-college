@@ -15,8 +15,7 @@ param(
     $exposedPermissions = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
 
     $exposedPermissionsFromJson |
-        ForEach-Object 
-        {
+        ForEach-Object -Process {
             $permission = New-Object Microsoft.Open.AzureAD.Model.OAuth2Permission
             $permission.Id = [System.Guid]::Parse($_.id)
             $permission.Origin = $_.origin
