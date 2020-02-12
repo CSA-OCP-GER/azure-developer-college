@@ -18,13 +18,13 @@ param(
         ForEach-Object -Process {
             $permission = New-Object Microsoft.Open.AzureAD.Model.OAuth2Permission
             $permission.Id = [System.Guid]::Parse($_.id)
-            $permission.Origin = $_.origin
+            $permission.Origin = $_.Origin
             $permission.IsEnabled = $true
             $permission.Type = $_.Type
-            $permission.AdminConsentDisplayName = $_.adminConsentDisplayName
+            $permission.AdminConsentDisplayName = $_.AdminConsentDisplayName
             $permission.AdminConsentDescription = $_.AdminConsentDescription
-            $permission.UserConsentDescription = $_.userConsentDescription
-            $permission.UserConsentDisplayName = $_.userConsentDisplayName
+            $permission.UserConsentDescription = $_.UserConsentDescription
+            $permission.UserConsentDisplayName = $_.UserConsentDisplayName
             $permission.Value = $_.value
 
             $exposedPermissions.Add($permission)
