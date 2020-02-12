@@ -12,7 +12,7 @@ param(
     $exposedPermissionsFromJson = Get-Content -Raw -Path ./oauth2-permissions.json |
         ConvertFrom-Json
 
-    $exposedPermissions = New-Object System.Collections.GenericList.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
+    $exposedPermissions = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
 
     $exposedPermissionsFromJson |
         ForEach-Object 
