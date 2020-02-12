@@ -11,9 +11,9 @@ In the previous challenges you have learned some basics about the OpenID Connect
 
 In [challenge-2](./challenge-2.md) you have already seen how to create an Azure AD client application to sign in users and how to create an API application that exposes OAuth2 permissions. We have to do the same for the sample application. 
 
-There are already a scripts available in the repository to create both applications for you. If you want to use a Shell script you can use the script [day5/apps/infrastructure/aad-integration.sh](../apps/infrastructure/scripts/aad-integration.sh). If you want to use Powershell you can use the Script [day5/apps/infrastructure/aad-integration.ps1](../apps/infrastructure/scripts/aad-integration.ps1).
+There are already scripts available in the repository to create both applications for you. If you want to use a Shell script you can use the script [day5/apps/infrastructure/aad-integration.sh](../apps/infrastructure/scripts/aad-integration.sh). If you want to use Powershell you can use the Script [day5/apps/infrastructure/aad-integration.ps1](../apps/infrastructure/scripts/aad-integration.ps1).
 
-Each script creates the server application first and then the client application for the sample application. The script uses a [oauth2-permissions.json](../apps/infrastructure/scripts/oauth2-permissions.json) file where all needed OAuth2 permission are defined.
+Each script creates the server application first and then the client application for the sample application. The scripts use a [oauth2-permissions.json](../apps/infrastructure/scripts/oauth2-permissions.json) file where all needed OAuth2 permission are defined.
 
 ### Shell
 Open a shell, use Azure CLI to connect to the Azure AD Tenant where you want to create the applications:. If you have created a new Azure AD that is not linked to an Azure subscription, add the additional option *--allow-no-subscription*:
