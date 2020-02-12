@@ -43,8 +43,5 @@ param(
     # create the UI app
     $uiApp = New-AzureADApplication -DisplayName $UiAppName -AvailableToOtherTenants $false -ReplyUrls $UiAppReplyUrl -Oauth2AllowImplicitFlow $true
 
-    @{
-        ApiAppId = $apiApp.AppId;
-        UiAppId = $uiApp.AppId
-    }
-
+    Write-Host "ApiAppId: $apiApp.AppId"
+    Write-Host "UiAppId: $uiApp.AppId"
