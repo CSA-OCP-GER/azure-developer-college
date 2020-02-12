@@ -30,6 +30,21 @@ param(
             $exposedPermissions.Add($permission)
         }
     # create the ApiApp
-    $apiApp = New-AzureADApplication -DisplayName $ApiAppName -IdentifierUris $ApiAppUri -Oauth2Permissions $exposedPermissions -AvailableToOtherTenants $false 
+    $apiApp = New-AzureADApplication -DisplayName $ApiAppName -IdentifierUris $ApiAppUri -AvailableToOtherTenants $false 
+    # remove the default created OAuth2Permission
+    $apiApp = Get-AzureADApplication -Filter "AppId eq '$($apiApp.AppId)'"
+    $apiApp.Oauth2Permissions[0].IsEnabled = $false
+    Set-AzureADApplication -ObjectId $apiApp.ObjectId -Oauth2Permissions $apiApp.Oauth2Permissions
+    # set the OAuth2Permissions
+    Set-AzureADApplication -ObjectId $apiApp.ObjectId -Oauth2Permissions $exposedPermissions
+    # create a ServicePrincipal
     New-AzureADServicePrincipal -AppId $apiApp.AppId
+
+    # create the UI app
+    $uiApp = New-AzureADApplication -DisplayName $UiAppName -AvailableToOtherTenants $false -ReplyUrls $UiAppReplyUrl -Oauth2AllowImplicitFlow $true
+
+    @{
+        ApiAppId = $apiApp.AppId;
+        UiAppId = $uiApp.AppId
+    }
 
