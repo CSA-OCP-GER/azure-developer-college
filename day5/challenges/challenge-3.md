@@ -11,10 +11,11 @@ In the previous challenges you have learned some basics about the OpenID Connect
 
 In [challenge-2](./challenge-2.md) you have already seen how to create an Azure AD client application to sign in users and how to create an API application that exposes OAuth2 permissions. We have to do the same for the sample application. 
 
-There is already a script available in the repository to create both applications for you. You can find the script in [day5/apps/infrastructure/aad-integration.sh](../apps/infrastructure/scripts/aad-integration.sh).
+There are already a scripts available in the repository to create both applications for you. If you want to use a Shell script you can use the script [day5/apps/infrastructure/aad-integration.sh](../apps/infrastructure/scripts/aad-integration.sh). If you want to use Powershell you can use the Script [day5/apps/infrastructure/aad-integration.ps1](../apps/infrastructure/scripts/aad-integration.ps1).
 
-The script creates the server application first and then the client application for the sample application. The script uses a [oauth2-permissions.json](../apps/infrastructure/scripts/oauth2-permissions.json) file where all needed OAuth2 permission are defined.
+Each script creates the server application first and then the client application for the sample application. The script uses a [oauth2-permissions.json](../apps/infrastructure/scripts/oauth2-permissions.json) file where all needed OAuth2 permission are defined.
 
+### Shell
 Open a shell, use Azure CLI to connect to the Azure AD Tenant where you want to create the applications:. If you have created a new Azure AD that is not linked to an Azure subscription, add the additional option *--allow-no-subscription*:
 
 ```shell
@@ -55,6 +56,54 @@ The output:
 UI AppId: <please note down>
 API AppId <please note down>
 ```
+
+### PowerShell
+Open Powershell and connect to your Azure AD. If you have not installed the AzureAD module run the following command:
+
+```PowerShell
+Install-Module AzureAD
+Import-Module AzureAD
+```
+
+Connect to your AzureAD using the command as follows:
+```PowerShell
+Connect-AzureAD
+```
+We have to run the script twice. Once for creating the applications for our `Development` stage and once for the `Testing` stage.
+Please use the following parameters to run the script for the `Development` stage:
+
+|Parameter|Value|
+|---------|-----|
+|ApiAppName|scmapi-dev|
+|ApiAppUri|http://scmapi-dev|
+|UiAppName|scmfe-dev|
+|UiAppReplyUrl|the url of your SCM Frontend deployment of stage `Development` (This is the Url to the static website e.g. `https://scmfedev.z20.web.core.windows.net`)|
+
+Use the following parameter for the *Testing* stage:
+
+|Parameter|Value|
+|---------|-----|
+|ApiAppName|scmapi-test|
+|ApiAppUri|http://scmapi-test|
+|UiAppName|scmfe-test|
+|UiAppReplyUrl|the url of your SCM Frontend deployment of stage `Testing`(This is the Url to the static website e.g. `https://scmfetest.z20.web.core.windows.net`))|
+
+Navigate to the directory that contains the oauth2-permissions.json file and run the script twice.
+
+__Note:__ Please note down the `UiAppId` and `ApiAppId` from the output after each run!
+
+```PowerShell
+./aad-integration.ps1 -ApiAppName <API-APP-NAME> -ApiAppUri <API-APP-URI> -UiAppName <UI-APP-NAME> -UiAppReplyUrl <UI-APP-REPLY-URL>
+```
+The output:
+```
+...
+...
+ApiAppId: <ApiAppId>
+UiAppId: <UiAppId>
+```
+
+## Validate the Applications in Azure AD
 
 After you have run the script twice navigate to your Azure AD and checkout the newly created applications. You should see four new applications.
 
