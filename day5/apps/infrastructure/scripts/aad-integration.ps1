@@ -9,8 +9,7 @@ param(
     [string]$UiAppReplyUrl)
     
     # read the exposed permission first
-    $exposedPermissionsFromJson = Get-Content -Raw -Path ./oauth2-permissions.json `
-        | ConvertFrom-Json
+    $exposedPermissionsFromJson = Get-Content -Raw -Path ./oauth2-permissions.json | ConvertFrom-Json
 
     Write-Host $exposedPermissionsFromJson
 
