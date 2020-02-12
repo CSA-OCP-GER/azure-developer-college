@@ -11,8 +11,6 @@ param(
     # read the exposed permission first
     $exposedPermissionsFromJson = Get-Content -Raw -Path ./oauth2-permissions.json | ConvertFrom-Json
 
-    Write-Host $exposedPermissionsFromJson
-
     $exposedPermissions = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
 
     $exposedPermissionsFromJson |
