@@ -1,7 +1,7 @@
 +++
 title = "Local Loop / Azure Deployment"
 chapter = false
-pre = "<b>Breakout 1: </b>"
+pre = "<b>❗️Breakout 1: </b>"
 weight = 15
 +++
 

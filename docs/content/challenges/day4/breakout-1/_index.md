@@ -1,7 +1,7 @@
 +++
 title = "Create CI/CD pipelines to deploy the Azure Dev College sample application to Azure"
 chapter = false
-pre = "<b>Breakout 1: </b>"
+pre = "❗️<b>Breakout 1: </b>"
 weight = 45
 +++
 
