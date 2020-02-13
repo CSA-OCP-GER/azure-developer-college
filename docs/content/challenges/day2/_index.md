@@ -10,3 +10,5 @@ pre = "<b>2. </b>"
 # Introduction
 
 Learn how to host Web applications, API applications and static websites on Azure and get familiar with the serverless offerings of the Microsoft platform.
+
+{{% children  %}}

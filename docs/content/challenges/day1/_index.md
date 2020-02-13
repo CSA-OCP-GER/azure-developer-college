@@ -10,3 +10,5 @@ pre = "<b>1. </b>"
 # Introduction
 
 Learn the basics of Azure and get familiar with common services, the Portal and Azure CLI.
+
+{{% children  %}}
