@@ -8,4 +8,4 @@ test
 README.md
 Dockerfile
 templates
-/public/settings/settings.js
+#/public/settings/settings.js
