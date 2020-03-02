@@ -68,7 +68,8 @@ $TemplateParameters = @{
 New-AzResourceGroupDeployment -Name 'NE' -TemplateUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-NE' -TemplateParameterObject $TemplateParameters -AsJob
 
 $TemplateParameters.vmNames = @('vmyellow','vmgreen')
-New-AzResourceGroupDeployment -Name 'WE' -TemplateUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-WE' -TemplateParameterObject $TemplateParameters -AsJob
+New-AzResourceGroupDeployment -Name 'WE' -TemplateUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-WE' -TemplateParameterObject $TemplateParameters -AsJob  
+
 ```
 
 
