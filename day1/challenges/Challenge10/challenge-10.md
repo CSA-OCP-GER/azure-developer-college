@@ -60,12 +60,17 @@ $TemplateParameters = @{
     "vmSize" = [string]'Standard_F2s_v2' # or 'Standard_B2s'
     "DiskSku" = [string]'StandardSSD_LRS'
 }
-New-AzResourceGroupDeployment -Name 'NE' -TemplateParameterUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-NE' -TemplateParameterObject $TemplateParameters -AsJob
-
-$TemplateParameters.vmNames = @('vmyellow','vmgreen')
-New-AzResourceGroupDeployment -Name 'WE' -TemplateParameterUri"https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-WE' -TemplateParameterObject $TemplateParameters -AsJob
 
 ```
+**Enter the password as asked.**  Then execute the deployment by adding 2 lines
+
+```
+New-AzResourceGroupDeployment -Name 'NE' -TemplateUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-NE' -TemplateParameterObject $TemplateParameters -AsJob
+
+$TemplateParameters.vmNames = @('vmyellow','vmgreen')
+New-AzResourceGroupDeployment -Name 'WE' -TemplateUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-WE' -TemplateParameterObject $TemplateParameters -AsJob
+```
+
 
 ## 2. Deploy a Traffic Manager instance ##
 [Add Traffic Manager Profile](https://docs.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile#add-traffic-manager-endpoints) in resource group **rg-wwwlb** with a routing method based on **geography**
