@@ -64,6 +64,7 @@ New-AzResourceGroupDeployment -Name 'NE' -TemplateParameterUri "https://raw.gith
 
 $TemplateParameters.vmNames = @('vmyellow','vmgreen')
 New-AzResourceGroupDeployment -Name 'WE' -TemplateParameterUri"https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-WE' -TemplateParameterObject $TemplateParameters -AsJob
+
 ```
 
 ## 2. Deploy a Traffic Manager instance ##
