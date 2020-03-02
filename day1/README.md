@@ -12,6 +12,7 @@
 - [Challenge 7: Networking: Loadbalancing your WWW Server Farm](challenges/Challenge%207/challenge-7.md)
 - [Challenge 8: Networking - VPN: Enabling Hybrid Networking with a Site-2-Site (Onprem to Azure) VPN Connection](challenges/Challenge%208/challenge-8.md)
 - [Challenge 9: Networking: Connect Two Virtual Networks Using Azure VNET Peering](challenges/Challenge%209/challenge-9.md)
+- [Challenge 10: Networking: Distribute traffic accross global Azure regions using Traffic Manager](challenges/Challenge10/challenge-10.md)
 
 ## Day 1 - Goal ##  
 On the **first day we'll kick off** the week with **some basics and infrastructure** stuff:  
