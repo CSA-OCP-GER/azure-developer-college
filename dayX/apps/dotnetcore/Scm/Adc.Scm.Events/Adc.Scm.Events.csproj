@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapr.Client" Version="0.4.0-preview01" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.1" />
+  </ItemGroup>
+
+</Project>
