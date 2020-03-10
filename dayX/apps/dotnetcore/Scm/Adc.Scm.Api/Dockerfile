@@ -23,9 +23,21 @@ COPY --from=build /app/out .
 # Select non-root port
 ENV ASPNETCORE_URLS=http://+:5000
 
+# copy run daprd script
+COPY Adc.Scm.Api/runapi.sh .
+# copy dapr compinents
+COPY Adc.Scm.Api/components components
+# install dapr runtime (daprd)
+RUN apt-get update
+RUN apt-get install -y wget
+RUN wget https://github.com/dapr/dapr/releases/download/v0.4.1/daprd_linux_amd64.tar.gz
+RUN tar -zxvf daprd_linux_amd64.tar.gz
+
 # Do not run as root user
 RUN chown -R www-data:www-data /app
 USER www-data
 
 # Launch dll
-ENTRYPOINT ["dotnet", "Adc.Scm.Api.dll"]
+#ENTRYPOINT ["dotnet", "Adc.Scm.Api.dll"]
+# Launsch dll and daprd
+CMD ["/bin/bash", "runapi.sh", "scmcontacts", "5000", "3500", "50000"]

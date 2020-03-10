@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Adc.Scm.Search.Api/bin/Debug/netcoreapp3.0/Adc.Scm.Search.Api.dll",
+            "program": "${workspaceFolder}/Adc.Scm.Search.Api/bin/Debug/netcoreapp3.1/Adc.Scm.Search.Api.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Adc.Scm.Search.Api",
             "stopAtEntry": false,

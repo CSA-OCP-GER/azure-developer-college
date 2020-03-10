@@ -1,58 +1,43 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Adc.Scm.Search.Indexer
 {
-    public static class ContactIndexer
+    public class ContactIndexer
     {
-        private static ExecutionContext _context;
+        private readonly ContactIndexerProcessor _processor;
 
-        private static Lazy<IConfiguration> _configuration = new Lazy<IConfiguration>(BuildConfiguration);
-        private static Lazy<ServiceProvider> _serviceProvider = new Lazy<ServiceProvider>(BuildServices);
-
-        private static IConfiguration Configuration
+        public ContactIndexer(ContactIndexerProcessor processor)
         {
-            get { return _configuration.Value; }
-        }
-
-        private static ServiceProvider ServiceProvider
-        {
-            get { return _serviceProvider.Value; }
+            _processor = processor;
         }
 
         [FunctionName("ContactIndexer")]
-        public static void Run([ServiceBusTrigger("scmtopic", "scmcontactsearch", Connection = "ServiceBusConnectionString", IsSessionsEnabled = true)]ContactMessage msg, ILogger log, ExecutionContext context)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "scmcontacts")]HttpRequest req, ILogger log)
         {
-            _context = context;
-
-            ServiceProvider.GetRequiredService<ContactIndexerProcessor>().Process(msg).GetAwaiter().GetResult();
-
+            string body = await new StreamReader(req.Body).ReadToEndAsync();
+            var data = JObject.Parse(body)["data"].ToString();
+            var msg = JsonConvert.DeserializeObject<ContactMessage>(data);
+            //await _processor.Process(msg);
+         
             log.LogInformation($"C# ServiceBus topic trigger function processed message: {msg.EventType}");
+            return new OkResult();
         }
 
-        private static IConfiguration BuildConfiguration()
+        [FunctionName("Subscribe")]
+        public async Task<IActionResult> Subscribe([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "dapr/subscribe")]HttpRequest request, ILogger log)
         {
-            return new ConfigurationBuilder()
-                .SetBasePath(_context.FunctionAppDirectory)
-                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .Build();
-        }
-
-        private static ServiceProvider BuildServices()
-        {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection
-                .AddOptions()
-                .Configure<ContactIndexerOptions>(options => Configuration.Bind("ContactIndexerOptions", options))
-                .AddScoped<ContactIndexerProcessor>();
-
-            return serviceCollection.BuildServiceProvider();
+            await Task.Delay(0);
+            string [] subscriptions = {"scmcontacts"};
+            return new OkObjectResult(JsonConvert.SerializeObject(subscriptions));
         }
     }
 }
