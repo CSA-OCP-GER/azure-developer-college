@@ -1,0 +1,32 @@
+FROM golang:alpine AS build
+
+RUN apk update && apk add make
+
+WORKDIR /app
+COPY . ./
+
+RUN make build
+RUN mv ./dist/linux_amd64/release/api ./
+RUN apk update && \
+    apk add wget && \
+    wget https://github.com/dapr/dapr/releases/download/v0.5.0/daprd_linux_amd64.tar.gz && \
+    tar -zxvf daprd_linux_amd64.tar.gz 
+
+FROM alpine AS runtime
+WORKDIR /app
+COPY --from=build /app/api .
+COPY --from=build /app/daprd .
+COPY --from=build /app/runserver.sh .
+
+RUN adduser \    
+    --disabled-password \    
+    --gecos "" \    
+    --home "/nonexistent" \    
+    --shell "/sbin/nologin" \    
+    --no-create-home \    
+    --uid "10001" \    
+    "appuser"
+
+USER appuser:appuser
+
+CMD ["sh", "runserver.sh", "subscribergo", "5000", "3500", "50000"]
