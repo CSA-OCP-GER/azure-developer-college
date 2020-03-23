@@ -1,24 +1,25 @@
 package server
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
-type Message struct {
-	Text string `json:Text`
-}
-
-type Payload struct {
-	data Message `json:data`
-}
+// type topic struct {
+// 	Name                  string `json:"name"`
+// 	MaxConcurrentMessages int    `json:"maxConcurrentMessages"`
+// }
 
 // subscribe to topics
 func (s *server) registerSubscribeToTopicsHandler() *server {
-	handler := func (w http.ResponseWriter, r *http.Request) {
-		topics := []string {"mytopic"}
-		json,_ := json.Marshal(topics)
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		topics := []string{"mytopic"}
+		json, _ := json.Marshal(topics)
+
+		// topics := []topic{topic{Name: "mytopic", MaxConcurrentMessages: 10}}
+		// json, _ := json.Marshal(topics)
+		log.Printf("Subscribed to: %s", string(json))
 		w.Write(json)
 		w.WriteHeader(http.StatusOK)
 	}
@@ -29,17 +30,17 @@ func (s *server) registerSubscribeToTopicsHandler() *server {
 
 // handle message of topic 'mytopic'
 func (s *server) registerMyTopicHandler() *server {
-	handler := func (w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
-		
-		var Palyoad struct {
+
+		var palyoad struct {
 			Data struct {
 				Text string `json:"Text"`
 			} `json:"data"`
 		}
 
-		decoder.Decode(&Palyoad)
-		log.Println(Palyoad.Data.Text)
+		decoder.Decode(&palyoad)
+		log.Println(palyoad.Data.Text)
 		w.WriteHeader(http.StatusOK)
 	}
 

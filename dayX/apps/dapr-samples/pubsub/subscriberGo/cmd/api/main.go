@@ -12,7 +12,10 @@ import (
 
 func main() {
 	numberPtr := flag.Int("port", 5000, "Server port")
+	flag.Parse()
+
 	port := *numberPtr
+
 	server := server.CreateServer(port)
 
 	go func() {
