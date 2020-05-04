@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Select non-root port
-ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_URLS=http://+:5050
 
 # Do not run as root user
 RUN chown -R www-data:www-data /app
