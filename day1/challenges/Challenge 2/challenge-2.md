@@ -15,7 +15,7 @@ ARM _'powered'_ deployments are:
 
 ## Deploy an ARM template using the portal
 
-0. _optional_ **Cleanup** all resources that have been created in this workshop e.g. by deleting the resource groups.  
+0. _optional_ **Cleanup** all resources that have been created in this workshop until now e.g. by deleting the resource groups.  
 
 1. Login to your azure subscription **and search the marketplace for 'Template Deployment'**    
 ![Azure Template Deployment](TemplateDeployment.PNG)
