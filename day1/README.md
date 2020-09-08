@@ -3,7 +3,7 @@
 [back](https://github.com/CSA-OCP-GER/azure-developer-college)  
 
 - [Challenge 0: Networking: Create a Virtual Network (IPv4) for your first VM.](challenges/Challenge%200/challenge-0.md)
-- [Challenge 1: PowerShell: Configure PowerShell for Azure Administration & Create a VM Using PowerShell.](challenges/Challenge%201/challenge-1.md)
+- [Challenge 1: Cloud Shell: Using PowerShell for Azure Administration and Automation](challenges/Challenge%201/challenge-1.md)
 - [Challenge 2: ARM: Create a VM and other Azure Resources using an ARM Template](challenges/Challenge%202/challenge-2.md)
 - [Challenge 3: VM - Azure Backup: Save your VM state](challenges/Challenge%203/challenge-3.md)
 - [Challenge 4: VM - Managed Disks: Attach a Data Disk to a VM - Extend and Retype it.](challenges/Challenge%204/challenge-4.md)
