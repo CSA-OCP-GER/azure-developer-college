@@ -3,7 +3,7 @@
 
 ## Here is what you will learn ##
 - how to create an azure storage account using the portal
-- enable access to the storagage account data (e.g. blobs) using Shared Access Signatures
+- enable access to the storage account data (e.g. blobs) using Shared Access Signatures
 - create a SAS policy to enable permission modification after SAS tokens have been issued.
 - use AAD credentials as 'better' way for storage account authorization
 - create a file share and attach it to your azure virtual machine
