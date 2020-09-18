@@ -2,8 +2,8 @@
 [back](../../README.md)  
 
 ## Here is what you will learn ##
-- how to create an azure storage account using the portal
-- enable access to the storage account data (e.g. blobs) using Shared Access Signatures
+- how to create an azure storage account using the portal for the use as a 'cloud file share'
+- enable 'secured' access to the storage account data (e.g. blobs) using Shared Access Signatures
 - create a SAS policy to enable permission modification after SAS tokens have been issued.
 - use AAD credentials as 'better' way for storage account authorization
 - create a file share and attach it to your azure virtual machine
@@ -40,7 +40,13 @@ Now **upload a small file**.
 
 **Can you download the file** using its URI in another browser session?  
 ![Download URI](sa03.PNG)  
-Answer: No. Because anonymous access is not allowed and this URI does not 'carry' any auth token.
+  
+**Answer: No. Because anonymous access is not allowed** and this URI does not 'carry' any auth token:  
+  
+
+![Download error](downloadError.png)
+  
+
   
 
 3. **Create a Shared Access Signature** [via the portal] to enable blob access. 
@@ -49,12 +55,15 @@ Answer: No. Because anonymous access is not allowed and this URI does not 'carry
 ```
 **Copy the Blob Service SAS URL to the clipboard**
 ![SAS URL](sas01.PNG)  
-
-**Edit the SAS URL**: You need to add the path to uploaded file - it should look similar to:  
+  
+In the result copy the SAS URI:  
+![SAS URL](sas02.PNG)  
+and **edit the SAS URL**: You need to add the path to uploaded file - it should look similar to:  
 
 > https://**%Your Storage Account Name%**.blob.core.windows.net/**secured/HelloWorld.txt**?sv=2019-02-02&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-01-26T00:03:42Z&st=2020-01-25T16:03:42Z&spr=https&sig=Pehc....  
 
-**Can you now download the file** in the browser [Yes]
+**Can you now download the file** in the browser [Yes]  
+![Download with edited URI works](downloadSuccess.png)
 
 > **Note**: If a SAS,...  
 > - ... is leaked, it can be used by anyone who obtains it, which can potentially compromise your storage account.
@@ -69,7 +78,7 @@ Why? Because the SAS key was generated using the previous key1 -> which is no lo
 
 ## Create a stored access policy to control permissions after SAS token is issued. ##
 
-1. Define a stored access policy on the container "securedap" (write)  
+1. Define a stored access policy ('mypolicy') on the container "secured" (write)  
 ```
 [Azure Portal] -> %Your Storage Account% -> Containers -> 'secured' -> Access policy -> 'Storage access policy' -> '+' Add policy
 ```
@@ -100,56 +109,86 @@ Why? Because the SAS key was generated using the previous key1 -> which is no lo
 > So stored access policies can help to modify permissions to a container after the SAS has been issued to users / apps.
 
 ## [optional] Authorize access to blobs using AAD ##  
-**You can** also **authorize access to storage accounts using Azure Active Directory (AAD) credentials**. [See](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad?toc=%2fazure%2fstorage%2fblobs%2ftoc.json)  
-And in fact this **is the recommended way**.  
-Apps however might want to use 'service accounts' aka Service Principals in Azure.  
-The following PowerShell code creates a Service Principal in AAD. You can give this 'user' permissions to your storage account -> container
+**You can** also **authorize access to storage accounts using Azure Active Directory (AAD) credentials**. [See](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad?toc=%2fazure%2fstorage%2fblobs%2ftoc.json).  
+Which means you assign users RBAC permissions to a e.g. container. This **is in fact the recommended way**.  
+Apps however might want to use 'service accounts' as users (aka Service Principals) in Azure.  
+The following PowerShell code creates a Service Principal in AAD.  
+Run this in your cloud shell:  
 
 ```PowerShell
-#Login to your azure subscription
-Login-AzAccount 
-#Right subscription selected?
-Get-AzSubscription | Out-GridView -Title "Select working context" -OutputMode Single | Set-AzContext
+$servicePrincipalName = "myADCServicePrincipal$(get-random -min 100 -max 999)"   #must be unique within AAD tenant
+
+#using Azure CLI is more comfortable to use for creating a Service Principal
+$jsonResult = &az ad sp create-for-rbac --name $servicePrincipalName 
+
+$SPPassword = ($jsonResult | convertfrom-json).password
+$SPName = ($jsonResult | convertfrom-json).name
+
 #Get your AAD ID
 $tenantID = $((Get-AzContext).Tenant.Id)  #e.g. '72f988bf-8.....'
 
-#create service principal with null rights in AAD
-$servicePrincipalName = "mySaSP...."   #must be unique within AAD tenant
-$sp = New-AzADServicePrincipal -DisplayName $servicePrincipalName -Role $null
-#save password for later logon (see below).
-$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($sp.Secret)
-$UnsecureSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+Write-Host "You created SP: $servicePrincipalName with password: $SPPassword in tenant: $tenantID" -ForegroundColor Cyan  
 
-<#now assign this service principal storage account contributor rights in the Portal.
+```
+You can give this 'user' or better 'service principal' permissions to your storage account -> container  
+```
 [Azure Portal] -> %Your Storage Account% -> Containers -> 'secured' ->  Access Control (IAM) -> Add a role assignment...
-    Role: e.g. "Storage Blob Data Owner"
-    Select: "mySaSP..."
-#>
+    Role: e.g. "Storage Blob Data Contributor"
+    Select: "myADCServicePrincipal..."
+```
+Below is some PowerShell Code that should 'simulate' your app. It'll login to Azure as Service Principal and access the storage account.  
+Run this in the Cloud Shell:  
 
+```PowerShell
 #Now sign in as this service principal
-$passwd = ConvertTo-SecureString $UnsecureSecret -AsPlainText -Force
-$pscredential = New-Object System.Management.Automation.PSCredential($sp.ServicePrincipalNames[0], $passwd)
+$passwd = ConvertTo-SecureString $SPPassword -AsPlainText -Force
+$pscredential = New-Object System.Management.Automation.PSCredential($SPName, $passwd)
 Connect-AzAccount -ServicePrincipal -Credential $pscredential -Tenant $tenantID
 
+Write-Host "Select the proper storage account" -ForegroundColor Blue
+
+#select your storage account
+do {
+    $saccts = @("")
+    Get-AzResource -ResourceType 'Microsoft.Storage/storageAccounts' | foreach -Begin { $i = 0 } -Process {
+        $i++
+        $saccts += "{0}. {1}" -f $i, $_.Name
+    } -outvariable menu
+    $saccts | Format-Wide { $_ } -Column 4 -Force
+    $r = Read-Host "Select the storage account"
+    $SA = $saccts[$r].Split()[1]
+    if ($SA -eq $null) { Write-Host "You must make a valid selection" -ForegroundColor Red }
+    else {
+        Write-Host "Selecting storage account: $($saccts[$r])" -ForegroundColor Green
+    }
+}
+until ($SA -ne $null)
+
 $ctx = $null
-$ctx = New-AzStorageContext -StorageAccountName "%Your Storage account name%" -UseConnectedAccount
+$ctx = New-AzStorageContext -StorageAccountName $SA -UseConnectedAccount
 $container = Get-AzStorageContainer -Context $ctx -Name 'secured'
 Get-AzStorageBlob -Container $($container.Name) -Context $ctx
+
 #in case of error - do you have the correct role permissions? (e.g. Storage Blob Data Contributor)
-#Get-AzRoleAssignment -ServicePrincipalName $sp.ServicePrincipalNames[0]
-Get-AzStorageBlob -Container $($container.Name) -Context $ctx | out-gridview -Title 'Select blob to download to c:\temp' -OutputMode Single | Get-AzStorageBlobContent -Destination 'c:\temp'
+#Get-AzRoleAssignment -ServicePrincipalName $SPName
 
-Logout-AzAccount -Username $sp.ServicePrincipalNames[0]
+#Display the content of the first file
+$myfiles = Get-AzStorageBlob -Container $($container.Name) -Context $ctx 
+$myfile = ($myfiles | Select-Object -First 1).Name
+Get-AzStorageBlobContent $myfile -Force -Context $ctx -container $($container.Name)
+Write-Host "the content...."  -ForegroundColor Cyan
+get-content -path $myfile
 
+Logout-AzAccount -Username $SPName  
 
+```
+You now want to delete your service principal?
+
+```PowerShell
 #cleanup
 Read-Host -Prompt "Ready to cleanup? (key)"
-#Login to your azure subscription
-Login-AzAccount 
-#Right subscription selected?
-Get-AzSubscription | Out-GridView -Title "Select working context" -OutputMode Single | Set-AzContext
-Remove-AzADServicePrincipal -DisplayName $servicePrincipalName -Force
-Remove-AzADApplication -DisplayName $servicePrincipalName -Force
+$SPDisplayName = ($jsonResult | convertfrom-json).displayName
+Remove-AzADApplication -DisplayName $SPDisplayName -Force
 ```
 
 ## Add an azure file share to a server. ##
