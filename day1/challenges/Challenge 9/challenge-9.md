@@ -40,9 +40,9 @@ The wizard in the portal is _smart enough_ to let create 2 peerings in a single 
 
 | Name | Value |
 |---|---|
-| Name of the peering from VNET1 to remote virtual network |  **VNET1toVNET2** |
-| Virtual Network  | **VNET2** |
-| Name of the peering from VNET2 to VNET1  |  **VNET2toVNET1** |   
+| **This** virtual network - Peering link name|  **VNET1-to-VNET2** |
+| Virtual Network (_to peer with_) | **VNET2** |
+| **Remote** virtual network - Peering link name  |  **VNET2-to-VNET1** |   
 
 ![VNET Peering settings](vnetpeeringsettings.PNG)
   
