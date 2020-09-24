@@ -105,7 +105,7 @@ This could be e.g. a public github repo or another https-reachable location.
 In this lab **we use a storage account for this**.  
 **Upload ("[CSE_Install-IIS.ps1](CSE_Install-IIS.ps1)") file to a storage account.**
 ```
-[Azure Portal] -> Resource Group -> rg-www -> sawww... (_your storage account_)  -> containers -> 'csescripts' -> Upload  
+[Azure Portal] -> Resource Group -> rg-www -> sawww... (%your storage account%)  -> containers -> 'csescripts' -> Upload  
 ->File "CSE_Install-IIS.ps1" -> Upload
 ```  
   
@@ -145,4 +145,10 @@ At the end **the result should look like this**
 Now you have a web server in your VM - you should test by browsing to the public IP address:  
 ![Running IIS](CSEIIS-Success.png)  
 
+
+## Cleanup the environment ##
+Cleanup by deleting the resource group.
+```
+[Azure Portal] -> Resource Groups -> 'rg-www' -> 'Delete resource group'
+```
 [back](../../README.md) 
