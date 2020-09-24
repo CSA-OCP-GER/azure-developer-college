@@ -144,7 +144,7 @@ Select the **following algorithms / suites for the connection**:
 Do you receive a response?  
 
 ## [Optional] Apply a more secure cipher for the VPN tunnel.
-**The following ARM Template defines a more secure cipher / algorithm to use for the VPN tunnel.**  
+**The following ARM Template ([VPNMoreSecureConnPolicy.json](VPNMoreSecureConnPolicy.json)) defines a more secure cipher / algorithm to use for the VPN tunnel.**  
 | Parameter Name | Values  |
 |---|---|
 | ipsecEncryption | AES256 |
