@@ -43,13 +43,13 @@
     "variables": {
         "virtualNetworks_azurevnet_name": "[concat('vnet-',variables('vmNamePrefix'))]",
         "VMSubnet": "snet-frontend",
-        "vmNamePrefix": "wwwfarm",
-        "storageAccountName": "[toLower(concat('sa',variables('vmNamePrefix'),substring(uniqueString(resourceGroup().id),0,4)))]",
+        "vmNamePrefix": "[replace(resourceGroup().name,'rg-','')]",
+        "storageAccountName": "[toLower(concat('sa',replace(variables('vmNamePrefix'),'-',''),substring(uniqueString(resourceGroup().id),0,4)))]",
         "nsgName": "[concat('nsg-',variables('vmNamePrefix'))]",
         "PIPName": "[concat('pip-',variables('vmNamePrefix'))]",
         "availabilitySetName": "[concat('av-',variables('vmNamePrefix'))]",
         "domainNameLabel": "[toLower(concat('farm',substring(uniqueString(resourceGroup().id),0,4)))]",
-        "lbName": "wwwlb"
+        "lbName": "[variables('vmNamePrefix')]"
     },
     "resources": [
         {

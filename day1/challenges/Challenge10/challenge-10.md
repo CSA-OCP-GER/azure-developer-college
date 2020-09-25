@@ -48,7 +48,8 @@ Once successful your shell should appear at the bottom of the page:
 ![Cloud Shell in the Azure portal](CloudShell2.png)
   
 To setup the starting point **copy & paste the following code into the Cloud Shell**:  
-```
+```PowerShell
+#Creates some resource groups in different azure regions
 New-AzResourceGroup -Name 'rg-wwwlb-NE' -Location 'North Europe'
 New-AzResourceGroup -Name 'rg-wwwlb-WE' -Location 'West Europe'
 New-AzResourceGroup -Name 'rg-wwwlb' -Location 'North Europe'
@@ -64,16 +65,53 @@ $TemplateParameters = @{
 ```
 **Enter the password as asked.**  Then execute the deployment by adding 2 lines
 
-```
+```PowerShell
+#will create some vms in different azure regions in parallel
 New-AzResourceGroupDeployment -Name 'NE' -TemplateUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-NE' -TemplateParameterObject $TemplateParameters -AsJob
 
 $TemplateParameters.vmNames = @('vmyellow','vmgreen')
 New-AzResourceGroupDeployment -Name 'WE' -TemplateUri "https://raw.githubusercontent.com/CSA-OCP-GER/azure-developer-college/day1addons/day1/challenges/Challenge10/Challenge10Start.json" -ResourceGroupName 'rg-wwwlb-WE' -TemplateParameterObject $TemplateParameters -AsJob  
 
+#wait until both deployments are done
+get-job -State Running | wait-job  
+
 ```
 
 
 ## 2. Deploy a Traffic Manager instance ##
-[Add Traffic Manager Profile](https://docs.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile#add-traffic-manager-endpoints) in resource group **rg-wwwlb** with a routing method based on **geography**
+[Add Traffic Manager Profile](https://docs.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile#add-traffic-manager-endpoints) in resource group **rg-wwwlb** with a routing method based on e.g. **performance**  
+  
+Add 2 endpoints to the traffic manager.
+| Name | Value |
+|---|---|
+| Type  |  **Azure endpoint** |
+| Name  |  **Dublin** |
+| Target resource type  |  **Public IP address** |
+| Public IP address  |  **pip-wwwlb-NE** |
+
+| Name | Value |
+|---|---|
+| Type  |  **Azure endpoint** |
+| Name  |  **Amsterdam** |
+| Target resource type  |  **Public IP address** |
+| Public IP address  |  **pip-wwwlb-WE** |
+
+Now test by opening the traffic managers DNS name in your browser (you might need to open multiple different browsers to see some change):  
+
+| ![VM Yellow](testvmyellow.png)   | ![VM Green](testvmgreen.png)   | ![VM Blue](testvmblue.png)  | ![VM Red](testvmred.png)  |
+|---|---|---|---|
+| vmyellow (Amsterdam)   | vmgreen (Amsterdam) |  vmblue (Dublin) | vmred (Dublin) |
+  
+## Cleanup ##
+**Delete the resource groups _rg-wwwlb...._** or execute this in the Cloud Shell:  
+```PowerShell
+Remove-AzResourceGroup -Name 'rg-wwwlb-NE' -Force -AsJob
+Remove-AzResourceGroup -Name 'rg-wwwlb-WE' -Force -AsJob
+Remove-AzResourceGroup -Name 'rg-wwwlb'    -Force -AsJob
+
+Get-Job -State Running | Wait-Job
+
+```
+
 
 [back](../../README.md)
