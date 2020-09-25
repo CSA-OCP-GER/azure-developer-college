@@ -5,7 +5,7 @@
 
 ## Create a data disk and attach it to a vm ##
 ```
-[Azure Portal] -> Virtual machines -> e.g. 'vmweb01' -> Disks -> "+ Add data disk"
+[Azure Portal] -> Virtual machines -> e.g. 'vmweb01' -> Disks -> "+ Create and attach a new disk"
 ```  
 | Name | Value |
 |---|---|

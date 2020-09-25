@@ -1,4 +1,4 @@
-{
+    {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
@@ -35,66 +35,32 @@
     },
     "variables": {
         "vmNames": [
-            "VMonVNET1",
-            "VMonVNET2"
+            "vmblue"
         ],
-        "vnetNames": [
-            "VNET1",
-            "VNET2"
-        ],
-        "VMSubnet": "VMSubnet1",
-        "storageAccountName": "[toLower(concat('sadiag',substring(uniqueString(resourceGroup().id),0,4)))]",
-        "nsgName": "[concat('nsg-','vms')]",
-        "PIPName": "pip-"
+        "virtualNetworks_azurevnet_name": "[concat('vnet-',variables('vmNamePrefix'))]",
+        "VMSubnet": "snet-www",
+        "vmNamePrefix": "www",
+        "storageAccountName": "[toLower(concat('sa',variables('vmNamePrefix'),substring(uniqueString(resourceGroup().id),0,4)))]",
+        "nsgName": "[concat('nsg-',variables('vmNamePrefix'))]",
+        "PIPName": "[concat('pip-',variables('vmNamePrefix'))]"
     },
     "resources": [
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-08-01",
-            "name": "[variables('vnetNames')[0]]",
+            "name": "[variables('virtualNetworks_azurevnet_name')]",
             "location": "[resourceGroup().location]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "172.16.100.0/24"
+                        "192.168.200.0/24"
                     ]
                 },
                 "subnets": [
                     {
                         "name": "[variables('VMSubnet')]",
                         "properties": {
-                            "addressPrefix": "172.16.100.0/26",
-                            "serviceEndpoints": [
-                            ],
-                            "delegations": [
-                            ],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    }
-                ],
-                "virtualNetworkPeerings": [
-                ],
-                "enableDdosProtection": false,
-                "enableVmProtection": false
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2019-08-01",
-            "name": "[variables('vnetNames')[1]]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "192.168.100.0/24"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "[variables('VMSubnet')]",
-                        "properties": {
-                            "addressPrefix": "192.168.100.0/26",
+                            "addressPrefix": "192.168.200.0/26",
                             "serviceEndpoints": [
                             ],
                             "delegations": [
@@ -119,7 +85,7 @@
                 "name": "Standard_LRS",
                 "tier": "Standard"
             },
-            "kind": "Storage",
+            "kind": "Storagev2",
             "properties": {
                 "networkAcls": {
                     "bypass": "AzureServices",
@@ -141,7 +107,20 @@
                     },
                     "keySource": "Microsoft.Storage"
                 }
-            }
+            },
+            "resources": [
+                {
+                    "name": "[concat('default/', 'csecripts')]",
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-07-01",
+                    "dependsOn": [
+                        "[variables('storageAccountName')]"
+                    ],
+                    "properties": {
+                        "publicAccess": "Blob"
+                    }
+                }
+            ]
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
@@ -170,6 +149,27 @@
                             "destinationAddressPrefixes": [
                             ]
                         }
+                    },
+                    {
+                        "name": "default-allow-http",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1001,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [
+                            ],
+                            "destinationPortRanges": [
+                            ],
+                            "sourceAddressPrefixes": [
+                            ],
+                            "destinationAddressPrefixes": [
+                            ]
+                        }
                     }
                 ]
             }
@@ -177,12 +177,8 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2019-09-01",
-            "name": "[concat(variables('PIPName'),variables('vmNames')[copyIndex()])]",
+            "name": "[variables('PIPName')]",
             "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "pipcopy",
-                "count": "[length(variables('vmNames'))]"
-            },
             "sku": {
                 "name": "Basic"
             },
@@ -204,8 +200,8 @@
             "location": "[resourceGroup().location]",
             "apiVersion": "2018-10-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]",
-                "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('PIPName'),variables('vmNames')[copyIndex()]))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('PIPName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -214,10 +210,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('PIPName'),variables('vmNames')[copyIndex()]))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('PIPName'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetNames')[copyIndex()], variables('VMSubnet'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_azurevnet_name'), variables('VMSubnet'))]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -280,50 +276,6 @@
                         "enabled": true,
                         "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))).primaryEndpoints.blob]"
                     }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "apiVersion": "2019-07-01",
-            "name": "[concat(variables('vmNames')[copyIndex()], '/BGInfo')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/',variables('vmNames')[copyIndex()])]"
-            ],
-            "copy": {
-                "name": "BGInfocopy",
-                "count": "[length(variables('vmNames'))]"
-            },
-            "properties": {
-                "autoUpgradeMinorVersion": true,
-                "publisher": "Microsoft.Compute",
-                "type": "BGInfo",
-                "typeHandlerVersion": "2.1"
-            }
-        },
-        {
-            "apiVersion": "2018-10-01",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmNames')[copyIndex()],'/','dscextension')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/',variables('vmNames')[copyIndex()])]"
-            ],
-            "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "dsccopy",
-                "count": "[length(variables('vmNames'))]"
-            },
-            "properties": {
-                "publisher": "Microsoft.Powershell",
-                "type": "DSC",
-                "typeHandlerVersion": "2.73",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "modulesUrl": "https://github.com/CSA-OCP-GER/azure-developer-college/raw/master/day1/challenges/Challenge%209/EnablePingConfig.zip",
-                    "configurationFunction": "EnablePingConfig.ps1\\AllowPing"
-                },
-                "protectedSettings": {
                 }
             }
         }

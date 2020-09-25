@@ -1,4 +1,4 @@
-{
+    {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
@@ -35,66 +35,31 @@
     },
     "variables": {
         "vmNames": [
-            "VMonVNET1",
-            "VMonVNET2"
+            "vmazure"
         ],
-        "vnetNames": [
-            "VNET1",
-            "VNET2"
-        ],
-        "VMSubnet": "VMSubnet1",
-        "storageAccountName": "[toLower(concat('sadiag',substring(uniqueString(resourceGroup().id),0,4)))]",
-        "nsgName": "[concat('nsg-','vms')]",
-        "PIPName": "pip-"
+        "virtualNetworks_azurevnet_name": "[concat('vnet-',variables('vmNamePrefix'))]",
+        "VMSubnet": "snet-vmazure",
+        "vmNamePrefix": "vpn",
+        "storageAccountName": "[toLower(concat('sa',variables('vmNamePrefix'),substring(uniqueString(resourceGroup().id),0,4)))]",
+        "nsgName": "[concat('nsg-',variables('vmNamePrefix'))]"
     },
     "resources": [
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-08-01",
-            "name": "[variables('vnetNames')[0]]",
+            "name": "[variables('virtualNetworks_azurevnet_name')]",
             "location": "[resourceGroup().location]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "172.16.100.0/24"
+                        "10.1.0.0/16"
                     ]
                 },
                 "subnets": [
                     {
                         "name": "[variables('VMSubnet')]",
                         "properties": {
-                            "addressPrefix": "172.16.100.0/26",
-                            "serviceEndpoints": [
-                            ],
-                            "delegations": [
-                            ],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    }
-                ],
-                "virtualNetworkPeerings": [
-                ],
-                "enableDdosProtection": false,
-                "enableVmProtection": false
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2019-08-01",
-            "name": "[variables('vnetNames')[1]]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "192.168.100.0/24"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "[variables('VMSubnet')]",
-                        "properties": {
-                            "addressPrefix": "192.168.100.0/26",
+                            "addressPrefix": "10.1.0.0/24",
                             "serviceEndpoints": [
                             ],
                             "delegations": [
@@ -119,7 +84,7 @@
                 "name": "Standard_LRS",
                 "tier": "Standard"
             },
-            "kind": "Storage",
+            "kind": "Storagev2",
             "properties": {
                 "networkAcls": {
                     "bypass": "AzureServices",
@@ -175,26 +140,6 @@
             }
         },
         {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2019-09-01",
-            "name": "[concat(variables('PIPName'),variables('vmNames')[copyIndex()])]",
-            "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "pipcopy",
-                "count": "[length(variables('vmNames'))]"
-            },
-            "sku": {
-                "name": "Basic"
-            },
-            "properties": {
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": [
-                ]
-            }
-        },
-        {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(variables('vmNames')[copyIndex()],'-nic1')]",
             "copy": {
@@ -204,8 +149,7 @@
             "location": "[resourceGroup().location]",
             "apiVersion": "2018-10-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]",
-                "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('PIPName'),variables('vmNames')[copyIndex()]))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -213,11 +157,8 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('PIPName'),variables('vmNames')[copyIndex()]))]"
-                            },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetNames')[copyIndex()], variables('VMSubnet'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_azurevnet_name'), variables('VMSubnet'))]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -283,7 +224,7 @@
                 }
             }
         },
-        {
+                {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2019-07-01",
             "name": "[concat(variables('vmNames')[copyIndex()], '/BGInfo')]",
