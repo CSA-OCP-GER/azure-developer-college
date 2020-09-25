@@ -1,3 +1,13 @@
+# This repo has been ARCHIVED!
+
+You can find all up-to-date content here: <https://github.com/azuredevcollege/trainingdays> 
+
+<br>
+<br>
+<br>
+<br>
+<hr>
+<br>
 <div align="center">
   <h1>Welcome to the Azure Developer College!</h1>
   <p>The Azure Developer College is a five days training for developers.</p>
